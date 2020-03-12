@@ -19,6 +19,7 @@ WriteMakefile(
     },
     PREREQ_PM => {
         'File::Path'            => 0,
+		'File::Spec'            => 0,
         'File::Spec::Functions' => 0,
         'LWP::UserAgent'        => 0,
         'URI'                   => 0,

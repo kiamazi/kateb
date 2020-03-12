@@ -10,6 +10,7 @@ use warnings;
 ### LWP::Protocol::https
 
 use File::Path qw(make_path rmtree);
+use File::Spec;
 use File::Spec::Functions qw(catdir catfile tmpdir);
 use LWP::UserAgent ();
 use URI		();
@@ -260,7 +261,7 @@ sub _write_file {
 	my $json = shift;
 	open my $fh, '>:encoding(UTF-8)', $file || die;
 	print $fh $json;
-	close $fh;	
+	close $fh;
 }
 
 sub _reset_json_file {
@@ -316,7 +317,7 @@ sub _download {
 		sub {
 			unless (defined $file) {
 				my $res = $_[1];
-	
+
 				$file = $argfile;
 
 				print "Saving to '$file'...\n";
@@ -359,7 +360,7 @@ sub _download {
 
 	if (fileno($FILE_HANDLE)) {
 		close($FILE_HANDLE) || die "Can't write to $file: $!\n";
-	
+
 		show("");	# clear text
 		print "\r";
 		print fbytes($size);
@@ -457,4 +458,3 @@ BEGIN {
 		$shown++;
 	}
 }
-

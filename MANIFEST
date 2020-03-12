@@ -1,0 +1,6 @@
+MANIFEST
+Makefile.PL
+lib/kateb.pm
+bin/kateb
+META.yml
+META.json

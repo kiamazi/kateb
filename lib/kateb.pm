@@ -26,11 +26,11 @@ This document describes L<kateb> version B<00.98.12>.
 
 kateb comes with a command-line application which you can use to install and update your fonts.
 
- $ cpanm Mira # Install
+ $ cpanm kateb # Install
 
- $ kateb               # install fonts in ~/.local/share/fonts/farsifreefonts
+ $ kateb       # install fonts in ~/.local/share/fonts/farsifreefonts
 
- $ sudo kateb    # install fonts in /usr/share/fonts/farsifreefonts
+ $ sudo kateb  # install fonts in /usr/share/fonts/farsifreefonts
 
 
 =head1 Author

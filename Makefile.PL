@@ -18,16 +18,16 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     PREREQ_PM => {
-        File::Path            => 0,
-        File::Spec::Functions => 0,
-        LWP::UserAgent        => 0,
-        URI                   => 0,
-        HTTP::Date            => 0,
-        JSON::PP              => 0,
-        JSON::MaybeXS         => 0,
-        Archive::Zip          => 0,
-        File::Copy            => 0,
-        Term::ANSIColor       => 0
+        'File::Path'            => 0,
+        'File::Spec::Functions' => 0,
+        'LWP::UserAgent'        => 0,
+        'URI'                   => 0,
+        'HTTP::Date'            => 0,
+        'JSON::PP'              => 0,
+        'JSON::MaybeXS'         => 0,
+        'Archive::Zip'          => 0,
+        'File::Copy'            => 0,
+        'Term::ANSIColor'       => 0
     },
     dist       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     META_MERGE => {

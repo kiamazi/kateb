@@ -1,0 +1,59 @@
+{
+   "abstract" : "indtsll and update Farsi free fonts",
+   "author" : [
+      "Kiavash"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "ExtUtils::MakeMaker version 7.34, CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "gpl_3"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "kateb",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Archive::Zip" : "0",
+            "File::Copy" : "0",
+            "File::Path" : "0",
+            "File::Spec::Functions" : "0",
+            "HTTP::Date" : "0",
+            "JSON::MaybeXS" : "0",
+            "JSON::PP" : "0",
+            "LWP::UserAgent" : "0",
+            "Term::ANSIColor" : "0",
+            "URI" : "0",
+            "perl" : "5.016"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/kiamazi/kateb.git",
+         "web" : "https://github.com/kiamazi/kateb"
+      }
+   },
+   "version" : "v00.98.12",
+   "x_serialization_backend" : "JSON::PP version 4.02"
+}

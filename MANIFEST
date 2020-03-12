@@ -2,5 +2,5 @@ MANIFEST
 Makefile.PL
 lib/kateb.pm
 bin/kateb
-META.yml
-META.json
+MYMETA.yml
+MYMETA.json

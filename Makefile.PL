@@ -22,6 +22,7 @@ WriteMakefile(
 		'File::Spec'            => 0,
         'File::Spec::Functions' => 0,
         'LWP::UserAgent'        => 0,
+		'LWP::Protocol::https'  => 0,
         'URI'                   => 0,
         'HTTP::Date'            => 0,
         'JSON::PP'              => 0,

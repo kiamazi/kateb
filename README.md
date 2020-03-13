@@ -11,7 +11,9 @@
 ### پیش‌نیازها
 - ‫در صورتی‌که از اوبونتو و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید و openssl بر روس سیستم شما نصب نیست
 
-	sudo apt install openssl libssl-dev
+``` bash
+sudo apt install openssl libssl-dev
+```
 
 - آرچ و نسخه‌های بر پایه‌ی آن مانند مانجارو
 
@@ -53,4 +55,4 @@
 	parastoo-font
 	sahel-font
 	vazir-code-font
-	nahid-font'
+	nahid-font

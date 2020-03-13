@@ -22,7 +22,7 @@ use File::Copy;
 use Term::ANSIColor qw(:constants);
 
 
-our $VERSION = '00.98.12';
+our $VERSION = '00.98.13';
 our $execname = "kateb";
 our $shown;  # have we called the show() function yet
 

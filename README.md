@@ -51,6 +51,6 @@
 	shabnam-font
 	gandom-font
 	parastoo-font
-	sahel-font'
+	sahel-font
 	vazir-code-font
 	nahid-font'

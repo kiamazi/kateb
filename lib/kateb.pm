@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.00';
+our $VERSION = '01.00.02';
 
 
 1;
@@ -19,7 +19,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<00.98.12>.
+This document describes L<kateb> version B<01.00.02>.
 
 
 =head1 kateb

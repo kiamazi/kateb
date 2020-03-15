@@ -2,8 +2,8 @@ package kateb;
 
 use strict;
 use warnings;
-use 5.016;
-our $VERSION = '00.98.13';
+use 5.012;
+our $VERSION = '01.00.00';
 
 
 1;

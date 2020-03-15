@@ -129,45 +129,6 @@ if (@ARGV && $ARGV[0] =~ m/^reinstall$/)
 	exit 0;
 }
 
-
-
-
-
-
-
-
-#------------------ Work Area ------------------#
-#my $Info = kateb::FontInfo->new();
-#
-#my $user_agent = LWP::UserAgent->new
-#(
-#	ssl_opts => { verify_hostname => 1 },
-#	keep_alive => 1
-#);
-#
-#foreach my $font (keys %{$Info})
-#{
-#	my $json_api_response = $user_agent->get($Info->{$font}->{api});
-#	my $tags = decode_json( $json_api_response->{_content} );
-#	my $version;
-#	eval
-#	{
-#		$version = $tags->[0]->{name};
-#	}; if ($@)
-#	{
-#		say "$c{bred}github API rate limit exceeded. This limit is 50 times per #hour, plz try again in about an hour$c{reset}";
-#		exit;
-#	}
-#
-#	my $url = $Info->$font($version);
-#	say "$c{bgreen}$url$c{reset}";
-#}
-
-#use Data::Dumper;
-#say Dumper $base;
-
-
-
 sub usage {
 	print <<END_USAGE;
 

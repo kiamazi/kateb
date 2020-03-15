@@ -131,35 +131,27 @@ if (@ARGV && $ARGV[0] =~ m/^reinstall$/)
 
 sub usage {
 	print <<END_USAGE;
-
 kateb <command> [option]
 
 commands:
 	install
-    	install new font
-
+		install new font
 	update
 		update available font
-
 	reinstall
 		reinstall, installed font
-
 	list
 		list of installed fonts versions
-
 	fonts
 		show all farsi free fonts supported
-
 	version | -v
 		kateb version
-
 
 options:
       -a | all
         install or update all fonts
 
 sample:
-
 	kateb install all
 END_USAGE
 exit 1;

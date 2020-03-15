@@ -64,7 +64,7 @@ if (@ARGV && $ARGV[0] =~ m/^fonts$/)
 {
 	require kateb::FontInfo;
 	my $info = kateb::FontInfo->new;
-	my @fonts_list = keys %{$info};
+	my @fonts_list = sort {lc $a cmp lc $b} keys %{$info};
 	say "List of fonts supported by kateb\n";
 	say "\t$_" foreach @fonts_list;
 	print "\n";

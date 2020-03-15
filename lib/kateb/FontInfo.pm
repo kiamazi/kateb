@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.04';
+$kateb::FontInfo::VERSION = '01.00.06';
 
 use strict;
 use warnings;
@@ -49,7 +49,7 @@ sub _sources {
 			api => 'https://api.github.com/repos/rastikerdar/sahel-font/tags',
 			publisher => 'https://github.com/rastikerdar'
 		},
-		'vazir-code' => {
+		vazircode => {
 			name => 'vazir-code-font',
 			api => 'https://api.github.com/repos/rastikerdar/vazir-code-font/tags',
 			publisher => 'https://github.com/rastikerdar'
@@ -191,15 +191,15 @@ sub sahel {
 	return $link;
 }
 
-sub vazir_code {
+sub vazircode {
 	my $self    = shift;
 	my $version = shift;
 	my $link = 
-		$self->{vazir_code}->{publisher} . "/" .
-		$self->{vazir_code}->{name} .
+		$self->{vazircode}->{publisher} . "/" .
+		$self->{vazircode}->{name} .
 		"/releases/download/" .
 		$version . "/" .
-		$self->{vazir_code}->{name} . "-" . $version .
+		$self->{vazircode}->{name} . "-" . $version .
 		".zip"
 	;
 	return $link;

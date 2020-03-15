@@ -20,6 +20,41 @@ sudo apt install openssl libssl-dev
 > نیازی به نصب پیش نیاز ندارید
 
 ## استفاده
+
+### fonts
+نمایش فونت‌های پشتیبانی شده توسط کاتب
+
+	kateb fonts
+
+### install
+نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
+
+	kateb install [font name]
+	
+	kateb install vazir
+	#or
+	kateb install all
+
+### update
+به روز رسانی فونت نصب شده
+
+	kateb update shabnam
+	#or
+	kateb update all
+
+### reinstall
+دوباره نصب کردن فونت نصب شده
+
+	kateb reinstall behdad
+	#or
+	kateb reinstall all
+
+### list
+لیست نام و نسخه‌ی فونت‌های نصب شده توسط کاتب
+
+	kateb list
+
+## مسیر نصب
 ‫**۱-** نصب در دایرکتوری خانه کاربر:
 
 ‫پس از نصب در ترمینال تنها کافی است تایپ کنید:
@@ -47,12 +82,19 @@ sudo apt install openssl libssl-dev
 ## فونت‌های پشتیبانی شده
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
-	vazir-font
-	samim-font
-	tanha-font
-	shabnam-font
-	gandom-font
-	parastoo-font
-	sahel-font
-	vazir-code-font
-	nahid-font
+	gandom
+	vazir
+	farbod
+	tanha
+	vazir-code
+	nika
+	mikhak
+	pfont
+	sahel
+	ganjnameh
+	samim
+	shabnam
+	parastoo
+	nahid
+	behdad
+

@@ -1,6 +1,9 @@
 MANIFEST
 Makefile.PL
 lib/kateb.pm
+lib/kateb/FontInfo.pm
+lib/kateb/Install.pm
+lib/kateb/LocalData.pm
 bin/kateb
 META.yml
 META.json

@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.06';
+$kateb::Install::VERSION = '01.00.08';
 
 use strict;
 use warnings;
@@ -84,7 +84,6 @@ sub install {
 	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
-	my @extracted_fonts;
 	foreach my $font_name (@fonts)
 	{
 		my $version = _online_version($info->{$font_name}->{api});
@@ -103,14 +102,15 @@ sub install {
 
 		_download( $url, $archive_file );
 
-		@extracted_fonts =
+		my @extracted_fonts =
 		_unzip($font_name, $archive_file, $cache_dir);
 
 		$local_data->{installedVersions}->{$font_name} = $version;
+
+		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
+
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	}
-
-	_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
 
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }
@@ -126,7 +126,6 @@ sub update {
 	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
-	my @extracted_fonts;
 	foreach my $font_name (@fonts)
 	{
 		if (not $local_data->{installedVersions}->{$font_name})
@@ -151,14 +150,15 @@ sub update {
 
 		_download( $url, $archive_file );
 
-		@extracted_fonts =
+		my @extracted_fonts =
 		_unzip($font_name, $archive_file, $cache_dir);
 
 		$local_data->{installedVersions}->{$font_name} = $version;
+
+		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
+
 		say $c{bgreen} . $font_name . $c{reset} . " updated. version: " . $c{bgreen} . $version . $c{reset};
 	}
-
-	_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
 
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }
@@ -174,7 +174,6 @@ sub reinstall {
 	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
-	my @extracted_fonts;
 	foreach my $font_name (@fonts)
 	{
 		if (not $local_data->{installedVersions}->{$font_name})
@@ -190,14 +189,15 @@ sub reinstall {
 
 		_download( $url, $archive_file );
 
-		@extracted_fonts =
+		my @extracted_fonts =
 		_unzip($font_name, $archive_file, $cache_dir);
 
 		$local_data->{installedVersions}->{$font_name} = $version;
+
+		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
+
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	}
-
-	_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
 
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }

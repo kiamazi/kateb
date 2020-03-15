@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.06';
+our $VERSION = '01.00.08';
 
 
 1;

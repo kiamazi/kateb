@@ -13,6 +13,7 @@ my $version = $kateb::VERSION;
 
 use Term::ANSIColor qw(:constants);
 
+#------------------- ansi color constants -------------------#
 my %c =
 (
 	byellow => (BOLD YELLOW),
@@ -27,17 +28,16 @@ my %c =
 
 #------------------- prepare -------------------#
 my $local_data = kateb::LocalData->new;
-#use Data::Dumper;
-#say Dumper $local_data;
-#exit;
+
 print "\n";
+
 
 #----------------- Check ARGVs -----------------#
 usage() unless @ARGV;
 
 usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^version$|\-v/);
 
-if ($ARGV[0] =~ m/version|\-v/)
+if ($ARGV[0] =~ m/^version$|^\-v$/)
 {
 	print "version: $c{bgreen}". $version ."$c{reset}\n";
 	exit 0;

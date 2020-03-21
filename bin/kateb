@@ -37,13 +37,13 @@ usage() unless @ARGV;
 
 usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^version$|\-v/);
 
-if (@ARGV && $ARGV[0] =~ m/version|\-v/)
+if ($ARGV[0] =~ m/version|\-v/)
 {
 	print "version: $c{bgreen}". $version ."$c{reset}\n";
 	exit 0;
 }
 
-if (@ARGV && $ARGV[0] =~ m/^list$/)
+if ($ARGV[0] =~ m/^list$/)
 {
 	my $num;
 	say "installed fonts:\n";
@@ -60,7 +60,7 @@ if (@ARGV && $ARGV[0] =~ m/^list$/)
 	exit 0;
 }
 
-if (@ARGV && $ARGV[0] =~ m/^fonts$/)
+if ($ARGV[0] =~ m/^fonts$/)
 {
 	require kateb::FontInfo;
 	my $info = kateb::FontInfo->new;
@@ -70,7 +70,7 @@ if (@ARGV && $ARGV[0] =~ m/^fonts$/)
 	print "\n";
 }
 
-if (@ARGV && $ARGV[0] =~ m/^install$/)
+if ($ARGV[0] =~ m/^install$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);
@@ -89,7 +89,7 @@ if (@ARGV && $ARGV[0] =~ m/^install$/)
 	exit 0;
 }
 
-if (@ARGV && $ARGV[0] =~ m/^update$/)
+if ($ARGV[0] =~ m/^update$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);
@@ -108,7 +108,7 @@ if (@ARGV && $ARGV[0] =~ m/^update$/)
 	exit 0;
 }
 
-if (@ARGV && $ARGV[0] =~ m/^reinstall$/)
+if ($ARGV[0] =~ m/^reinstall$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);

@@ -285,7 +285,7 @@ sub _unzip {
 			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
 			push @extracted_fonts, catfile($cache_dir, $file_name);
 		}
-	} elsif ($font_name =~ /^ganjnameh$|^nika$|^mikhak$/)
+	} elsif ($font_name =~ /^ganjnameh$|^nika$|^mikhak$|^shahab$/)
 	{
 		foreach my $file (grep { m{.*\.ttf$}g } $zip->memberNames())
 		{

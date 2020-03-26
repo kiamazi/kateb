@@ -338,7 +338,7 @@ sub noon {
 	my $self    = shift;
 	my $version = shift;
 	my $ver = $version;
-	$ver =~ s/\./\-/;
+	$ver =~ s/\./\-/g;
 	my $link =
 		$self->{noon}->{publisher} . "/" .
 		$self->{noon}->{name} .

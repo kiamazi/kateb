@@ -99,7 +99,7 @@ if ($ARGV[0] =~ m/^update$/)
 		say "- $_" foreach @{$install->{errlist}};
 		print "\n";
 		say "To see the list of fonts supported by kateb, try:\n\n\tkateb fonts\n";
-		
+
 		exit $install->{error};
 	}
 

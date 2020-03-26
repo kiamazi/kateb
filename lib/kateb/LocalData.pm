@@ -1,5 +1,5 @@
 package kateb::LocalData;
-$kateb::LocalData::VERSION = '01.00.10';
+$kateb::LocalData::VERSION = '01.00.12';
 
 use strict;
 use warnings;
@@ -139,5 +139,3 @@ sub _reset_json_file {
 }
 
 1;
-
-

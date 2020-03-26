@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.10';
+our $VERSION = '01.00.12';
 
 
 1;
@@ -19,7 +19,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.10>.
+This document describes L<kateb> version B<01.00.12>.
 
 
 =head1 kateb
@@ -29,13 +29,13 @@ kateb comes with a command-line application which you can use to install and upd
  $ cpanm kateb # Install
 
  $ kateb install [font name |or| all]      # install fonts in ~/.local/share/fonts/farsifreefonts
- 
+
  $ kateb reinstall [font name |or| all]
- 
+
  $ kateb update [font name |or| all]
- 
+
  $ kateb list                                        # list of installed fonts
- 
+
  $ kateb fonts                                    # list of available fonts
 
  $ sudo kateb install/reinstall/update [font name |or| all] # install fonts in /usr/share/fonts/farsifreefonts
@@ -66,7 +66,7 @@ You should have received a copy of the GNU General Public License along with thi
 ## نصب
 
 	sudo cpan kateb
-	
+
 ### پیش‌نیازها
 - ‫در صورتی‌که از اوبونتو و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید و openssl بر روس سیستم شما نصب نیست
 
@@ -89,7 +89,7 @@ sudo apt install openssl libssl-dev
 نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
 
 	kateb install [font name]
-	
+
 	kateb install vazir
 	#or
 	kateb install all

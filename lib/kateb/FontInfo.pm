@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.10';
+$kateb::FontInfo::VERSION = '01.00.12';
 
 use strict;
 use warnings;

@@ -7,7 +7,7 @@
 ## نصب
 
 	sudo cpan kateb
-	
+
 ### پیش‌نیازها
 - ‫در صورتی‌که از اوبونتو و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید و openssl و یا کتابخانه‌های آن نصب نشده‌اند:
 
@@ -30,7 +30,7 @@ sudo apt install openssl libssl-dev
 نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
 
 	kateb install [font name]
-	
+
 	kateb install vazir
 	#or
 	kateb install all
@@ -82,19 +82,20 @@ sudo apt install openssl libssl-dev
 ## فونت‌های پشتیبانی شده
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
-	gandom
-	vazir
+	behdad
 	farbod
-	tanha
-	vazir-code
-	nika
+	gandom
+	ganjnameh
 	mikhak
+	nahid
+	nika
+	noon
+	parastoo
 	pfont
 	sahel
-	ganjnameh
 	samim
 	shabnam
-	parastoo
-	nahid
-	behdad
-
+	shahab
+	tanha
+	vazir
+	vazircode

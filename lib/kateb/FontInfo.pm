@@ -88,6 +88,16 @@ sub _sources {
 			name => 'pfont',
 			api => 'https://api.github.com/repos/pfont/pfont/tags',
 			publisher => 'https://github.com/pfont'
+		},
+		shahab => {
+			name => 'ShahabFont',
+			api => 'https://api.github.com/repos/font-store/ShahabFont/tags',
+			publisher => 'https://github.com/font-store'
+		},
+		noon => {
+			name => 'NoonFont',
+			api => 'https://api.github.com/repos/font-store/NoonFont/tags',
+			publisher => 'https://github.com/font-store'
 		}
 	};
 	return $github_apis;
@@ -96,7 +106,7 @@ sub _sources {
 sub vazir {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{vazir}->{publisher} . "/" .
 		$self->{vazir}->{name} .
 		"/releases/download/" .
@@ -110,7 +120,7 @@ sub vazir {
 sub samim {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{samim}->{publisher} . "/" .
 		$self->{samim}->{name} .
 		"/releases/download/" .
@@ -124,7 +134,7 @@ sub samim {
 sub tanha {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{tanha}->{publisher} . "/" .
 		$self->{tanha}->{name} .
 		"/releases/download/" .
@@ -138,7 +148,7 @@ sub tanha {
 sub shabnam {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{shabnam}->{publisher} . "/" .
 		$self->{shabnam}->{name} .
 		"/releases/download/" .
@@ -152,7 +162,7 @@ sub shabnam {
 sub gandom {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{gandom}->{publisher} . "/" .
 		$self->{gandom}->{name} .
 		"/releases/download/" .
@@ -166,7 +176,7 @@ sub gandom {
 sub parastoo {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{parastoo}->{publisher} . "/" .
 		$self->{parastoo}->{name} .
 		"/releases/download/" .
@@ -180,7 +190,7 @@ sub parastoo {
 sub sahel {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{sahel}->{publisher} . "/" .
 		$self->{sahel}->{name} .
 		"/releases/download/" .
@@ -194,7 +204,7 @@ sub sahel {
 sub vazircode {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{vazircode}->{publisher} . "/" .
 		$self->{vazircode}->{name} .
 		"/releases/download/" .
@@ -208,7 +218,7 @@ sub vazircode {
 sub nahid {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{nahid}->{publisher} . "/" .
 		$self->{nahid}->{name} .
 		"/releases/download/" .
@@ -222,7 +232,7 @@ sub nahid {
 sub mikhak {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{mikhak}->{publisher} . "/" .
 		$self->{mikhak}->{name} .
 		"/releases/download/" .
@@ -238,7 +248,7 @@ sub ganjnameh {
 	my $version = shift;
 	my $ver = $version;
 	$ver =~ s/^v//;
-	my $link = 
+	my $link =
 		$self->{ganjnameh}->{publisher} . "/" .
 		$self->{ganjnameh}->{name} .
 		"/releases/download/" .
@@ -254,7 +264,7 @@ sub behdad {
 	my $version = shift;
 	my $ver = $version;
 	$ver =~ s/^v//;
-	my $link = 
+	my $link =
 		$self->{behdad}->{publisher} . "/" .
 		$self->{behdad}->{name} .
 		"/releases/download/" .
@@ -268,7 +278,7 @@ sub behdad {
 sub nika {
 	my $self    = shift;
 	my $version = shift;
-	my $link = 
+	my $link =
 		$self->{nika}->{publisher} . "/" .
 		$self->{nika}->{name} .
 		"/releases/download/" .
@@ -284,7 +294,7 @@ sub farbod {
 	my $version = shift;
 	my $ver = $version;
 	$ver =~ s/^v//;
-	my $link = 
+	my $link =
 		$self->{farbod}->{publisher} . "/" .
 		$self->{farbod}->{name} .
 		"/releases/download/" .
@@ -298,8 +308,7 @@ sub farbod {
 sub pfont {
 	my $self    = shift;
 	my $version = shift;
-	my $ver = $version;
-	my $link = 
+	my $link =
 		$self->{pfont}->{publisher} . "/" .
 		$self->{pfont}->{name} .
 		"/releases/download/" .
@@ -309,6 +318,36 @@ sub pfont {
 	return $link;
 }
 
+sub shahab {
+	my $self    = shift;
+	my $version = shift;
+	my $ver = $version;
+	$ver =~ s/^v//;
+	my $link =
+		$self->{shahab}->{publisher} . "/" .
+		$self->{shahab}->{name} .
+		"/releases/download/" .
+		$version . "/" .
+		"pack." . $ver .
+		".zip"
+	;
+	return $link;
+}
+
+sub noon {
+	my $self    = shift;
+	my $version = shift;
+	my $ver = $version;
+	$ver =~ s/./-/;
+	my $link =
+		$self->{noon}->{publisher} . "/" .
+		$self->{noon}->{name} .
+		"/releases/download/" .
+		$version . "/" .
+		"NOON_" . $ver .
+		".zip"
+	;
+	return $link;
+}
+
 1;
-
-

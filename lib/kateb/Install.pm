@@ -29,7 +29,7 @@ my %c =
 );
 
 sub new {
-    my $class      = shift;
+	my $class      = shift;
 	my @args       = @_;
 	my $self;
 	if (not $args[0])

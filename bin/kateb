@@ -146,8 +146,8 @@ commands:
 		kateb version
 
 options:
-      -a | all
-        install or update all fonts
+	-a | all
+	install or update all fonts
 
 sample:
 	kateb install all

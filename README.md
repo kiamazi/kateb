@@ -21,7 +21,7 @@
 sudo apt install make libssl-dev
 ```
 
-> اگر از ابونتو 20.04 استفاده میکنید:
+- اگر از ابونتو 20.04 استفاده میکنید:
 
 ``` bash
 sudo apt install make

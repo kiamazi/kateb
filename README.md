@@ -6,32 +6,35 @@
 
 ## نصب
 
-	sudo cpan kateb
-
-توجه: قبل از نصب کاتب، از نصب بودن پیش‌نیازها مطمین باشید
-
-### پیش‌نیازها
-- make, openSSL, libssl-dev
-
-#### اوبونتو / دبیان و سایر نسخه‌های برپایه دبیان
+### اوبونتو / دبیان و سایر نسخه‌های برپایه دبیان
 
 
 - ‫در صورتی‌که از نسخه‌های قبل از اوبونتو ۲۰.۰۴ و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید:
 
 ``` bash
 sudo apt install make libssl-dev
+sudo cpan kateb
 ```
 
 - اگر از ابونتو 20.04 استفاده میکنید:
 
 ``` bash
 sudo apt install make
+sudo cpan kateb
 ```
 
-#### آرچ و نسخه‌های بر پایه‌ آن / مانجارو
+### آرچ و نسخه‌های بر پایه‌ آن / مانجارو
 
 ``` bash
 sudo pacman -S make
+sudo cpan kateb
+```
+
+### فدورا
+
+``` bash
+sudo dnf install cpan perl-LWP-Protocol-https
+sudo cpan kateb
 ```
 
 ## استفاده

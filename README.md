@@ -33,7 +33,7 @@ sudo cpan kateb
 ### فدورا
 
 ``` bash
-sudo dnf install cpan perl-LWP-Protocol-https
+sudo dnf install cpan make perl-LWP-Protocol-https
 sudo cpan kateb
 ```
 

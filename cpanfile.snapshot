@@ -1,20 +1,20 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
-  Archive-Zip-1.67
-    pathname: P/PH/PHRED/Archive-Zip-1.67.tar.gz
+  Archive-Zip-1.68
+    pathname: P/PH/PHRED/Archive-Zip-1.68.tar.gz
     provides:
-      Archive::Zip 1.67
-      Archive::Zip::Archive 1.67
-      Archive::Zip::BufferedFileHandle 1.67
-      Archive::Zip::DirectoryMember 1.67
-      Archive::Zip::FileMember 1.67
-      Archive::Zip::Member 1.67
-      Archive::Zip::MemberRead 1.67
-      Archive::Zip::MockFileHandle 1.67
-      Archive::Zip::NewFileMember 1.67
-      Archive::Zip::StringMember 1.67
-      Archive::Zip::Tree 1.67
-      Archive::Zip::ZipFileMember 1.67
+      Archive::Zip 1.68
+      Archive::Zip::Archive 1.68
+      Archive::Zip::BufferedFileHandle 1.68
+      Archive::Zip::DirectoryMember 1.68
+      Archive::Zip::FileMember 1.68
+      Archive::Zip::Member 1.68
+      Archive::Zip::MemberRead 1.68
+      Archive::Zip::MockFileHandle 1.68
+      Archive::Zip::NewFileMember 1.68
+      Archive::Zip::StringMember 1.68
+      Archive::Zip::Tree 1.68
+      Archive::Zip::ZipFileMember 1.68
     requirements:
       Compress::Raw::Zlib 2.017
       Encode 0
@@ -30,6 +30,12 @@ DISTRIBUTIONS
       IO::Seekable 0
       Time::Local 0
       perl 5.006
+  Clone-0.45
+    pathname: A/AT/ATOOMIC/Clone-0.45.tar.gz
+    provides:
+      Clone 0.45
+    requirements:
+      ExtUtils::MakeMaker 0
   Cpanel-JSON-XS-4.19
     pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.19.tar.gz
     provides:
@@ -143,10 +149,10 @@ DISTRIBUTIONS
       locale 0
       perl 5.008001
       strict 0
-  HTTP-Daemon-6.06
-    pathname: O/OA/OALDERS/HTTP-Daemon-6.06.tar.gz
+  HTTP-Daemon-6.10
+    pathname: O/OA/OALDERS/HTTP-Daemon-6.10.tar.gz
     provides:
-      HTTP::Daemon 6.06
+      HTTP::Daemon 6.10
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -154,11 +160,10 @@ DISTRIBUTIONS
       HTTP::Request 6
       HTTP::Response 6
       HTTP::Status 6
-      IO::Socket::IP 0
+      IO::Socket::IP 0.25
       LWP::MediaTypes 6
       Module::Build::Tiny 0.034
       Socket 0
-      Sys::Hostname 0
       perl 5.006
       strict 0
       warnings 0
@@ -173,21 +178,22 @@ DISTRIBUTIONS
       Time::Zone 0
       perl 5.006002
       strict 0
-  HTTP-Message-6.22
-    pathname: O/OA/OALDERS/HTTP-Message-6.22.tar.gz
+  HTTP-Message-6.24
+    pathname: O/OA/OALDERS/HTTP-Message-6.24.tar.gz
     provides:
-      HTTP::Config 6.22
-      HTTP::Headers 6.22
-      HTTP::Headers::Auth 6.22
-      HTTP::Headers::ETag 6.22
-      HTTP::Headers::Util 6.22
-      HTTP::Message 6.22
-      HTTP::Request 6.22
-      HTTP::Request::Common 6.22
-      HTTP::Response 6.22
-      HTTP::Status 6.22
+      HTTP::Config 6.24
+      HTTP::Headers 6.24
+      HTTP::Headers::Auth 6.24
+      HTTP::Headers::ETag 6.24
+      HTTP::Headers::Util 6.24
+      HTTP::Message 6.24
+      HTTP::Request 6.24
+      HTTP::Request::Common 6.24
+      HTTP::Response 6.24
+      HTTP::Status 6.24
     requirements:
       Carp 0
+      Clone 0
       Compress::Raw::Zlib 0
       Encode 3.01
       Encode::Locale 1
@@ -205,7 +211,6 @@ DISTRIBUTIONS
       LWP::MediaTypes 6
       MIME::Base64 2.1
       MIME::QuotedPrint 0
-      Storable 0
       URI 1.10
       base 0
       perl 5.008001
@@ -228,10 +233,27 @@ DISTRIBUTIONS
       Encode 2.10
       Exporter 5.57
       ExtUtils::MakeMaker 6.30
-  JSON-MaybeXS-1.004000
-    pathname: H/HA/HAARG/JSON-MaybeXS-1.004000.tar.gz
+  IO-Socket-SSL-2.068
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.068.tar.gz
     provides:
-      JSON::MaybeXS 1.004000
+      IO::Socket::SSL 2.068
+      IO::Socket::SSL::Intercept 2.056
+      IO::Socket::SSL::OCSP_Cache 2.068
+      IO::Socket::SSL::OCSP_Resolver 2.068
+      IO::Socket::SSL::PublicSuffix undef
+      IO::Socket::SSL::SSL_Context 2.068
+      IO::Socket::SSL::SSL_HANDLE 2.068
+      IO::Socket::SSL::Session_Cache 2.068
+      IO::Socket::SSL::Utils 2.014
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mozilla::CA 0
+      Net::SSLeay 1.46
+      Scalar::Util 0
+  JSON-MaybeXS-1.004002
+    pathname: E/ET/ETHER/JSON-MaybeXS-1.004002.tar.gz
+    provides:
+      JSON::MaybeXS 1.004002
     requirements:
       Carp 0
       Cpanel::JSON::XS 2.3310
@@ -251,6 +273,18 @@ DISTRIBUTIONS
       Scalar::Util 0
       perl 5.006002
       strict 0
+  LWP-Protocol-https-6.07
+    pathname: O/OA/OALDERS/LWP-Protocol-https-6.07.tar.gz
+    provides:
+      LWP::Protocol::https 6.07
+      LWP::Protocol::https::Socket 6.07
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::Socket::SSL 1.54
+      LWP::UserAgent 6.06
+      Mozilla::CA 20110101
+      Net::HTTPS 6
+      perl 5.008001
   Module-Build-Tiny-0.039
     pathname: L/LE/LEONT/Module-Build-Tiny-0.039.tar.gz
     provides:
@@ -276,6 +310,14 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Mozilla-CA-20200520
+    pathname: A/AB/ABH/Mozilla-CA-20200520.tar.gz
+    provides:
+      Mozilla::CA 20200520
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test 0
+      perl 5.006
   Net-HTTP-6.19
     pathname: O/OA/OALDERS/Net-HTTP-6.19.tar.gz
     provides:
@@ -295,8 +337,17 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  TimeDate-2.32
-    pathname: A/AT/ATOOMIC/TimeDate-2.32.tar.gz
+  Net-SSLeay-1.88
+    pathname: C/CH/CHRISN/Net-SSLeay-1.88.tar.gz
+    provides:
+      Net::SSLeay 1.88
+      Net::SSLeay::Handle 1.88
+    requirements:
+      ExtUtils::MakeMaker 0
+      MIME::Base64 0
+      perl 5.008001
+  TimeDate-2.33
+    pathname: A/AT/ATOOMIC/TimeDate-2.33.tar.gz
     provides:
       Date::Format 2.24
       Date::Format::Generic 2.24
@@ -335,7 +386,7 @@ DISTRIBUTIONS
       Date::Language::TigrinyaEritrean 1.00
       Date::Language::TigrinyaEthiopian 1.00
       Date::Language::Turkish 1.0
-      Date::Parse 2.32
+      Date::Parse 2.33
       Time::Zone 2.24
       TimeDate 1.21
     requirements:
@@ -428,32 +479,54 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  libwww-perl-6.43
-    pathname: O/OA/OALDERS/libwww-perl-6.43.tar.gz
+  kateb-01.00.12
+    pathname: K/KI/KIAVASH/kateb/kateb-01.00.12.tar.gz
     provides:
-      LWP 6.43
-      LWP::Authen::Basic 6.43
-      LWP::Authen::Digest 6.43
-      LWP::Authen::Ntlm 6.43
-      LWP::ConnCache 6.43
-      LWP::Debug 6.43
-      LWP::Debug::TraceHTTP 6.43
-      LWP::DebugFile 6.43
-      LWP::MemberMixin 6.43
-      LWP::Protocol 6.43
-      LWP::Protocol::cpan 6.43
-      LWP::Protocol::data 6.43
-      LWP::Protocol::file 6.43
-      LWP::Protocol::ftp 6.43
-      LWP::Protocol::gopher 6.43
-      LWP::Protocol::http 6.43
-      LWP::Protocol::loopback 6.43
-      LWP::Protocol::mailto 6.43
-      LWP::Protocol::nntp 6.43
-      LWP::Protocol::nogo 6.43
-      LWP::RobotUA 6.43
-      LWP::Simple 6.43
-      LWP::UserAgent 6.43
+      kateb 1.000012
+      kateb::FontInfo 1.000012
+      kateb::Install 1.000012
+      kateb::LocalData 1.000012
+    requirements:
+      Archive::Zip 0
+      ExtUtils::MakeMaker 0
+      File::Copy 0
+      File::Path 0
+      File::Spec 0
+      File::Spec::Functions 0
+      File::Temp 0
+      HTTP::Date 0
+      JSON::PP 0
+      LWP::Protocol::https 0
+      LWP::UserAgent 0
+      Term::ANSIColor 0
+      URI 0
+      perl 5.012
+  libwww-perl-6.44
+    pathname: O/OA/OALDERS/libwww-perl-6.44.tar.gz
+    provides:
+      LWP 6.44
+      LWP::Authen::Basic 6.44
+      LWP::Authen::Digest 6.44
+      LWP::Authen::Ntlm 6.44
+      LWP::ConnCache 6.44
+      LWP::Debug 6.44
+      LWP::Debug::TraceHTTP 6.44
+      LWP::DebugFile 6.44
+      LWP::MemberMixin 6.44
+      LWP::Protocol 6.44
+      LWP::Protocol::cpan 6.44
+      LWP::Protocol::data 6.44
+      LWP::Protocol::file 6.44
+      LWP::Protocol::ftp 6.44
+      LWP::Protocol::gopher 6.44
+      LWP::Protocol::http 6.44
+      LWP::Protocol::loopback 6.44
+      LWP::Protocol::mailto 6.44
+      LWP::Protocol::nntp 6.44
+      LWP::Protocol::nogo 6.44
+      LWP::RobotUA 6.44
+      LWP::Simple 6.44
+      LWP::UserAgent 6.44
       libwww::perl undef
     requirements:
       CPAN::Meta::Requirements 2.120620

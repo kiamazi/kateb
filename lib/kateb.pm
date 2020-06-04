@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.12';
+our $VERSION = '01.00.13';
 
 
 1;
@@ -19,7 +19,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.12>.
+This document describes L<kateb> version B<01.00.13>.
 
 
 =head1 kateb
@@ -65,18 +65,36 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## نصب
 
-	sudo cpan kateb
+### اوبونتو / دبیان و سایر نسخه‌های برپایه دبیان
 
-### پیش‌نیازها
-- ‫در صورتی‌که از اوبونتو و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید و openssl بر روس سیستم شما نصب نیست
+
+- ‫در صورتی‌که از نسخه‌های قبل از اوبونتو ۲۰.۰۴ و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید:
 
 ``` bash
-sudo apt install openssl libssl-dev
+sudo apt install make libssl-dev
+sudo cpan -T kateb
 ```
 
-- آرچ و نسخه‌های بر پایه‌ی آن مانند مانجارو
+- اگر از ابونتو 20.04 استفاده میکنید:
 
-> نیازی به نصب پیش نیاز ندارید
+``` bash
+sudo apt install make
+sudo cpan -T kateb
+```
+
+### آرچ و نسخه‌های بر پایه‌ آن / مانجارو
+
+``` bash
+sudo pacman -S make
+sudo cpan -T kateb
+```
+
+### فدورا
+
+``` bash
+sudo dnf install cpan make perl-LWP-Protocol-https
+sudo cpan -T kateb
+```
 
 ## استفاده
 
@@ -141,21 +159,20 @@ sudo apt install openssl libssl-dev
 ## فونت‌های پشتیبانی شده
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
-	gandom
-	vazir
+	behdad
 	farbod
-	tanha
-	vazir-code
-	nika
+	gandom
+	ganjnameh
 	mikhak
+	nahid
+	nika
+	noon
+	parastoo
 	pfont
 	sahel
-	ganjnameh
 	samim
 	shabnam
-	parastoo
-	nahid
-	behdad
-
-
-=cut
+	shahab
+	tanha
+	vazir
+	vazircode

@@ -1,5 +1,7 @@
 MANIFEST
 Makefile.PL
+Changes
+LICENSE
 lib/kateb.pm
 lib/kateb/FontInfo.pm
 lib/kateb/Install.pm

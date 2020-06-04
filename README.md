@@ -13,28 +13,28 @@
 
 ``` bash
 sudo apt install make libssl-dev
-sudo cpan kateb
+sudo cpan -T kateb
 ```
 
 - اگر از ابونتو 20.04 استفاده میکنید:
 
 ``` bash
 sudo apt install make
-sudo cpan kateb
+sudo cpan -T kateb
 ```
 
 ### آرچ و نسخه‌های بر پایه‌ آن / مانجارو
 
 ``` bash
 sudo pacman -S make
-sudo cpan kateb
+sudo cpan -T kateb
 ```
 
 ### فدورا
 
 ``` bash
 sudo dnf install cpan make perl-LWP-Protocol-https
-sudo cpan kateb
+sudo cpan -T kateb
 ```
 
 ## استفاده

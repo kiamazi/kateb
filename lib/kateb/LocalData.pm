@@ -1,5 +1,5 @@
 package kateb::LocalData;
-$kateb::LocalData::VERSION = '01.00.13';
+$kateb::LocalData::VERSION = '01.00.14';
 
 use strict;
 use warnings;

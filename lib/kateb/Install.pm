@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.13';
+$kateb::Install::VERSION = '01.00.14';
 
 use strict;
 use warnings;
@@ -97,6 +97,17 @@ sub install {
 			say $c{bgreen} . $version . $c{reset};
 			next;
 		}
+
+		if ($font_name eq 'lalezar') {
+			my $url = $info->$font_name($version);
+			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
+			_download( $url, $archive_file );
+			_copy_fonts( $target_dir, $archive_file );
+			$local_data->{installedVersions}->{$font_name} = $version;
+			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+			next;
+		}
+
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
 
@@ -145,6 +156,17 @@ sub update {
 			say $c{bgreen} . $version . $c{reset};
 			next;
 		}
+
+		if ($font_name eq 'lalezar') {
+			my $url = $info->$font_name($version);
+			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
+			_download( $url, $archive_file );
+			_copy_fonts( $target_dir, $archive_file );
+			$local_data->{installedVersions}->{$font_name} = $version;
+			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+			next;
+		}
+
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
 
@@ -183,7 +205,19 @@ sub reinstall {
 			say $c{bblue} . "\tkateb install $font_name\n". $c{reset};
 			next;
 		}
+
 		my $version = _online_version($info->{$font_name}->{api});
+
+		if ($font_name eq 'lalezar') {
+			my $url = $info->$font_name($version);
+			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
+			_download( $url, $archive_file );
+			_copy_fonts( $target_dir, $archive_file );
+			$local_data->{installedVersions}->{$font_name} = $version;
+			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+			next;
+		}
+
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
 
@@ -319,6 +353,7 @@ sub _unzip {
 sub _download {
 	my $url	 = shift;
 	my $archive_file = shift;
+	unlink $archive_file if -e $archive_file;
 
 	$url = URI->new($url);
 

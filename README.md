@@ -39,12 +39,18 @@ sudo cpan -T kateb
 
 ## استفاده
 
+	kateb <command> [option]
+
+
 ### fonts
+
 نمایش فونت‌های پشتیبانی شده توسط کاتب
 
 	kateb fonts
 
+
 ### install
+
 نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
 
 	kateb install [font name]
@@ -53,26 +59,34 @@ sudo cpan -T kateb
 	#or
 	kateb install all
 
+
 ### update
+
 به روز رسانی فونت نصب شده
 
 	kateb update shabnam
 	#or
 	kateb update all
 
+
 ### reinstall
+
 دوباره نصب کردن فونت نصب شده
 
 	kateb reinstall behdad
 	#or
 	kateb reinstall all
 
+
 ### list
+
 لیست نام و نسخه‌ی فونت‌های نصب شده توسط کاتب
 
 	kateb list
 
+
 ## مسیر نصب
+
 ‫**۱-** نصب در دایرکتوری خانه کاربر:
 
 ‫پس از نصب در ترمینال تنها کافی است تایپ کنید:
@@ -97,13 +111,16 @@ sudo cpan -T kateb
 
 	/usr/share/fonts/truetype/farsifreefont
 
+
 ## فونت‌های پشتیبانی شده
+
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
 	behdad
 	farbod
 	gandom
 	ganjnameh
+	lalezar
 	mikhak
 	nahid
 	nika

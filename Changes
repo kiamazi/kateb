@@ -1,5 +1,8 @@
 Release history for kateb
 
-1.00.13		2020-06-04
+1.00.14		2020-06-04
+	- add new font: Lalezar
+
+1.00.13		2020-05-29
 	- add missed dependencies to Makefile
 	- edit readme file: add method-> install kateb in fedora

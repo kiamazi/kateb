@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.13';
+our $VERSION = '01.00.14';
 
 
 1;
@@ -19,7 +19,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.13>.
+This document describes L<kateb> version B<01.00.14>.
 
 
 =head1 kateb
@@ -57,53 +57,48 @@ You should have received a copy of the GNU General Public License along with thi
 
 =head1 فارسی
 
-# کاتب
-
-نصب کننده‌ی فونت‌های آزاد فارسی
+کاتب
 
 ‫کاتب یک نصب کننده و به روز رسان برای فونت‌های آزاد فارسی است.
 
-## نصب
+=head2 نصب
 
-### اوبونتو / دبیان و سایر نسخه‌های برپایه دبیان
+=head3 اوبونتو / دبیان و سایر نسخه‌های برپایه دبیان
 
 
 - ‫در صورتی‌که از نسخه‌های قبل از اوبونتو ۲۰.۰۴ و یا سایر نسخه‌های بر پایه دبیان استفاده می‌کنید:
 
-``` bash
-sudo apt install make libssl-dev
-sudo cpan -T kateb
-```
+	sudo apt install make libssl-dev
+	sudo cpan -T kateb
+
 
 - اگر از ابونتو 20.04 استفاده میکنید:
 
-``` bash
-sudo apt install make
-sudo cpan -T kateb
-```
+	sudo apt install make
+	sudo cpan -T kateb
 
-### آرچ و نسخه‌های بر پایه‌ آن / مانجارو
+=head3 آرچ و نسخه‌های بر پایه‌ آن / مانجارو
 
-``` bash
-sudo pacman -S make
-sudo cpan -T kateb
-```
+	sudo pacman -S make
+	sudo cpan -T kateb
 
-### فدورا
+=head3 فدورا
 
-``` bash
-sudo dnf install cpan make perl-LWP-Protocol-https
-sudo cpan -T kateb
-```
+	sudo dnf install cpan make perl-LWP-Protocol-https
+	sudo cpan -T kateb
 
-## استفاده
+=head2 استفاده
 
-### fonts
+kateb <command> [option]
+
+=head3 fonts
+
 نمایش فونت‌های پشتیبانی شده توسط کاتب
 
 	kateb fonts
 
-### install
+=head3 install
+
 نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
 
 	kateb install [font name]
@@ -112,26 +107,30 @@ sudo cpan -T kateb
 	#or
 	kateb install all
 
-### update
+=head3 update
+
 به روز رسانی فونت نصب شده
 
 	kateb update shabnam
 	#or
 	kateb update all
 
-### reinstall
+=head3 reinstall
+
 دوباره نصب کردن فونت نصب شده
 
 	kateb reinstall behdad
 	#or
 	kateb reinstall all
 
-### list
+=head3 list
+
 لیست نام و نسخه‌ی فونت‌های نصب شده توسط کاتب
 
 	kateb list
 
-## مسیر نصب
+=head2 مسیر نصب
+
 ‫**۱-** نصب در دایرکتوری خانه کاربر:
 
 ‫پس از نصب در ترمینال تنها کافی است تایپ کنید:
@@ -156,13 +155,15 @@ sudo cpan -T kateb
 
 	/usr/share/fonts/truetype/farsifreefont
 
-## فونت‌های پشتیبانی شده
+=head2 فونت‌های پشتیبانی شده
+
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
 	behdad
 	farbod
 	gandom
 	ganjnameh
+	lalezar
 	mikhak
 	nahid
 	nika

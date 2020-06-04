@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.13';
+$kateb::FontInfo::VERSION = '01.00.14';
 
 use strict;
 use warnings;
@@ -98,9 +98,20 @@ sub _sources {
 			name => 'NoonFont',
 			api => 'https://api.github.com/repos/font-store/NoonFont/tags',
 			publisher => 'https://github.com/font-store'
+		},
+		lalezar => {
+			name => 'Lalezar',
+			api => 'https://api.github.com/repos/BornaIz/Lalezar/tags',
+			publisher => 'https://github.com/BornaIz'
 		}
 	};
 	return $github_apis;
+}
+
+sub lalezar {
+	my $link    =
+        'https://raw.githubusercontent.com/BornaIz/Lalezar/master/fonts/Lalezar-Regular.ttf';
+	return $link;
 }
 
 sub vazir {

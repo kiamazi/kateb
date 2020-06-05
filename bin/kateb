@@ -74,7 +74,8 @@ if ($ARGV[0] =~ m/^info$/)
 {
 	shift @ARGV;
 
-	my $install    = kateb::Install->new(@ARGV);
+	my $install = kateb::Install->new(@ARGV);
+	errinst($install) if ($install->{error});
 
 	require kateb::FontInfo;
 	my $info = kateb::FontInfo->new;
@@ -103,15 +104,7 @@ if ($ARGV[0] =~ m/^install$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);
-	if ($install->{error})
-	{
-		say $install->{message};
-		say "- $_" foreach @{$install->{errlist}};
-		print "\n";
-		say "To see the list of fonts supported by kateb, try:\n\n\tkateb fonts\n";
-
-		exit $install->{error};
-	}
+	errinst($install) if ($install->{error});
 
 	$install->install($local_data);
 
@@ -122,15 +115,7 @@ if ($ARGV[0] =~ m/^update$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);
-	if ($install->{error})
-	{
-		say $install->{message};
-		say "- $_" foreach @{$install->{errlist}};
-		print "\n";
-		say "To see the list of fonts supported by kateb, try:\n\n\tkateb fonts\n";
-
-		exit $install->{error};
-	}
+	errinst($install) if ($install->{error});
 
 	$install->update($local_data);
 
@@ -141,19 +126,20 @@ if ($ARGV[0] =~ m/^reinstall$/)
 {
 	shift @ARGV;
 	my $install = kateb::Install->new(@ARGV);
-	if ($install->{error})
-	{
-		say $install->{message};
-		say "- $_" foreach @{$install->{errlist}};
-		print "\n";
-		say "To see the list of fonts supported by kateb, try:\n\n\tkateb fonts\n";
-
-		exit $install->{error};
-	}
+	errinst($install) if ($install->{error});
 
 	$install->reinstall($local_data);
 
 	exit 0;
+}
+
+sub errinst {
+	my $install = shift;
+	say $install->{message};
+	say "- $_" foreach @{$install->{errlist}};
+	print "\n";
+	say "To see the list of fonts supported by kateb, try:\n\n\tkateb fonts\n";
+	exit $install->{error};
 }
 
 sub usage {

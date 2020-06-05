@@ -85,6 +85,15 @@ sudo cpan -T kateb
 	kateb list
 
 
+### info
+
+خلاصه اطلاعات در مورد منتشر کننده فونت
+
+	kateb info Mikhak
+	#or
+	kateb info all
+
+
 ## مسیر نصب
 
 ‫**۱-** نصب در دایرکتوری خانه کاربر:

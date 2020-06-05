@@ -1,5 +1,11 @@
 Release history for kateb
 
+1.00.16		2020-06-05
+	- add new switch: info
+		- print publisher name and font repository address
+	- fix install module
+		- Reduce code size by writing new functions for repetitive tasks
+
 1.00.14		2020-06-04
 	- add new font: Lalezar
 

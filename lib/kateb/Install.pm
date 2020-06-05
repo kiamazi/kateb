@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.14';
+$kateb::Install::VERSION = '01.00.16';
 
 use strict;
 use warnings;
@@ -97,32 +97,8 @@ sub install {
 			say $c{bgreen} . $version . $c{reset};
 			next;
 		}
-
-		if ($font_name eq 'lalezar') {
-			my $url = $info->$font_name($version);
-			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
-			_download( $url, $archive_file );
-			_copy_fonts( $target_dir, $archive_file );
-			$local_data->{installedVersions}->{$font_name} = $version;
-			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
-			next;
-		}
-
-		my $url = $info->$font_name($version);
-		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
-
-		_download( $url, $archive_file );
-
-		my @extracted_fonts =
-		_unzip($font_name, $archive_file, $cache_dir);
-
-		$local_data->{installedVersions}->{$font_name} = $version;
-
-		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
-
-		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+		_do($font_name, $local_data, $version);
 	}
-
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }
 
@@ -156,32 +132,8 @@ sub update {
 			say $c{bgreen} . $version . $c{reset};
 			next;
 		}
-
-		if ($font_name eq 'lalezar') {
-			my $url = $info->$font_name($version);
-			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
-			_download( $url, $archive_file );
-			_copy_fonts( $target_dir, $archive_file );
-			$local_data->{installedVersions}->{$font_name} = $version;
-			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
-			next;
-		}
-
-		my $url = $info->$font_name($version);
-		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
-
-		_download( $url, $archive_file );
-
-		my @extracted_fonts =
-		_unzip($font_name, $archive_file, $cache_dir);
-
-		$local_data->{installedVersions}->{$font_name} = $version;
-
-		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
-
-		say $c{bgreen} . $font_name . $c{reset} . " updated. version: " . $c{bgreen} . $version . $c{reset};
+		_do($font_name, $local_data, $version);
 	}
-
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }
 
@@ -205,19 +157,37 @@ sub reinstall {
 			say $c{bblue} . "\tkateb install $font_name\n". $c{reset};
 			next;
 		}
-
 		my $version = _online_version($info->{$font_name}->{api});
+		_do($font_name, $local_data, $version);
+	}
+	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
+}
 
-		if ($font_name eq 'lalezar') {
-			my $url = $info->$font_name($version);
-			my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
-			_download( $url, $archive_file );
-			_copy_fonts( $target_dir, $archive_file );
-			$local_data->{installedVersions}->{$font_name} = $version;
-			say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
-			next;
-		}
+############################################
+######  do: install/reinstall/update  ######
+############################################
 
+sub _do {
+	my $font_name  = shift;
+	my $local_data = shift;
+	my $version    = shift;
+	my $temp_dir   = $local_data->{tempDir};
+	my $cache_dir  = $local_data->{cacheDir};
+	my $target_dir = $local_data->{targetDir};
+	my $json_file  = $local_data->{jsonFile};
+
+	my $info       = kateb::FontInfo->new;
+
+	if ($font_name eq 'lalezar')
+	{
+		my $url = $info->$font_name($version);
+		my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
+		_download( $url, $archive_file );
+		_copy_fonts( $target_dir, $archive_file );
+		$local_data->{installedVersions}->{$font_name} = $version;
+		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+	} else
+	{
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
 
@@ -232,10 +202,9 @@ sub reinstall {
 
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	}
-
-	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
 }
 
+############################################
 
 sub _compare {
 	my @args = @_;

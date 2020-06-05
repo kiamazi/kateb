@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.14';
+our $VERSION = '01.00.16';
 
 
 1;
@@ -128,6 +128,14 @@ kateb <command> [option]
 لیست نام و نسخه‌ی فونت‌های نصب شده توسط کاتب
 
 	kateb list
+
+=head3 info
+
+خلاصه اطلاعات در مورد منتشر کننده فونت
+
+	kateb info Mikhak
+	#or
+	kateb info all
 
 =head2 مسیر نصب
 

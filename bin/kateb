@@ -35,7 +35,7 @@ print "\n";
 #----------------- Check ARGVs -----------------#
 usage() unless @ARGV;
 
-usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^version$|\-v/);
+usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^info$|^version$|\-v/);
 
 if ($ARGV[0] =~ m/^version$|^\-v$/)
 {
@@ -67,6 +67,35 @@ if ($ARGV[0] =~ m/^fonts$/)
 	my @fonts_list = sort {lc $a cmp lc $b} keys %{$info};
 	say "List of fonts supported by kateb\n";
 	say "\t$_" foreach @fonts_list;
+	print "\n";
+}
+
+if ($ARGV[0] =~ m/^info$/)
+{
+	shift @ARGV;
+
+	my $install    = kateb::Install->new(@ARGV);
+
+	require kateb::FontInfo;
+	my $info = kateb::FontInfo->new;
+
+	my @fonts_list;
+	if ($ARGV[0] =~ /^all$|^-a$/)
+	{
+		@fonts_list = keys %{$info};
+	} else
+	{
+		@fonts_list = @ARGV;
+	}
+	@fonts_list = sort {lc $a cmp lc $b} @fonts_list;
+	foreach my $font_name (@fonts_list)
+	{
+		say $c{bgreen} . $info->{$font_name}->{name} . $c{reset};
+		say "Publisher : " . $info->{$font_name}->{publisher_name};
+		say "Repository: " . $info->{$font_name}->{repo};
+		print "\n";
+	}
+
 	print "\n";
 }
 

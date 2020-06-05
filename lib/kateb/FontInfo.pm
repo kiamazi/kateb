@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.14';
+$kateb::FontInfo::VERSION = '01.00.16';
 
 use strict;
 use warnings;
@@ -17,92 +17,128 @@ sub _sources {
 		vazir => {
 			name => 'vazir-font',
 			api => 'https://api.github.com/repos/rastikerdar/vazir-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/vazir-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		samim => {
 			name => 'samim-font',
 			api => 'https://api.github.com/repos/rastikerdar/samim-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/samin-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		tanha => {
 			name => 'tanha-font',
 			api => 'https://api.github.com/repos/rastikerdar/tanha-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/tanha-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		shabnam => {
 			name => 'shabnam-font',
 			api => 'https://api.github.com/repos/rastikerdar/shabnam-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/shabnam-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		gandom => {
 			name => 'gandom-font',
 			api => 'https://api.github.com/repos/rastikerdar/gandom-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/gandom-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		parastoo => {
 			name => 'parastoo-font',
 			api => 'https://api.github.com/repos/rastikerdar/parastoo-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/parastoo-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		sahel => {
 			name => 'sahel-font',
 			api => 'https://api.github.com/repos/rastikerdar/sahel-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/sahel-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		vazircode => {
 			name => 'vazir-code-font',
 			api => 'https://api.github.com/repos/rastikerdar/vazir-code-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/vazir-code-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		nahid => {
 			name => 'nahid-font',
 			api => 'https://api.github.com/repos/rastikerdar/nahid-font/tags',
-			publisher => 'https://github.com/rastikerdar'
+			publisher => 'https://github.com/rastikerdar',
+			repo => 'https://github.com/rastikerdar/nahid-font/',
+			publisher_name => 'Saber Rastikerdar'
 		},
 		mikhak => {
 			name => 'Mikhak',
 			api => 'https://api.github.com/repos/aminabedi68/Mikhak/tags',
-			publisher => 'https://github.com/aminabedi68'
+			publisher => 'https://github.com/aminabedi68',
+			repo => 'https://github.com/aminabedi68/Mikhak/',
+			publisher_name => 'Amin Abedi'
 		},
 		ganjnameh => {
 			name => 'GanjnamehFont',
 			api => 'https://api.github.com/repos/font-store/GanjnamehFont/tags',
-			publisher => 'https://github.com/font-store'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/GanjnamehFont/',
+			publisher_name => 'Saleh Souzanchi'
 		},
 		behdad => {
 			name => 'BehdadFont',
 			api => 'https://api.github.com/repos/font-store/BehdadFont/tags',
-			publisher => 'https://github.com/font-store'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/BehdadFont/',
+			publisher_name => 'Saleh Souzanchi'
 		},
 		nika => {
 			name => 'NikaFont',
 			api => 'https://api.github.com/repos/font-store/NikaFont/tags',
-			publisher => 'https://github.com/font-store'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/NikaFont/',
+			publisher_name => 'Saleh Souzanchi'
 		},
 		farbod => {
 			name => 'FarbodFont',
 			api => 'https://api.github.com/repos/font-store/FarbodFont/tags',
-			publisher => 'https://github.com/font-store'
-		},
-		pfont => {
-			name => 'pfont',
-			api => 'https://api.github.com/repos/pfont/pfont/tags',
-			publisher => 'https://github.com/pfont'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/FarbodFont',
+			publisher_name => 'Saleh Souzanchi'
 		},
 		shahab => {
 			name => 'ShahabFont',
 			api => 'https://api.github.com/repos/font-store/ShahabFont/tags',
-			publisher => 'https://github.com/font-store'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/ShahabFont',
+			publisher_name => 'Saleh Souzanchi'
 		},
 		noon => {
 			name => 'NoonFont',
 			api => 'https://api.github.com/repos/font-store/NoonFont/tags',
-			publisher => 'https://github.com/font-store'
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/font-store/NoonFont',
+			publisher_name => 'Saleh Souzanchi'
+		},
+		pfont => {
+			name => 'pfont',
+			api => 'https://api.github.com/repos/pfont/pfont/tags',
+			publisher => 'https://github.com/pfont',
+			repo => 'https://github.com/pfont/pfont/',
+			publisher_name => 'Persian Free Font'
 		},
 		lalezar => {
 			name => 'Lalezar',
 			api => 'https://api.github.com/repos/BornaIz/Lalezar/tags',
-			publisher => 'https://github.com/BornaIz'
+			publisher => 'https://github.com/BornaIz',
+			repo => 'https://github.com/BornaIz/Lalezar/',
+			publisher_name => 'Borna Izadpanah'
 		}
 	};
 	return $github_apis;

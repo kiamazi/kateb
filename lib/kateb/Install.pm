@@ -8,7 +8,7 @@ use 5.012;
 use kateb::FontInfo;
 use JSON::PP;
 use LWP::UserAgent ();
-use URI		       ();
+use URI            ();
 use HTTP::Date     ();
 use File::Spec::Functions qw(catdir catfile tmpdir);
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
@@ -258,7 +258,7 @@ sub _copy_fonts {
 		my ($volume, $directories, $file) = File::Spec->splitpath( $font_file );
 		my $target = catfile($target_dir, $file);
 		##########################################################
-	#	say "...copy $file to $target_dir";
+	#   say "...copy $file to $target_dir";
 		##########################################################
 
 		copy($font_file, $target);
@@ -320,7 +320,7 @@ sub _unzip {
 ###################################
 
 sub _download {
-	my $url	 = shift;
+	my $url          = shift;
 	my $archive_file = shift;
 	unlink $archive_file if -e $archive_file;
 
@@ -332,19 +332,19 @@ sub _download {
 		env_proxy  => 1,
 	);
 
-	my $file;	    # name of file we download into
-	my $length;	    # total number of bytes to download
-	my $flength;	# formatted length
+	my $file;       # name of file we download into
+	my $length;     # total number of bytes to download
+	my $flength;    # formatted length
 	my $size = 0;   # number of bytes received
-	my $start_t;	# start time of download
+	my $start_t;    # start time of download
 	my $last_dur;   # time of last callback
 	my $FILE_HANDLE;
 
-	$shown = 0;  # have we called the show() function yet
+	$shown = 0;     # have we called the show() function yet
 
 	$SIG{INT} = sub { die "Interrupted\n"; };
 
-	$| = 1;		 # autoflush
+	$| = 1;         # autoflush
 
 	my $res = $ua->request(
 		HTTP::Request->new(GET => $url),
@@ -437,7 +437,7 @@ sub _download {
 	}
 
 	# Did not manage to create any file
-#	print "\n" if $shown;
+#   print "\n" if $shown;
 	if (my $xdied = $res->header("X-Died")) {
 		print "kateb: Aborted\n$xdied\n";
 	}

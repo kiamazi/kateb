@@ -5,11 +5,11 @@ use strict;
 use warnings;
 
 sub new {
-    my $class  = shift;
-    my $self = _sources();
-    bless $self, $class;
+	my $class  = shift;
+	my $self = _sources();
+	bless $self, $class;
 
-    return $self;
+	return $self;
 }
 
 sub _sources {

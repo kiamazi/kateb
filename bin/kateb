@@ -157,6 +157,8 @@ commands:
 		list of installed fonts versions
 	fonts
 		show all farsi free fonts supported
+	info
+		short info about font publisher
 	version | -v
 		kateb version
 

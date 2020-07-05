@@ -1,12 +1,12 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.16';
+$kateb::FontInfo::VERSION = '01.00.17';
 
 use strict;
 use warnings;
 
 sub new {
 	my $class  = shift;
-	my $self = _sources();
+	my $self   = _sources();
 	bless $self, $class;
 
 	return $self;
@@ -82,6 +82,13 @@ sub _sources {
 			api => 'https://api.github.com/repos/aminabedi68/Mikhak/tags',
 			publisher => 'https://github.com/aminabedi68',
 			repo => 'https://github.com/aminabedi68/Mikhak/',
+			publisher_name => 'Amin Abedi'
+		},
+		estedad => {
+			name => 'Estedad',
+			api => 'https://api.github.com/repos/aminabedi68/Estedad/tags',
+			publisher => 'https://github.com/aminabedi68',
+			repo => 'https://github.com/aminabedi68/Estedad/',
 			publisher_name => 'Amin Abedi'
 		},
 		ganjnameh => {
@@ -285,6 +292,20 @@ sub mikhak {
 		"/releases/download/" .
 		$version . "/" .
 		$self->{mikhak}->{name} . "-" . $version .
+		".zip"
+	;
+	return $link;
+}
+
+sub estedad {
+	my $self    = shift;
+	my $version = shift;
+	my $link =
+		$self->{estedad}->{publisher} . "/" .
+		$self->{estedad}->{name} .
+		"/releases/download/" .
+		$version . "/" .
+		$self->{estedad}->{name} . ".V" . $version .
 		".zip"
 	;
 	return $link;

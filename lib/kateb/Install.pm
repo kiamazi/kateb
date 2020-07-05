@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.16';
+$kateb::Install::VERSION = '01.00.17';
 
 use strict;
 use warnings;
@@ -304,7 +304,15 @@ sub _unzip {
 			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
 			push @extracted_fonts, catfile($cache_dir, $file_name);
 		}
- 	} else
+	} elsif ($font_name =~ /^estedad$/)
+	{
+		foreach my $file (grep { m{Std \(Standard\)/instances/.*\.ttf$}g } $zip->memberNames())
+		{
+			my ($volume, $directories, $file_name) = File::Spec->splitpath($file);
+			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
+			push @extracted_fonts, catfile($cache_dir, $file_name);
+		}
+	} else
 	{
 		foreach my $file (grep { m"^((?!/).)*\.ttf$"g } $zip->memberNames())
 		{

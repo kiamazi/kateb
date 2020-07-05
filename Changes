@@ -1,5 +1,8 @@
 Release history for kateb
 
+1.00.17		2020-07-05
+	- add new font: Estedad
+
 1.00.16		2020-06-05
 	- add new switch: info
 		- print publisher name and font repository address

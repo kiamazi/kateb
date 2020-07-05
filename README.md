@@ -33,7 +33,7 @@ sudo cpan -T kateb
 ### فدورا
 
 ``` bash
-sudo dnf install cpan make perl-LWP-Protocol-https
+sudo dnf install cpan make
 sudo cpan -T kateb
 ```
 
@@ -53,9 +53,11 @@ sudo cpan -T kateb
 
 نصب یک فونت جدید یا تمام فونت‌های پشتیبانی شده
 
-	kateb install [font name]
+	kateb install [font name(s) or all]
 
 	kateb install vazir
+	#or
+	kateb install vazir sahel estedad
 	#or
 	kateb install all
 
@@ -64,7 +66,11 @@ sudo cpan -T kateb
 
 به روز رسانی فونت نصب شده
 
+	kateb update [font name(s) or all]
+
 	kateb update shabnam
+	#or
+	kateb update shabnam mikhad lalezar sahel
 	#or
 	kateb update all
 
@@ -73,7 +79,11 @@ sudo cpan -T kateb
 
 دوباره نصب کردن فونت نصب شده
 
+	kateb reinstall [font name(s) or all]
+
 	kateb reinstall behdad
+	#or
+	kateb reinstall behdad ganjnameh parastoo
 	#or
 	kateb reinstall all
 
@@ -96,17 +106,17 @@ sudo cpan -T kateb
 
 ## مسیر نصب
 
-‫**۱-** نصب در دایرکتوری خانه کاربر:
-
-‫پس از نصب در ترمینال تنها کافی است تایپ کنید:
-
-	kateb
-
 در صورتیکه فونت‌های پشتیبانی شده را قبلا در آدرس
 
 	~/.local/share/fonts/
 
 ‫یا سایر مسیرهایی که به عنوان شاخه‌های فونت توسط سیستم‌عامل شما در دایرکتوری خانه پشتیبانی می‌شوند، کپی کرده‌اید ابتدا فونت‌های کپی شده را پاک کنید.
+
+‫**۱-** نصب در دایرکتوری خانه کاربر:
+
+‫پس از نصب در ترمینال تنها کافی است تایپ کنید:
+
+	kateb <command>
 
 ‫مسیر نصب فونت‌ها توسط کاتب در پوشه‌ی خانه کاربر:
 
@@ -114,7 +124,7 @@ sudo cpan -T kateb
 
 ‫**۲-** نصب سیستمی:
 
-	sudo kateb
+	sudo kateb <command>
 
 ‫مسیر نصب سیستمی فونت:
 
@@ -126,6 +136,7 @@ sudo cpan -T kateb
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
 	behdad
+	estedad
 	farbod
 	gandom
 	ganjnameh

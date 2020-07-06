@@ -37,10 +37,17 @@ sudo dnf install cpan make
 sudo cpan -T kateb
 ```
 
-## استفاده
+### نصب از منبع کد
+
+	git clone git@github.com:kiamazi/kateb.git
+	cd kateb
+	perl ./Makefile.PL
+	make test                        #optional
+	make install
+
+# استفاده
 
 	kateb <command> [option]
-
 
 ### fonts
 

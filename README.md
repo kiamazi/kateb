@@ -161,3 +161,4 @@ sudo cpan -T kateb
 	tanha
 	vazir
 	vazircode
+	zira

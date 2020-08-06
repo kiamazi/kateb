@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.17';
+$kateb::FontInfo::VERSION = '01.00.18';
 
 use strict;
 use warnings;
@@ -69,6 +69,14 @@ sub _sources {
 			publisher => 'https://github.com/rastikerdar',
 			repo => 'https://github.com/rastikerdar/vazir-code-font/',
 			publisher_name => 'Saber Rastikerdar'
+		},
+		zira => {
+			name => 'zira-code-font',
+			api => 'https://api.github.com/repos/kiamazi/ziar-code-font/tags',
+			publisher => 'https://github.com/kiamazi',
+			repo => 'https://github.com/kiamazi/zira-code-font/',
+			publisher_name => 'Kiavash Mazi
+FiraCode + VazirCode'
 		},
 		nahid => {
 			name => 'nahid-font',
@@ -264,6 +272,20 @@ sub vazircode {
 		"/releases/download/" .
 		$version . "/" .
 		$self->{vazircode}->{name} . "-" . $version .
+		".zip"
+	;
+	return $link;
+}
+
+sub zira {
+	my $self    = shift;
+	my $version = shift;
+	my $link =
+		$self->{zira}->{publisher} . "/" .
+		$self->{zira}->{name} .
+		"/releases/download/" .
+		$version . "/" .
+		$self->{zira}->{name} . "-" . $version .
 		".zip"
 	;
 	return $link;

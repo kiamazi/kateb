@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.17';
+our $VERSION = '01.00.18';
 
 
 1;
@@ -19,7 +19,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.14>.
+This document describes L<kateb> version B<01.00.18>.
 
 
 =head1 kateb
@@ -168,6 +168,7 @@ kateb <command> [option]
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
 	behdad
+	estedad
 	farbod
 	gandom
 	ganjnameh
@@ -185,3 +186,4 @@ kateb <command> [option]
 	tanha
 	vazir
 	vazircode
+	zira

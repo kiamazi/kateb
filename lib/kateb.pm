@@ -186,4 +186,4 @@ kateb <command> [option]
 	tanha
 	vazir
 	vazircode
-	zira
+	ziracode

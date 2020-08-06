@@ -72,11 +72,10 @@ sub _sources {
 		},
 		ziracode => {
 			name => 'zira-code-font',
-			api => 'https://api.github.com/repos/kiamazi/ziar-code-font/tags',
+			api => 'https://api.github.com/repos/kiamazi/zira-code-font/tags',
 			publisher => 'https://github.com/kiamazi',
 			repo => 'https://github.com/kiamazi/zira-code-font/',
-			publisher_name => 'Kiavash Mazi
-FiraCode + VazirCode'
+			publisher_name => 'Kiavash Mazi'
 		},
 		nahid => {
 			name => 'nahid-font',

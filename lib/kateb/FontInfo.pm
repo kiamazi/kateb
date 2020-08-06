@@ -70,7 +70,7 @@ sub _sources {
 			repo => 'https://github.com/rastikerdar/vazir-code-font/',
 			publisher_name => 'Saber Rastikerdar'
 		},
-		zira => {
+		ziracode => {
 			name => 'zira-code-font',
 			api => 'https://api.github.com/repos/kiamazi/ziar-code-font/tags',
 			publisher => 'https://github.com/kiamazi',
@@ -277,15 +277,15 @@ sub vazircode {
 	return $link;
 }
 
-sub zira {
+sub ziracode {
 	my $self    = shift;
 	my $version = shift;
 	my $link =
-		$self->{zira}->{publisher} . "/" .
-		$self->{zira}->{name} .
-		"/releases/download/" .
-		$version . "/" .
-		$self->{zira}->{name} . "-" . $version .
+		$self->{ziracode}->{publisher} . "/" .
+		$self->{ziracode}->{name} .
+		"/releases/dcodeownload/" .
+		$version . "code/" .
+		$self->{ziracode}->{name} . "-" . $version .
 		".zip"
 	;
 	return $link;

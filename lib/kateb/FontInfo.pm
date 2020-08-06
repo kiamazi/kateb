@@ -282,8 +282,8 @@ sub ziracode {
 	my $link =
 		$self->{ziracode}->{publisher} . "/" .
 		$self->{ziracode}->{name} .
-		"/releases/dcodeownload/" .
-		$version . "code/" .
+		"/releases/download/" .
+		$version . "/" .
 		$self->{ziracode}->{name} . "-" . $version .
 		".zip"
 	;

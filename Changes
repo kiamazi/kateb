@@ -1,20 +1,20 @@
 Release history for kateb
 
-1.00.18		2020-08-06
-	- add new font: ZiraCode
+1.00.18                2020-08-06
+        - add new font: ZiraCode
 
-1.00.17		2020-07-05
-	- add new font: Estedad
+1.00.17                2020-07-05
+        - add new font: Estedad
 
-1.00.16		2020-06-05
-	- add new switch: info
-		- print publisher name and font repository address
-	- fix install module
-		- Reduce code size by writing new functions for repetitive tasks
+1.00.16                2020-06-05
+        - add new switch: info
+                - print publisher name and font repository address
+        - fix install module
+                - Reduce code size by writing new functions for repetitive tasks
 
-1.00.14		2020-06-04
-	- add new font: Lalezar
+1.00.14                2020-06-04
+        - add new font: Lalezar
 
-1.00.13		2020-05-29
-	- add missed dependencies to Makefile
-	- edit readme file: add method-> install kateb in fedora
+1.00.13                2020-05-29
+        - add missed dependencies to Makefile
+        - edit readme file: add method-> install kateb in fedora

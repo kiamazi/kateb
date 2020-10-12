@@ -10,7 +10,7 @@ WriteMakefile(
 	NAME               => 'kateb',
 	AUTHOR             => 'Kiavash',
 	VERSION_FROM       => 'lib/kateb.pm',
-	ABSTRACT           => 'indtsll and update Farsi free fonts',
+	ABSTRACT           => 'Install and update free Farsi fonts',
 	LICENSE            => 'gpl_3',
 	EXE_FILES          => ["bin/kateb"],
 	MIN_PERL_VERSION   => 5.012,

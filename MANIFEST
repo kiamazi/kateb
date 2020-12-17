@@ -1,11 +1,11 @@
-MANIFEST
-Makefile.PL
+bin/kateb
 Changes
-LICENSE
 lib/kateb.pm
 lib/kateb/FontInfo.pm
 lib/kateb/Install.pm
 lib/kateb/LocalData.pm
-bin/kateb
-META.yml
+LICENSE
+Makefile.PL
+MANIFEST
 META.json
+META.yml

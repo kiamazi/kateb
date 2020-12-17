@@ -1,5 +1,10 @@
 Release history for kateb
 
+1.00.22                2020-12-18
+		- support Estedad new release tagging method
+		- add new switch: self-upgrade
+		        - kateb, update itself
+
 1.00.20                2020-08-06
         - add new font: ZiraCode
 

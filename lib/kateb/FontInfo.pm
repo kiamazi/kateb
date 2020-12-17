@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.20';
+$kateb::FontInfo::VERSION = '01.00.22';
 
 use strict;
 use warnings;
@@ -326,7 +326,7 @@ sub estedad {
 		$self->{estedad}->{name} .
 		"/releases/download/" .
 		$version . "/" .
-		$self->{estedad}->{name} . ".V" . $version .
+		$self->{estedad}->{name} . "-v" . $version .
 		".zip"
 	;
 	return $link;

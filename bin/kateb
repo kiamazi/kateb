@@ -6,8 +6,7 @@ use strict;
 use warnings;
 
 use kateb;
-use kateb::Install;
-use kateb::LocalData;
+
 my $version = $kateb::VERSION;
 
 
@@ -35,7 +34,7 @@ print "\n";
 #----------------- Check ARGVs -----------------#
 usage() unless @ARGV;
 
-usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^info$|^version$|\-v/);
+usage() if (@ARGV && $ARGV[0] !~ m/^install$|^reinstall$|^update$|^list$|^fonts$|^info$|^self-upgrade$|^version$|\-v/);
 
 if ($ARGV[0] =~ m/^version$|^\-v$/)
 {
@@ -133,6 +132,29 @@ if ($ARGV[0] =~ m/^reinstall$/)
 	exit 0;
 }
 
+if ($ARGV[0] =~ m/^self-upgrade$/) {
+	use LWP::UserAgent;
+	my $ua = LWP::UserAgent->new();
+
+	my $response = $ua->get('https://fastapi.metacpan.org/v1/module/kateb?fields=version');
+
+	if ($response->is_success) {
+		use JSON::PP;
+		my $lversion = decode_json( $response->{_content} )->{version};
+		if (version->parse($version) == version->parse($lversion)) {
+			say 'already updated';
+		} else {
+			say "installed version: $version / latest version: $lversion";
+			say qx{cpan -T kateb};
+		}
+	} else {
+		say "Error: " . $response->status_line;
+	}
+
+	exit 0;
+}
+
+
 sub errinst {
 	my $install = shift;
 	say $install->{message};
@@ -161,6 +183,8 @@ commands:
 		short info about font publisher
 	version | -v
 		kateb version
+	self-upgrade
+		kateb, update itelf
 
 options:
 	-a | all

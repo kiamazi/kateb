@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.22';
+our $VERSION = '01.00.23';
 
 use kateb::Install;
 use kateb::LocalData;
@@ -21,7 +21,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.22>.
+This document describes L<kateb> version B<01.00.23>.
 
 
 =head1 kateb
@@ -141,7 +141,7 @@ kateb <command> [option]
 
 =head3 self-upgrade
 
-‫در صورت وجود داشتن نسخه جدیدتر کاتب، خود را به روز رسانی می‌کند
+‫در صورت وجود داشتن نسخه جدیدتر کاتب، به کاربر اطلاع می‌دهد
 
 =head2 مسیر نصب
 

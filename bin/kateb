@@ -133,11 +133,6 @@ if ($ARGV[0] =~ m/^reinstall$/)
 }
 
 if ($ARGV[0] =~ m/^self-upgrade$/) {
-	# use Cwd 'abs_path';
-	# my $kateb_path = abs_path($0);
-	# my $home = $ENV{HOME};
-	# my $is_home = $kateb_path =~ m{^$home} ? 1: 0;
-
 	use LWP::UserAgent;
 	my $ua = LWP::UserAgent->new();
 	my $response = $ua->get('https://fastapi.metacpan.org/v1/module/kateb?fields=version');
@@ -155,7 +150,6 @@ if ($ARGV[0] =~ m/^self-upgrade$/) {
 		exit 0;
 	}
 
-	# if (not $is_home and $> == 0) {
 	say "installed version: $c{byellow}" . version->parse($version)->normal . $c{reset};
 	say "version available: $c{bblue}" . version->parse($latest_version)->normal . $c{reset};
 	say '';

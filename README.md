@@ -110,6 +110,9 @@ sudo cpan -T kateb
 	#or
 	kateb info all
 
+### self-upgrade
+
+‫در صورت وجود داشتن نسخه جدیدتر کاتب، خود را به روز رسانی می‌کند
 
 ## مسیر نصب
 

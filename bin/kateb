@@ -133,23 +133,42 @@ if ($ARGV[0] =~ m/^reinstall$/)
 }
 
 if ($ARGV[0] =~ m/^self-upgrade$/) {
+	# use Cwd 'abs_path';
+	# my $kateb_path = abs_path($0);
+	# my $home = $ENV{HOME};
+	# my $is_home = $kateb_path =~ m{^$home} ? 1: 0;
+
 	use LWP::UserAgent;
 	my $ua = LWP::UserAgent->new();
-
 	my $response = $ua->get('https://fastapi.metacpan.org/v1/module/kateb?fields=version');
-
-	if ($response->is_success) {
-		use JSON::PP;
-		my $lversion = decode_json( $response->{_content} )->{version};
-		if (version->parse($version) == version->parse($lversion)) {
-			say 'already updated';
-		} else {
-			say "installed version: $version / latest version: $lversion";
-			say qx{cpan -T kateb};
-		}
-	} else {
+	unless ($response->is_success) {
 		say "Error: " . $response->status_line;
+		exit 3;
 	}
+
+	use JSON::PP;
+	my $latest_version = decode_json( $response->{_content} )->{version};
+	unless (version->parse($latest_version)->numify > version->parse($version)->numify)
+	{
+		print "latest version installed on this pc: " .
+			$c{bgreen} . version->parse($version)->normal . $c{reset} ."\n";
+		exit 0;
+	}
+
+	# if (not $is_home and $> == 0) {
+	say "installed version: $c{byellow}" . version->parse($version)->normal . $c{reset};
+	say "version available: $c{bblue}" . version->parse($latest_version)->normal . $c{reset};
+	say '';
+	say "you can upgrade to new version by type this command:\n";
+	say "	sudo cpan -T kateb\n	or\n	sudo cpan kateb";
+	# }
+	# if ($> == 0) {
+	# 	say qx{sudo cpan -T kateb};
+	# } else {
+	# 	say qx{cpan -T kateb};
+	# }
+
+
 
 	exit 0;
 }

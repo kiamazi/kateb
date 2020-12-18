@@ -13,11 +13,11 @@ use File::Spec;
 use File::Spec::Functions qw(catdir catfile tmpdir);
 
 sub new {
-    my $class  = shift;
+	my $class  = shift;
 	my $self = _prepare();
-    bless $self, $class;
+	bless $self, $class;
 
-    return $self;
+	return $self;
 }
 
 sub _prepare {

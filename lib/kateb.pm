@@ -3,7 +3,7 @@ package kateb;
 use strict;
 use warnings;
 use 5.012;
-our $VERSION = '01.00.23';
+our $VERSION = '01.00.24';
 
 use kateb::Install;
 use kateb::LocalData;

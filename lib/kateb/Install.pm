@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.23';
+$kateb::Install::VERSION = '01.00.24';
 
 use strict;
 use warnings;
@@ -40,8 +40,9 @@ sub new {
 			errlist => [],
 			fonts   => '',
 		};
-	} elsif ($args[0] =~ /^all$|^-a$/) {
-		$self ={
+	} elsif ($args[0] =~ /^all$|^-a$/)
+	{
+		$self = {
 			error   => 0,
 			message => "ok!",
 			errlist => [],
@@ -68,9 +69,9 @@ sub new {
 			};
 		}
 	}
-    bless $self, $class;
+	bless $self, $class;
 
-    return $self;
+	return $self;
 }
 
 sub install {
@@ -79,9 +80,6 @@ sub install {
 	my @fonts      = @{$self->{fonts}};
 	my $info       = kateb::FontInfo->new;
 
-	my $temp_dir   = $local_data->{tempDir};
-	my $cache_dir  = $local_data->{cacheDir};
-	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
 	foreach my $font_name (@fonts)
@@ -174,7 +172,6 @@ sub _do {
 	my $temp_dir   = $local_data->{tempDir};
 	my $cache_dir  = $local_data->{cacheDir};
 	my $target_dir = $local_data->{targetDir};
-	my $json_file  = $local_data->{jsonFile};
 
 	my $info       = kateb::FontInfo->new;
 
@@ -258,7 +255,7 @@ sub _copy_fonts {
 		my ($volume, $directories, $file) = File::Spec->splitpath( $font_file );
 		my $target = catfile($target_dir, $file);
 		##########################################################
-	#   say "...copy $file to $target_dir";
+		#   say "...copy $file to $target_dir";
 		##########################################################
 
 		copy($font_file, $target);

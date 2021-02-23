@@ -42,3 +42,6 @@ local/
 .vstags
 /.vscode/
 /.idea/
+
+###
+/_Deparsed_XSubs.pm

@@ -151,7 +151,7 @@ if ($ARGV[0] =~ m/^self-upgrade$/) {
 	}
 
 	say "installed version: $c{byellow}" . version->parse($version)->normal . $c{reset};
-	say "version available: $c{bblue}" . version->parse($latest_version)->normal . $c{reset};
+	say "available version: $c{bblue}" . version->parse($latest_version)->normal . $c{reset};
 	say '';
 	say "you can upgrade to new version by type this command:\n";
 	say "	sudo cpan -T kateb\n	or\n	sudo cpan kateb";

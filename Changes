@@ -1,5 +1,12 @@
 Release history for kateb
 
+1.00.25                2021-02-24
+        - fix Estedad download link for v-5.0(2)
+        - fix Mikhak  download link for v-2.2(2)
+
+1.00.23                2020-12-18
+        - add new switch: self-upgrda
+
 1.00.22                2020-12-18
         - support Estedad new release tagging method
         - add new switch: self-upgrade

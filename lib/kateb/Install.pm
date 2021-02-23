@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.24';
+$kateb::Install::VERSION = '01.00.25';
 
 use strict;
 use warnings;

@@ -307,14 +307,17 @@ sub nahid {
 sub mikhak {
 	my $self    = shift;
 	my $version = shift;
+	my $file_version = $version;
+	$file_version =~ s/\( (\d+) \)/.$1/x;
 	my $link =
 		$self->{mikhak}->{publisher} . "/" .
 		$self->{mikhak}->{name} .
 		"/releases/download/" .
 		$version . "/" .
-		$self->{mikhak}->{name} . "-" . $version .
+		$self->{mikhak}->{name} . "-" . $file_version .
 		".zip"
 	;
+
 	return $link;
 }
 

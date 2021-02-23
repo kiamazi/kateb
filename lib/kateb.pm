@@ -21,7 +21,7 @@ kateb - tools for install and update farsi free fonts
 
 =head1 VERSION
 
-This document describes L<kateb> version B<01.00.23>.
+This document describes L<kateb> version B<01.00.24>.
 
 
 =head1 kateb

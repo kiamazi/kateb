@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.25';
+$kateb::FontInfo::VERSION = '01.00.26';
 
 use strict;
 use warnings;
@@ -308,7 +308,7 @@ sub mikhak {
 	my $self    = shift;
 	my $version = shift;
 	my $file_version = $version;
-	$file_version =~ s/\( (\d+) \)/.$1/x;
+	$file_version =~ s/\( (\d+) \)//x;
 	my $link =
 		$self->{mikhak}->{publisher} . "/" .
 		$self->{mikhak}->{name} .

@@ -7,7 +7,8 @@ use 5.012;
 
 use kateb::FontInfo;
 use JSON::PP;
-use LWP::UserAgent ();
+#use LWP::UserAgent ();
+use HTTP::Tinyish;
 use URI            ();
 use HTTP::Date     ();
 use File::Spec::Functions qw(catdir catfile tmpdir);
@@ -106,9 +107,6 @@ sub update {
 	my @fonts      = @{$self->{fonts}};
 	my $info       = kateb::FontInfo->new;
 
-	my $temp_dir   = $local_data->{tempDir};
-	my $cache_dir  = $local_data->{cacheDir};
-	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
 	foreach my $font_name (@fonts)
@@ -141,9 +139,6 @@ sub reinstall {
 	my @fonts      = @{$self->{fonts}};
 	my $info       = kateb::FontInfo->new;
 
-	my $temp_dir   = $local_data->{tempDir};
-	my $cache_dir  = $local_data->{cacheDir};
-	my $target_dir = $local_data->{targetDir};
 	my $json_file  = $local_data->{jsonFile};
 
 	foreach my $font_name (@fonts)
@@ -225,13 +220,24 @@ sub _all_fonts {
 
 sub _online_version {
 	my $api = shift;
-	my $user_agent = LWP::UserAgent->new
+#	my $user_agent = LWP::UserAgent->new
+#	(
+#		ssl_opts => { verify_hostname => 1 },
+#		keep_alive => 1
+#	);
+
+#	use Data::Dumper;
+	my $http = HTTP::Tinyish->new
 	(
-		ssl_opts => { verify_hostname => 1 },
-		keep_alive => 1
+		agent => "kateb/$kateb::VERSION",
+		verify_SSL => 1
 	);
-	my $json_api_response = $user_agent->get($api);
-	my $tags = decode_json( $json_api_response->{_content} );
+	my $res = $http->get($api);
+#	print Dumper $res;
+#	print  "\n";
+
+	#my $json_api_response = $user_agent->get($api);
+	my $tags = decode_json( $res->{content} );
 	my $version;
 	eval
 	{
@@ -328,175 +334,192 @@ sub _download {
 	my $url          = shift;
 	my $archive_file = shift;
 	unlink $archive_file if -e $archive_file;
-
 	$url = URI->new($url);
-
-	my $ua = LWP::UserAgent->new(
-		agent	  => "kateb",
-		keep_alive => 1,
-		env_proxy  => 1,
+	my $http = HTTP::Tinyish->new
+	(
+		agent => "kateb/$kateb::VERSION",
+		verify_SSL => 1
 	);
-
-	my $file;       # name of file we download into
-	my $length;     # total number of bytes to download
-	my $flength;    # formatted length
-	my $size = 0;   # number of bytes received
-	my $start_t;    # start time of download
-	my $last_dur;   # time of last callback
-	my $FILE_HANDLE;
-
-	$shown = 0;     # have we called the show() function yet
-
-	$SIG{INT} = sub { die "Interrupted\n"; };
-
-	$| = 1;         # autoflush
-
-	my $res = $ua->request(
-		HTTP::Request->new(GET => $url),
-		sub {
-			unless (defined $file) {
-				my $res = $_[1];
-
-				$file = $archive_file;
-
-				print "Saving to '$file'...\n";
-				use Fcntl qw(O_WRONLY O_EXCL O_CREAT);
-				sysopen($FILE_HANDLE, $file, O_WRONLY | O_EXCL | O_CREAT)
-					|| die "Can't open $file: $!";
-
-				unless (fileno($FILE_HANDLE)) {
-					open($FILE_HANDLE, ">", $file) || die "Can't open $file: $!\n";
-				}
-				binmode $FILE_HANDLE;
-				$length   = $res->content_length;
-				$flength  = fbytes($length) if defined $length;
-				$start_t  = time;
-				$last_dur = 0;
-			}
-
-			print $FILE_HANDLE $_[0] or die "Can't write to $file: $!\n";
-			$size += length($_[0]);
-
-			if (defined $length) {
-				my $dur = time - $start_t;
-				if ($dur != $last_dur) {	# don't update too often
-					$last_dur = $dur;
-					my $perc = $size / $length;
-					my $speed;
-					$speed = fbytes($size / $dur) . "/sec" if $dur > 3;
-					my $secs_left = fduration($dur / $perc - $dur);
-					$perc = int($perc * 100);
-					my $show = "$perc% of $flength";
-					$show .= " (at $speed, $secs_left remaining)" if $speed;
-					show($show, 1);
-				}
-			}
-			else {
-				show(fbytes($size) . " received");
-			}
-		}
-	);
-
-	if (fileno($FILE_HANDLE)) {
-		close($FILE_HANDLE) || die "Cant write to $file: $!\n";
-
-		show("");	# clear text
-		print "\r";
-		print fbytes($size);
-		print " of ", fbytes($length) if defined($length) && $length != $size;
-		print " received";
-		my $dur = time - $start_t;
-		if ($dur) {
-			my $speed = fbytes($size / $dur) . "/sec";
-			print " in ", fduration($dur), " ($speed)";
-		}
-		print "\n";
-
-		if (my $mtime = $res->last_modified) {
-			utime time, $mtime, $file;
-		}
-
-		if ($res->header("X-Died") || !$res->is_success) {
-			if (my $died = $res->header("X-Died")) {
-				print "$died\n";
-			}
-			if (-t) {
-				print "Transfer aborted.  Delete $file? [n] ";
-				my $ans = <STDIN>;
-				if (defined($ans) && $ans =~ /^y\n/) {
-					unlink($file) && print "Deleted.\n";
-				}
-				elsif ($length > $size) {
-					print "Truncated file kept: ", fbytes($length - $size),
-						" missing\n";
-				}
-				else {
-					print "File kept.\n";
-				}
-				exit 1;
-			}
-			else {
-				print "Transfer aborted, $file kept\n";
-			}
-		}
-	}
-
-	# Did not manage to create any file
-#   print "\n" if $shown;
-	if (my $xdied = $res->header("X-Died")) {
-		print "kateb: Aborted\n$xdied\n";
-	}
-	else {
-		print $c{bblue}, $url, " downloaded$c{reset}\n";
+	my $res = $http->mirror($url, $archive_file);
+	my $file = $archive_file;
+	$file =~ s{^.*/([^/]*\.zip)}{$1};
+	if ( $res->{success} ) {
+		print "$file downloaded\n";
 	}
 }
+# sub _download {
+# 	my $url          = shift;
+# 	my $archive_file = shift;
+# 	unlink $archive_file if -e $archive_file;
+#
+# 	$url = URI->new($url);
+#
+# 	my $ua = LWP::UserAgent->new(
+# 		agent	  => "kateb",
+# 		keep_alive => 1,
+# 		env_proxy  => 1,
+# 	);
+#
+# 	my $file;       # name of file we download into
+# 	my $length;     # total number of bytes to download
+# 	my $flength;    # formatted length
+# 	my $size = 0;   # number of bytes received
+# 	my $start_t;    # start time of download
+# 	my $last_dur;   # time of last callback
+# 	my $FILE_HANDLE;
+#
+# 	$shown = 0;     # have we called the show() function yet
+#
+# 	$SIG{INT} = sub { die "Interrupted\n"; };
+#
+# 	$| = 1;         # autoflush
+#
+# 	my $res = $ua->request(
+# 		HTTP::Request->new(GET => $url),
+# 		sub {
+# 			unless (defined $file) {
+# 				my $res = $_[1];
+#
+# 				$file = $archive_file;
+#
+# 				print "Saving to '$file'...\n";
+# 				use Fcntl qw(O_WRONLY O_EXCL O_CREAT);
+# 				sysopen($FILE_HANDLE, $file, O_WRONLY | O_EXCL | O_CREAT)
+# 					|| die "Can't open $file: $!";
+#
+# 				unless (fileno($FILE_HANDLE)) {
+# 					open($FILE_HANDLE, ">", $file) || die "Can't open $file: $!\n";
+# 				}
+# 				binmode $FILE_HANDLE;
+# 				$length   = $res->content_length;
+# 				$flength  = fbytes($length) if defined $length;
+# 				$start_t  = time;
+# 				$last_dur = 0;
+# 			}
+#
+# 			print $FILE_HANDLE $_[0] or die "Can't write to $file: $!\n";
+# 			$size += length($_[0]);
+#
+# 			if (defined $length) {
+# 				my $dur = time - $start_t;
+# 				if ($dur != $last_dur) {	# don't update too often
+# 					$last_dur = $dur;
+# 					my $perc = $size / $length;
+# 					my $speed;
+# 					$speed = fbytes($size / $dur) . "/sec" if $dur > 3;
+# 					my $secs_left = fduration($dur / $perc - $dur);
+# 					$perc = int($perc * 100);
+# 					my $show = "$perc% of $flength";
+# 					$show .= " (at $speed, $secs_left remaining)" if $speed;
+# 					show($show, 1);
+# 				}
+# 			}
+# 			else {
+# 				show(fbytes($size) . " received");
+# 			}
+# 		}
+# 	);
+#
+# 	if (fileno($FILE_HANDLE)) {
+# 		close($FILE_HANDLE) || die "Cant write to $file: $!\n";
+#
+# 		show("");	# clear text
+# 		print "\r";
+# 		print fbytes($size);
+# 		print " of ", fbytes($length) if defined($length) && $length != $size;
+# 		print " received";
+# 		my $dur = time - $start_t;
+# 		if ($dur) {
+# 			my $speed = fbytes($size / $dur) . "/sec";
+# 			print " in ", fduration($dur), " ($speed)";
+# 		}
+# 		print "\n";
+#
+# 		if (my $mtime = $res->last_modified) {
+# 			utime time, $mtime, $file;
+# 		}
+#
+# 		if ($res->header("X-Died") || !$res->is_success) {
+# 			if (my $died = $res->header("X-Died")) {
+# 				print "$died\n";
+# 			}
+# 			if (-t) {
+# 				print "Transfer aborted.  Delete $file? [n] ";
+# 				my $ans = <STDIN>;
+# 				if (defined($ans) && $ans =~ /^y\n/) {
+# 					unlink($file) && print "Deleted.\n";
+# 				}
+# 				elsif ($length > $size) {
+# 					print "Truncated file kept: ", fbytes($length - $size),
+# 						" missing\n";
+# 				}
+# 				else {
+# 					print "File kept.\n";
+# 				}
+# 				exit 1;
+# 			}
+# 			else {
+# 				print "Transfer aborted, $file kept\n";
+# 			}
+# 		}
+# 	}
+#
+# 	# Did not manage to create any file
+# #   print "\n" if $shown;
+# 	if (my $xdied = $res->header("X-Died")) {
+# 		print "kateb: Aborted\n$xdied\n";
+# 	}
+# 	else {
+# 		print $c{bblue}, $url, " downloaded$c{reset}\n";
+# 	}
+# }
 
-sub fbytes {
-	my $n = int(shift);
-	if ($n >= 1024 * 1024) {
-		return sprintf "%.3g MB", $n / (1024.0 * 1024);
-	}
-	elsif ($n >= 1024) {
-		return sprintf "%.3g KB", $n / 1024.0;
-	}
-	else {
-		return "$n bytes";
-	}
-}
-
-sub fduration {
-	use integer;
-	my $secs = int(shift);
-	my $hours = $secs / (60 * 60);
-	$secs -= $hours * 60 * 60;
-	my $mins = $secs / 60;
-	$secs %= 60;
-	if ($hours) {
-		return "$hours hours $mins minutes";
-	}
-	elsif ($mins >= 2) {
-		return "$mins minutes";
-	}
-	else {
-		$secs += $mins * 60;
-		return "$secs seconds";
-	}
-}
+# sub fbytes {
+# 	my $n = int(shift);
+# 	if ($n >= 1024 * 1024) {
+# 		return sprintf "%.3g MB", $n / (1024.0 * 1024);
+# 	}
+# 	elsif ($n >= 1024) {
+# 		return sprintf "%.3g KB", $n / 1024.0;
+# 	}
+# 	else {
+# 		return "$n bytes";
+# 	}
+# }
+#
+# sub fduration {
+# 	use integer;
+# 	my $secs = int(shift);
+# 	my $hours = $secs / (60 * 60);
+# 	$secs -= $hours * 60 * 60;
+# 	my $mins = $secs / 60;
+# 	$secs %= 60;
+# 	if ($hours) {
+# 		return "$hours hours $mins minutes";
+# 	}
+# 	elsif ($mins >= 2) {
+# 		return "$mins minutes";
+# 	}
+# 	else {
+# 		$secs += $mins * 60;
+# 		return "$secs seconds";
+# 	}
+# }
 
 
 BEGIN {
-	my @ani = qw(- \ | /);
-	my $ani = 0;
-
-	sub show {
-		my ($mess, $show_ani) = @_;
-		print "\r$mess" . (" " x (75 - length $mess));
-		my $msg = $show_ani ? $ani[$ani++]. "\b" : ' ';
-		print $msg;
-		$ani %= @ani;
-		$shown++;
-	}
-}
+# 	my @ani = qw(- \ | /);
+# 	my $ani = 0;
+#
+# 	sub show {
+# 		my ($mess, $show_ani) = @_;
+# 		print "\r$mess" . (" " x (75 - length $mess));
+# 		my $msg = $show_ani ? $ani[$ani++]. "\b" : ' ';
+# 		print $msg;
+# 		$ani %= @ani;
+# 		$shown++;
+# 	}
+ }
 
 
 

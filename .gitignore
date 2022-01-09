@@ -34,6 +34,9 @@ Makefile
 /pm_to_blib
 /*.zip
 
+# perl language server (pls)
+/.pls_cache/
+
 ###
 *.tar.gz
 local/
@@ -42,6 +45,8 @@ local/
 .vstags
 /.vscode/
 /.idea/
+
+local/
 
 ###
 /_Deparsed_XSubs.pm

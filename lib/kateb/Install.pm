@@ -10,7 +10,7 @@ use JSON::PP;
 #use LWP::UserAgent ();
 use HTTP::Tinyish;
 use URI            ();
-use HTTP::Date     ();
+#use HTTP::Date     ();
 use File::Spec::Functions qw(catdir catfile tmpdir);
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use File::Copy;
@@ -91,7 +91,7 @@ sub install {
 			$version eq $local_data->{installedVersions}->{$font_name}
 			)
 		{
-			print $c{bgreen} . $font_name . $c{reset};
+			printf("$c{bgreen}%10s$c{reset}",$font_name);
 			print ", The latest version is already installed: ";
 			say $c{bgreen} . $version . $c{reset};
 			next;
@@ -113,7 +113,7 @@ sub update {
 	{
 		if (not $local_data->{installedVersions}->{$font_name})
 		{
-			print $c{bred} . $font_name . $c{reset};
+			printf("$c{bred}%10s$c{reset}",$font_name);
 			print " is not already installed, but can be installed with:\n\n";
 			say $c{bblue} . "\tkateb install $font_name\n". $c{reset};
 			next;
@@ -123,7 +123,7 @@ sub update {
 
 		if ($version eq $local_data->{installedVersions}->{$font_name})
 		{
-			print $c{bgreen} . $font_name . $c{reset};
+			printf("$c{bgreen}%10s$c{reset}",$font_name);
 			print ", The latest version is already installed: ";
 			say $c{bgreen} . $version . $c{reset};
 			next;
@@ -145,7 +145,7 @@ sub reinstall {
 	{
 		if (not $local_data->{installedVersions}->{$font_name})
 		{
-			print $c{bred} . $font_name . $c{reset};
+			printf("$c{bred}%10s$c{reset}",$font_name);
 			print " is not already installed, but can be installed with:\n\n";
 			say $c{bblue} . "\tkateb install $font_name\n". $c{reset};
 			next;
@@ -169,12 +169,13 @@ sub _do {
 	my $target_dir = $local_data->{targetDir};
 
 	my $info       = kateb::FontInfo->new;
+	print "working on $font_name-$version...";
 
 	if ($font_name eq 'lalezar')
 	{
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($cache_dir, "Lalezar-Regular.ttf");
-		_download( $url, $archive_file );
+		_download( $url, $archive_file ) ? print "\t[Downloaded]\n" : print "\t[Failed]\n";
 		_copy_fonts( $target_dir, $archive_file );
 		$local_data->{installedVersions}->{$font_name} = $version;
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
@@ -182,16 +183,10 @@ sub _do {
 	{
 		my $url = $info->$font_name($version);
 		my $archive_file = catfile($temp_dir, "$font_name-$version.zip");
-
-		_download( $url, $archive_file );
-
-		my @extracted_fonts =
-		_unzip($font_name, $archive_file, $cache_dir);
-
+		_download( $url, $archive_file ) ? print "\t[Downloaded]\n" : print "\t[Failed]\n";
+		my @extracted_fonts = _unzip($font_name, $archive_file, $cache_dir);
 		$local_data->{installedVersions}->{$font_name} = $version;
-
 		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
-
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	}
 }
@@ -334,6 +329,9 @@ sub _download {
 	my $url          = shift;
 	my $archive_file = shift;
 	unlink $archive_file if -e $archive_file;
+	# my $file = $archive_file;
+	# $file =~ s{^.*/([^/]*\.zip)}{$1};
+
 	$url = URI->new($url);
 	my $http = HTTP::Tinyish->new
 	(
@@ -341,11 +339,7 @@ sub _download {
 		verify_SSL => 1
 	);
 	my $res = $http->mirror($url, $archive_file);
-	my $file = $archive_file;
-	$file =~ s{^.*/([^/]*\.zip)}{$1};
-	if ( $res->{success} ) {
-		print "$file downloaded\n";
-	}
+	$res->{success} ? return 1 : return 0;
 }
 # sub _download {
 # 	my $url          = shift;

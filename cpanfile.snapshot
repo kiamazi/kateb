@@ -30,22 +30,6 @@ DISTRIBUTIONS
       IO::Seekable 0
       Time::Local 0
       perl 5.006
-  Cpanel-JSON-XS-4.25
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.25.tar.gz
-    provides:
-      Cpanel::JSON::XS 4.25
-      Cpanel::JSON::XS::Type undef
-    requirements:
-      Carp 0
-      Config 0
-      Encode 1.9801
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Pod::Text 2.08
-      XSLoader 0
-      overload 0
-      strict 0
-      warnings 0
   File-Which-1.23
     pathname: P/PL/PLICEASE/File-Which-1.23.tar.gz
     provides:
@@ -53,17 +37,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006
-  HTTP-Date-6.05
-    pathname: O/OA/OALDERS/HTTP-Date-6.05.tar.gz
-    provides:
-      HTTP::Date 6.05
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Time::Local 1.28
-      Time::Zone 0
-      perl 5.006002
-      strict 0
   HTTP-Tinyish-0.17
     pathname: M/MI/MIYAGAWA/HTTP-Tinyish-0.17.tar.gz
     provides:
@@ -88,62 +61,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0.31
       Time::HiRes 0
-  JSON-MaybeXS-1.004003
-    pathname: E/ET/ETHER/JSON-MaybeXS-1.004003.tar.gz
-    provides:
-      JSON::MaybeXS 1.004003
-    requirements:
-      Carp 0
-      Cpanel::JSON::XS 2.3310
-      ExtUtils::MakeMaker 0
-      JSON::PP 2.27300
-      Scalar::Util 0
-      perl 5.006
-  TimeDate-2.33
-    pathname: A/AT/ATOOMIC/TimeDate-2.33.tar.gz
-    provides:
-      Date::Format 2.24
-      Date::Format::Generic 2.24
-      Date::Language 1.10
-      Date::Language::Afar 0.99
-      Date::Language::Amharic 1.00
-      Date::Language::Austrian 1.01
-      Date::Language::Brazilian 1.01
-      Date::Language::Bulgarian 1.01
-      Date::Language::Chinese 1.00
-      Date::Language::Chinese_GB 1.01
-      Date::Language::Czech 1.01
-      Date::Language::Danish 1.01
-      Date::Language::Dutch 1.02
-      Date::Language::English 1.01
-      Date::Language::Finnish 1.01
-      Date::Language::French 1.04
-      Date::Language::Gedeo 0.99
-      Date::Language::German 1.02
-      Date::Language::Greek 1.00
-      Date::Language::Hungarian 1.01
-      Date::Language::Icelandic 1.01
-      Date::Language::Italian 1.01
-      Date::Language::Norwegian 1.01
-      Date::Language::Occitan 1.04
-      Date::Language::Oromo 0.99
-      Date::Language::Romanian 1.01
-      Date::Language::Russian 1.01
-      Date::Language::Russian_cp1251 1.01
-      Date::Language::Russian_koi8r 1.01
-      Date::Language::Sidama 0.99
-      Date::Language::Somali 0.99
-      Date::Language::Spanish 1.00
-      Date::Language::Swedish 1.01
-      Date::Language::Tigrinya 1.00
-      Date::Language::TigrinyaEritrean 1.00
-      Date::Language::TigrinyaEthiopian 1.00
-      Date::Language::Turkish 1.0
-      Date::Parse 2.33
-      Time::Zone 2.24
-      TimeDate 1.21
-    requirements:
-      ExtUtils::MakeMaker 0
   URI-5.09
     pathname: O/OA/OALDERS/URI-5.09.tar.gz
     provides:

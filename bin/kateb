@@ -1,9 +1,16 @@
 #!/usr/bin/env perl
 
 use 5.012;
-
 use strict;
 use warnings;
+
+BEGIN {
+	if ($ENV{DEVELOPE})
+	{
+		use FindBin;
+		unshift @INC, "$FindBin::Bin/../lib", "$FindBin::Bin/../local/lib/perl5";
+	}
+}
 
 use kateb;
 

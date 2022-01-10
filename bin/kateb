@@ -152,14 +152,6 @@ if ($ARGV[0] =~ m/^self-upgrade$/) {
 		exit 3;
 	}
 
-	#use LWP::UserAgent;
-	#my $ua = LWP::UserAgent->new();
-	#my $response = $ua->get('https://fastapi.metacpan.org/v1/module/kateb?fields=version');
-	# unless ($response->is_success) {
-	# 	say "Error: " . $response->status_line;
-	# 	exit 3;
-	# }
-
 	use JSON::PP;
 	my $latest_version = decode_json( $response->{content} )->{version};
 	unless (version->parse($latest_version)->numify > version->parse($version)->numify)

@@ -187,6 +187,12 @@ sub _do {
 		_copy_fonts($target_dir, @extracted_fonts) if @extracted_fonts;
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	}
+
+	if ($font_name eq 'vazir')
+	{
+		my @vazirs = grep { m"Vazir(?!(-Code|matn))"g } glob catfile($target_dir, "*.ttf");
+		unlink foreach @vazirs;
+	}
 }
 
 ############################################
@@ -299,7 +305,16 @@ sub _unzip {
 			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
 			push @extracted_fonts, catfile($cache_dir, $file_name);
 		}
-	} else
+	} elsif ($font_name =~ /^vazir$/)
+	{
+		foreach my $file (grep { m"^fonts/ttf/((?!/).)*\.ttf$"g } $zip->memberNames())
+		{
+			my ($volume, $directories, $file_name) = File::Spec->splitpath($file);
+			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
+			push @extracted_fonts, catfile($cache_dir, $file_name);
+		}
+	}
+	else
 	{
 		foreach my $file (grep { m"^((?!/).)*\.ttf$"g } $zip->memberNames())
 		{

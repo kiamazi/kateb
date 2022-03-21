@@ -1,5 +1,8 @@
 Release history for kateb
 
+1.00.30                2022-03-21
+        - change vazir-font to vazirmatn
+
 1.00.28                2022-01-10
         - prints the output text in a better format
 

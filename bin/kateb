@@ -5,8 +5,9 @@ use strict;
 use warnings;
 
 BEGIN {
-	if ($ENV{DEVELOPE})
+	if ($ENV{KATEB_DEV})
 	{
+		say 'DEV_MODE';
 		use FindBin;
 		unshift @INC, "$FindBin::Bin/../lib", "$FindBin::Bin/../local/lib/perl5";
 	}

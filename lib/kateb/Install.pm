@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.29';
+$kateb::Install::VERSION = '01.00.30';
 
 use strict;
 use warnings;
@@ -28,8 +28,8 @@ my %c =
 );
 
 sub new {
-	my $class      = shift;
-	my @args       = @_;
+	my $class = shift;
+	my @args  = @_;
 	my $self;
 	if (not $args[0])
 	{

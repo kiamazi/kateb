@@ -1,5 +1,5 @@
 package kateb::FontInfo;
-$kateb::FontInfo::VERSION = '01.00.29';
+$kateb::FontInfo::VERSION = '01.00.30';
 
 use strict;
 use warnings;
@@ -15,10 +15,10 @@ sub new {
 sub _sources {
 	my $github_apis = {
 		vazir => {
-			name => 'vazir-font',
-			api => 'https://api.github.com/repos/rastikerdar/vazir-font/tags',
+			name => 'vazirmatn',
+			api => 'https://api.github.com/repos/rastikerdar/vazirmatn/tags',
 			publisher => 'https://github.com/rastikerdar',
-			repo => 'https://github.com/rastikerdar/vazir-font/',
+			repo => 'https://github.com/rastikerdar/vazirmatn/',
 			publisher_name => 'Saber Rastikerdar'
 		},
 		samim => {

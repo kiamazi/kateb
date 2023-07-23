@@ -1,5 +1,10 @@
 Release history for kateb
 
+1.1.0                  2023-07-23
+        - add macOS support
+        - improved functionality of commands
+        - "fc-cahce -vf <FONT_DIRECTORY>" after (re)intall/update
+
 1.00.30                2022-03-21
         - change vazir-font to vazirmatn
 

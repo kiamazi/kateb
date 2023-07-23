@@ -1,5 +1,5 @@
 package kateb::LocalData;
-$kateb::LocalData::VERSION = '01.00.30';
+$kateb::LocalData::VERSION = '1.1.0';
 
 use strict;
 use warnings;
@@ -24,7 +24,7 @@ sub _prepare {
 	my $execname = "kateb";
 
 	#----------------------- GLOBAL VARIABLES -----------------------#
-	# crate empty envs
+	# create empty envs
 	my $json_file;
 
 	# Home directory
@@ -37,10 +37,13 @@ sub _prepare {
 	my $cache_font_dir = catdir($config_dir, 'fonts');
 
 	# user font directory [target directory]
-	my $root_font_dir = catdir('/', 'usr', 'share', 'fonts', 'truetype', 'farsifreefont');
-	my $user_font_dir = catdir($home_dir, '.local', 'share', 'fonts', 'farsifreefont');
+	my $root_font_dir = $^O eq 'darwin'
+		? catdir('/', 'Library', 'Fonts')
+		: catdir('/', 'usr', 'share', 'fonts', 'truetype', 'farsifreefont');
+	my $user_font_dir = $^O eq 'darwin'
+		? catdir($home_dir, 'Library', 'Fonts')
+		: catdir($home_dir, '.local', 'share', 'fonts', 'farsifreefont');
 	my $target_dir = $> == 0 ? $root_font_dir : $user_font_dir;
-
 
 	# temp dir for downloads
 	my $temp_dir = File::Temp->newdir();
@@ -101,7 +104,7 @@ sub _prepare {
 }
 
 sub write_data {
-	shift;
+	shift; #$self
 	my $local_data = shift;
 	my $json_file  = shift;
 	my $installed_versions = encode_json($local_data);

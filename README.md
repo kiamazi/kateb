@@ -1,3 +1,7 @@
+# Persian fonts installer
+
+a script to download, install and update Persian free(libre) fonts on all GNU/Linux distros
+
 # کاتب
 
 نصب کننده‌ی فونت‌های آزاد فارسی

@@ -1,5 +1,5 @@
 package kateb::Install;
-$kateb::Install::VERSION = '01.00.30';
+$kateb::Install::VERSION = '1.1.0';
 
 use strict;
 use warnings;
@@ -80,23 +80,32 @@ sub install {
 	my $info       = kateb::FontInfo->new;
 
 	my $json_file  = $local_data->{jsonFile};
+	my @check;
 
 	foreach my $font_name (@fonts)
 	{
 		my $version = _online_version($info->{$font_name}->{api});
-		if (
-			$local_data->{installedVersions}->{$font_name} and
-			$version eq $local_data->{installedVersions}->{$font_name}
-			)
+		if ($local_data->{installedVersions}->{$font_name})
 		{
 			printf("$c{bgreen}%10s$c{reset}",$font_name);
-			print ", The latest version is already installed: ";
-			say $c{bgreen} . $version . $c{reset};
+			say " version " . $c{bgreen} . $version . $c{reset} . " is already installed";
+
+			unless ($version eq $local_data->{installedVersions}->{$font_name}) {
+				push @check, $font_name;
+				say "\tnew version is available: " .
+				$c{bred} . $version . $c{reset};
+			}
 			next;
 		}
 		_do($font_name, $local_data, $version);
 	}
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
+	say "\nto update fonts:
+	$c{bblue}kateb update @check$c{reset}" if @check;
+
+	# my @fc_cache = ("fc-cache", "-f", "-v", $local_data->{targetDir}, ">/dev/null");
+	# qx(@fc_cache);
+	system("fc-cache -f -v $local_data->{targetDir} >/dev/null");
 }
 
 sub update {
@@ -129,6 +138,10 @@ sub update {
 		_do($font_name, $local_data, $version);
 	}
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
+
+	# my @fc_cache = ("fc-cache", "-f", "-v", $local_data->{targetDir}, ">/dev/null");
+	# qx(@fc_cache);
+	system("fc-cache -f -v $local_data->{targetDir} >/dev/null");
 }
 
 sub reinstall {
@@ -152,6 +165,10 @@ sub reinstall {
 		_do($font_name, $local_data, $version);
 	}
 	kateb::LocalData->write_data($local_data->{installedVersions}, $json_file);
+
+	# my @fc_cache = ("fc-cache", "-f", "-v", $local_data->{targetDir}, ">/dev/null");
+	# qx(@fc_cache);
+	system("fc-cache -f -v $local_data->{targetDir} >/dev/null");
 }
 
 ############################################
@@ -190,7 +207,7 @@ sub _do {
 
 	if ($font_name eq 'vazir')
 	{
-		my @vazirs = grep { m"Vazir(?!(-Code|matn))"g } glob catfile($target_dir, "*.ttf");
+		my @vazirs = grep { m"Vazir(?!(?:-Code|matn))"g } glob catfile($target_dir, "*.ttf");
 		unlink foreach @vazirs;
 	}
 }

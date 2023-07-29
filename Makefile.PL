@@ -39,6 +39,9 @@ WriteMakefile(
 				url  => 'https://github.com/kiamazi/kateb.git',
 				web  => 'https://github.com/kiamazi/kateb',
 			},
+            bugtracker => {
+                web => 'https://github.com/kiamazi/kateb/issues'
+            },
 		},
 	},
 );

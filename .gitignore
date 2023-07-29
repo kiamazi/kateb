@@ -47,6 +47,7 @@ local/
 /.idea/
 
 local/
+ToDo.md
 
 ###
 /_Deparsed_XSubs.pm

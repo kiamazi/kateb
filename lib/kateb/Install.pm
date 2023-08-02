@@ -194,6 +194,14 @@ sub _do {
 		_copy_fonts( $target_dir, $archive_file );
 		$local_data->{installedVersions}->{$font_name} = $version;
 		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
+	} elsif ($font_name eq 'nastaliq')
+	{
+		my $url = $info->$font_name($version);
+		my $archive_file = catfile($cache_dir, "IranNastaliq-Web.ttf");
+		_download( $url, $archive_file ) ? print "\t[Downloaded]\n" : print "\t[Failed]\n";
+		_copy_fonts( $target_dir, $archive_file );
+		$local_data->{installedVersions}->{$font_name} = $version;
+		say $c{bgreen} . $font_name . $c{reset} . " installed. version: " . $c{bgreen} . $version . $c{reset};
 	} else
 	{
 		my $url = $info->$font_name($version);

@@ -174,7 +174,7 @@ sub lalezar {
 
 sub nastaliq {
 	my $link =
-	    'https://github.com/font-store/font-IranNastaliq/blob/master/WebFonts/IranNastaliq-Web.ttf';
+	    'https://github.com/font-store/font-IranNastaliq/raw/master/WebFonts/IranNastaliq-Web.ttf';
 	return $link;
 }
 

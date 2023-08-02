@@ -161,7 +161,6 @@ sub _sources {
 			repo => 'https://github.com/BornaIz/Lalezar/',
 			publisher_name => 'Saleh Souzanchi'
 		}
-
 	};
 	return $github_apis;
 }

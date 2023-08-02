@@ -159,6 +159,7 @@ sudo cpan -T kateb
 	lalezar
 	mikhak
 	nahid
+	nastaliq
 	nika
 	noon
 	parastoo

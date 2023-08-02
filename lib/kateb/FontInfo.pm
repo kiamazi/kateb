@@ -153,7 +153,15 @@ sub _sources {
 			publisher => 'https://github.com/BornaIz',
 			repo => 'https://github.com/BornaIz/Lalezar/',
 			publisher_name => 'Borna Izadpanah'
+		},
+		nastaliq => {
+			name => 'font-IranNastaliq',
+			api => 'https://api.github.com/repos/font-store/font-IranNastaliq/tags',
+			publisher => 'https://github.com/font-store',
+			repo => 'https://github.com/BornaIz/Lalezar/',
+			publisher_name => 'Saleh Souzanchi'
 		}
+
 	};
 	return $github_apis;
 }
@@ -161,6 +169,12 @@ sub _sources {
 sub lalezar {
 	my $link    =
         'https://raw.githubusercontent.com/BornaIz/Lalezar/master/fonts/Lalezar-Regular.ttf';
+	return $link;
+}
+
+sub nastaliq {
+	my $link =
+	    'https://github.com/font-store/font-IranNastaliq/blob/master/WebFonts/IranNastaliq-Web.ttf';
 	return $link;
 }
 

@@ -160,7 +160,14 @@ sub _sources {
 			publisher => 'https://github.com/font-store',
 			repo => 'https://github.com/BornaIz/Lalezar/',
 			publisher_name => 'Saleh Souzanchi'
-		}
+		},
+		arad => {
+			name => 'Arad',
+			api => 'https://api.github.com/repos/MDarvishi5124/Arad/releases',
+			publisher => 'https://github.com/MDarvishi5124',
+			repo => 'https://github.com/MDarvishi5124/Arad/',
+			publisher_name => 'Mohammad Darvishi'
+		},
 	};
 	return $github_apis;
 }
@@ -174,6 +181,25 @@ sub lalezar {
 sub nastaliq {
 	my $link =
 	    'https://github.com/font-store/font-IranNastaliq/raw/master/WebFonts/IranNastaliq-Web.ttf';
+	return $link;
+}
+
+# sub arad {
+#     my $link =
+# 	    'https://github.com/MDarvishi5124/Arad/releases/download/1.0.1v/Arad.zip';
+# 	return $link;
+# }
+sub arad {
+	my $self    = shift;
+	my $version = shift;
+	my $link =
+		$self->{arad}->{publisher} . "/" .
+		$self->{arad}->{name} .
+		"/releases/download/" .
+		$version . "/" .
+		$self->{arad}->{name} .
+		".zip"
+	;
 	return $link;
 }
 

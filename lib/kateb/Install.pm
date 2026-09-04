@@ -256,7 +256,7 @@ sub _online_version {
 	my $version;
 	eval
 	{
-		$version = $tags->[0]->{name};
+		$version = $tags->[0]->{tag_name} || $tags->[0]->{name};
 	}; if ($@)
 	{
 		say "$c{bred}github API rate limit exceeded. This limit is 50 times per hour, plz try again in about an hour$c{reset}";
@@ -338,8 +338,16 @@ sub _unzip {
 			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
 			push @extracted_fonts, catfile($cache_dir, $file_name);
 		}
-	}
-	else
+	} elsif ($font_name =~ /^arad$/)
+	{
+	    # m{^main/static/ttf/.*\.ttf$} && ! /Dots/
+		foreach my $file (grep { m{main/static/ttf/(?!.*Dots).*\.ttf$}g } $zip->memberNames())
+		{
+			my ($volume, $directories, $file_name) = File::Spec->splitpath($file);
+			$zip->extractMember( $file, catfile($cache_dir, $file_name) );
+			push @extracted_fonts, catfile($cache_dir, $file_name);
+		}
+	} else
 	{
 		foreach my $file (grep { m"^((?!/).)*\.ttf$"g } $zip->memberNames())
 		{

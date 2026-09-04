@@ -151,6 +151,7 @@ sudo cpan -T kateb
 
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
+    arad
 	behdad
 	estedad
 	farbod

@@ -1,5 +1,8 @@
 Release history for kateb
 
+1.2.0                  2026-05-09
+        - add new font: Arad
+
 1.1.0                  2023-07-23
         - add macOS support
         - improved functionality of commands

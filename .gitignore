@@ -5,6 +5,7 @@
 /MYMETA.*
 *.o
 *.bs
+cpanfile.snapshot
 
 # Devel::Cover
 cover_db/
@@ -43,8 +44,9 @@ local/
 
 ###
 .vstags
-/.vscode/
-/.idea/
+.vscode/
+.idea/
+.zed/
 
 local/
 ToDo.md

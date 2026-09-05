@@ -1,5 +1,6 @@
 bin/kateb
 Changes
+cpanfile
 lib/kateb.pm
 lib/kateb/FontInfo.pm
 lib/kateb/Install.pm
@@ -9,3 +10,4 @@ Makefile.PL
 MANIFEST
 META.json
 META.yml
+README.md

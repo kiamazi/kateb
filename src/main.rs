@@ -1,253 +1,270 @@
 #![allow(unused)]
 
+mod catalog;
+
 use std::env;
+use catalog::{Font, FontError, build_catalog};
 
-struct Font {
-    name: String,
-    api: String,
-    repo_name: String,
-    repo_url: String,
-    publisher_name: String,
-    publisher_url: String,
+//-----------------------------
+/// All commands accepted by the CLI.
+#[derive(Debug)]
+enum Command {
+    Install(Vec<String>),
+    Update(Vec<String>),
+    Reinstall(Vec<String>),
+    List,
+    Fonts,
+    Info(Vec<String>),
+    Version,
+    SelfUpgrade,
 }
 
-fn main() {
-    let mut args = env::args().skip(1);
-    if args.len() == 0 {
-        usage();
-    }
+impl Command {
+    /// Parse the raw iterator (`env::args().skip(1)`) into a `Command`.
+    fn from_iter<I>(mut it: I) -> Result<Self, &'static str>
+    where
+        I: Iterator<Item = String>,
+    {
+        let cmd = it.next().ok_or("missing command")?;
+        let args: Vec<String> = it.collect();
 
-    let mut fonts = [
-        Font {
-			name: "vazir".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/vazirmatn/tags".to_string(),
-			repo_name: "vazirmatn".to_string(),
-			repo_url: "https://github.com/rastikerdar/vazirmatn/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "samim".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/samim-font/tags".to_string(),
-			repo_name: "samim-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/samin-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "tanha".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/tanha-font/tags".to_string(),
-			repo_name: "tanha-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/tanha-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "shabnam".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/shabnam-font/tags".to_string(),
-			repo_name: "shabnam-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/shabnam-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "gandom".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/gandom-font/tags".to_string(),
-			repo_name: "gandom-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/gandom-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "parastoo".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/parastoo-font/tags".to_string(),
-			repo_name: "parastoo-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/parastoo-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "sahel".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/sahel-font/tags".to_string(),
-			repo_name: "sahel-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/sahel-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "vazircode".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/vazir-code-font/tags".to_string(),
-			repo_name: "vazir-code-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/vazir-code-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "ziracode".to_string(),
-			api: "https://api.github.com/repos/kiamazi/zira-code-font/tags".to_string(),
-			repo_name: "zira-code-font".to_string(),
-			repo_url: "https://github.com/kiamazi/zira-code-font/".to_string(),
-			publisher_name: "Kiavash Mazi".to_string(),
-			publisher_url: "https://github.com/kiamazi".to_string(),
-		},
-		Font {
-			name: "nahid".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/nahid-font/tags".to_string(),
-			repo_name: "nahid-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/nahid-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-		},
-		Font {
-			name: "mikhak".to_string(),
-			api: "https://api.github.com/repos/aminabedi68/Mikhak/tags".to_string(),
-			repo_name: "Mikhak".to_string(),
-			repo_url: "https://github.com/aminabedi68/Mikhak/".to_string(),
-			publisher_name: "Amin Abedi".to_string(),
-			publisher_url: "https://github.com/aminabedi68".to_string(),
-		},
-		Font {
-			name: "estedad".to_string(),
-			api: "https://api.github.com/repos/aminabedi68/Estedad/tags".to_string(),
-			repo_name: "Estedad".to_string(),
-			repo_url: "https://github.com/aminabedi68/Estedad/".to_string(),
-			publisher_name: "Amin Abedi".to_string(),
-			publisher_url: "https://github.com/aminabedi68".to_string(),
-		},
-		Font {
-			name: "ganjnameh".to_string(),
-			api: "https://api.github.com/repos/font-store/GanjnamehFont/tags".to_string(),
-			repo_name: "GanjnamehFont".to_string(),
-			repo_url: "https://github.com/font-store/GanjnamehFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string()
-		},
-		Font {
-			name: "behdad".to_string(),
-			api: "https://api.github.com/repos/font-store/BehdadFont/tags".to_string(),
-			repo_name: "BehdadFont".to_string(),
-			repo_url: "https://github.com/font-store/BehdadFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "nika".to_string(),
-			api: "https://api.github.com/repos/font-store/NikaFont/tags".to_string(),
-			repo_name: "NikaFont".to_string(),
-			repo_url: "https://github.com/font-store/NikaFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "farbod".to_string(),
-			api: "https://api.github.com/repos/font-store/FarbodFont/tags".to_string(),
-			repo_name: "FarbodFont".to_string(),
-			repo_url: "https://github.com/font-store/FarbodFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "shahab".to_string(),
-			api: "https://api.github.com/repos/font-store/ShahabFont/tags".to_string(),
-			repo_name: "ShahabFont".to_string(),
-			repo_url: "https://github.com/font-store/ShahabFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "noon".to_string(),
-			api: "https://api.github.com/repos/font-store/NoonFont/tags".to_string(),
-			repo_name: "NoonFont".to_string(),
-			repo_url: "https://github.com/font-store/NoonFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "pfont".to_string(),
-			api: "https://api.github.com/repos/pfont/pfont/tags".to_string(),
-			repo_name: "pfont".to_string(),
-			repo_url: "https://github.com/pfont/pfont/".to_string(),
-			publisher_name: "Persian Free Font".to_string(),
-			publisher_url: "https://github.com/pfont".to_string(),
-		},
-		Font {
-			name: "lalezar".to_string(),
-			api: "https://api.github.com/repos/BornaIz/Lalezar/tags".to_string(),
-			repo_name: "Lalezar".to_string(),
-			repo_url: "https://github.com/BornaIz/Lalezar/".to_string(),
-			publisher_name: "Borna Izadpanah".to_string(),
-			publisher_url: "https://github.com/BornaIz".to_string(),
-		},
-		Font {
-			name: "nastaliq".to_string(),
-			api: "https://api.github.com/repos/font-store/font-IranNastaliq/tags".to_string(),
-			repo_name: "font-IranNastaliq".to_string(),
-			repo_url: "https://github.com/font-store/font-IranNastaliq/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-		},
-		Font {
-			name: "arad".to_string(),
-			api: "https://api.github.com/repos/MDarvishi5124/Arad/releases".to_string(),
-			repo_name: "Arad".to_string(),
-			repo_url: "https://github.com/MDarvishi5124/Arad/".to_string(),
-			publisher_name: "Mohammad Darvishi".to_string(),
-			publisher_url: "https://github.com/MDarvishi5124".to_string(),
-		},
-    ];
-    fonts.sort_by(|a, b| (a.publisher_name).cmp(&b.publisher_name));
-
-    let command = args.next().unwrap();
-    match command.as_str() {
-        "install"      => println!("installing..."),
-        "update"       => println!("updating..."),
-        "reinstall"    => println!("reinstalling..."),
-        "list"         => {
-            println!("available fonts...\n");
-            // println!(" ┌{0:─^11}┬{0:─^20}┐", "─");
-            fonts.iter().enumerate().for_each(|(index, font)| {
-                let mut publisher = font.publisher_name.as_str();
-                if index > 0 && font.publisher_name != fonts[index-1].publisher_name {
-                    println!(" {0:─^11}┼{0:─^20}", "─");
-                } else if index > 0 {
-                    publisher = "";
-                }
-                println!(" {:10} │ {:18}", font.name, publisher);
-                // if index < fonts.len() - 1 {
-                //     println!(" ├{0:─^11}┼{0:─^20}┤", "─");
-                // }
-            });
-            // println!(" └{0:─^11}┴{0:─^20}┘", "─");
-        },
-        "fonts"        => println!("show installed fonts..."),
-        "info"         => println!("info..."),
-        "version"      => println!("Version: {}", env!("CARGO_PKG_VERSION")),
-        "self-upgrade" => println!("self-upgrade..."),
-        _ => usage()
+        match cmd.as_str() {
+            "install"   => Ok(Command::Install(args)),
+            "update"    => Ok(Command::Update(args)),
+            "reinstall" => Ok(Command::Reinstall(args)),
+            "list"      => Ok(Command::List),
+            "fonts"     => Ok(Command::Fonts),
+            "info"      => Ok(Command::Info(args)),
+            "version" | "-v" => Ok(Command::Version),
+            "self-upgrade" => Ok(Command::SelfUpgrade),
+            _ => Err("unknown command"),
+        }
     }
 }
 
+//-----------------------------
+fn run(command: Command, fonts: &[Font]) -> Result<(), ()> {
+    match command {
+        Command::Install(list)   => install(fonts, &list).map_err(|e| eprintln!("❌ {}", e))?,
+        Command::Update(list)    => update(fonts, &list).map_err(|e| eprintln!("❌ {}", e))?,
+        Command::Reinstall(list) => reinstall(fonts, &list).map_err(|e| eprintln!("❌ {}", e))?,
+        Command::Info(list)      => info(fonts, &list).map_err(|e| eprintln!("❌ {}", e))?,
+        Command::List            => list_fonts(fonts),
+        Command::Fonts           => show_supported_fonts(),
+        Command::Version         => println!("Version: {}", env!("CARGO_PKG_VERSION")),
+        Command::SelfUpgrade     => println!("self‑upgrade…"),
+    }
+    Ok(())
+}
 
-/// print app usage tip
-fn usage() {
-	println!(r#"
+/// Validate a user‑supplied list of font names and return the matching fonts.
+///
+/// * **Empty list** → `Err(FontError::EmptyList)`.
+/// * **`"all"`** → returns **all** fonts (extra items are ignored, a warning is printed).
+/// * **Invalid names** → `Err(FontError::InvalidFonts)` containing the unknown names.
+/// * **Valid subset** → `Ok(Vec<&Font>)` with the matching fonts, preserving the
+///   order of the original `fonts` slice.
+///
+/// The function never mutates its inputs.
+pub fn check_fonts<'a>(
+    fonts: &'a [Font],
+    list: &[String],
+) -> Result<Vec<&'a Font>, FontError> {
+    if list.is_empty() {
+        return Err(FontError::EmptyList);
+    }
+
+    // “all” handling – warning if other items are present
+    if list.iter().any(|s| s.as_str() == "all") {
+        if list.len() > 1 {
+            eprintln!(
+                r#"warning: when you choose "all" other options are ignored."#
+            );
+        }
+        return Ok(fonts.iter().collect());
+    }
+
+    // Find unknown names
+    let not_valid: Vec<String> = list
+        .iter()
+        .filter(|name| !fonts.iter().any(|f| f.name == **name))
+        .cloned()
+        .collect();
+
+    if !not_valid.is_empty() {
+        return Err(FontError::InvalidFonts(not_valid));
+    }
+
+    // All names exist → collect the matching fonts
+    let res: Vec<&Font> = fonts
+        .iter()
+        .filter(|f| list.contains(&f.name))
+        .collect();
+
+    Ok(res)
+}
+
+/// Installs the requested fonts.
+///
+/// This function is a thin wrapper around [`check_fonts`] that
+///
+/// * validates the input list,
+/// * reports any problems to the user,
+/// * and, when the list is valid, calls `Font::install` for each selected font.
+///
+/// # Parameters
+///
+/// * `fonts` – A slice containing **all** fonts that are available for installation.
+///   The slice is borrowed; ownership remains with the caller.
+///
+/// * `list` – A slice of font names supplied by the user.  The semantics are the
+///   same as in [`check_fonts`]:
+///
+///   - If the slice contains the literal string `"all"` the function installs **every**
+///     font in `fonts`.  If other items are present they are ignored, and a warning
+///     is printed to `stderr`.
+///   - If the slice is empty, an `EmptyList` error is returned and reported to the user.
+///   - If any name does not correspond to an existing font, an `InvalidFonts` error
+///     containing the offending names is returned and reported.
+///   - Otherwise the function installs only the fonts whose names appear in `list`,
+///     preserving the order of `fonts`.
+///
+/// # Returns
+///
+/// * `Ok(())` – All requested fonts were installed successfully.
+///
+/// * `Err(FontError)` – Validation failed.  The error is printed to `stderr` so the
+///   user sees a helpful message, and the same error value is also returned for
+///   programmatic handling by the caller.
+///
+/// # Example
+///
+/// ```rust
+/// # use mycrate::{Font, install, FontError};
+///
+/// // Install a single, valid font
+/// install(&available_fonts, &["vazir".into()]).unwrap();
+///
+/// // Request a non‑existent font – prints an error and returns Err
+/// if let Err(e) = install(&available, &["Times".into()]) {
+///     eprintln!("installation failed: {}", e);
+/// }
+/// ```
+///
+/// # Errors
+///
+/// See [`FontError`] for the concrete variants that can be returned:
+///
+/// * `EmptyList` – the user supplied no font names.
+/// * `InvalidFonts` – one or more supplied names are not present in `fonts`.
+///
+/// The function never returns an error for the `"all"` case; it merely emits a
+/// warning when additional names accompany `"all"` and proceeds with installation.
+///
+/// # Side effects
+///
+/// For each font selected by the validation step, `font.install()` is called,
+/// which is expected to perform the actual installation (e.g., copying files,
+/// updating a registry, etc.).  Any side effects produced by `install` are
+/// therefore performed only after successful validation.
+///
+/// # See also
+///
+/// * [`check_fonts`] – the helper that performs the validation and selection logic.
+fn install(fonts: &[Font], list: &[String]) -> Result<(), FontError> {
+    let install_list = check_fonts(fonts, list)?;
+    for font in install_list {
+        font.install();
+    }
+    Ok(())
+}
+
+fn update(fonts: &[Font], list: &[String]) -> Result<(), FontError> {
+    let to_do = check_fonts(fonts, list)?;
+    for f in to_do {
+        f.update();
+    }
+    Ok(())
+}
+
+fn reinstall(fonts: &[Font], list: &[String]) -> Result<(), FontError> {
+    let to_do = check_fonts(fonts, list)?;
+    for f in to_do {
+        f.reinstall();
+    }
+    Ok(())
+}
+
+fn info(fonts: &[Font], list: &[String]) -> Result<(), FontError> {
+    let to_show = check_fonts(fonts, list)?;
+    for f in to_show {
+        f.info();
+    }
+    Ok(())
+}
+
+/// Pretty‑print the catalog of fonts (sorted by publisher).
+fn list_fonts(fonts: &[Font]) {
+    println!("available fonts\n{:─^70}", "");
+    for (i, f) in fonts.iter().enumerate() {
+        let publisher = if i == 0 || f.publisher_name != fonts[i - 1].publisher_name {
+            &f.publisher_name
+        } else {
+            ""
+        };
+        println!(" {:10} │ {:18} │ {}", f.name, publisher, f.repo_url);
+        if i + 1 < fonts.len() && f.publisher_name != fonts[i + 1].publisher_name {
+            println!(" {0:─^10}─┼{0:─^19}─┼{0:─^55}", "─");
+        }
+    }
+}
+
+/// Placeholder – replace with a real list of “all supported fonts”.
+fn show_supported_fonts() {
+    println!("(supported fonts list would go here)");
+}
+
+fn usage() -> ! {
+    println!(r#"
 kateb <command> [option]
 
 commands:
-    install          install new font
-    update           update available font
-    reinstall        reinstall, installed font
-    list             list of installed fonts versions
-    fonts            show all farsi free fonts supported
-    info             short info about font publisher
-    version | -v     kateb version
-    self-upgrade     kateb, update itelf
+    install          install a new font
+    update           update an installed font
+    reinstall        reinstall an already‑installed font
+    list             list all supported Farsi fonts
+    fonts            show the fonts that are currently installed
+    info             display brief information about a font’s publisher
+    version | -v     display the kateb version
+    self-upgrade     upgrade the kateb tool itself
 
 options:
-    -a | all         install or update all fonts
+    -a | all         install or update every font
+    <font name>      install or update the specified font
 
 sample:
     kateb install all
 "#);
-	std::process::exit(1);
+
+    std::process::exit(1);
+}
+
+
+//-----------------------------
+fn main() {
+    let mut fonts = build_catalog();
+    fonts.sort_by(|a, b| a.publisher_name.cmp(&b.publisher_name));
+
+    // Parse CLI arguments
+    let args = env::args().skip(1);
+    let command = match Command::from_iter(args) {
+        Ok(c) => c,
+        Err(msg) => {
+            eprintln!("Error: {msg}");
+            usage();
+        }
+    };
+
+    // Execute the command; any error already printed inside `run`
+    let _ = run(command, &fonts);
 }

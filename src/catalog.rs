@@ -1,7 +1,7 @@
 use std::{fmt, error::Error};
 
 /// Information about a single font.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Ord)]
 pub struct Font {
     pub name: String,
     pub api: String,
@@ -20,6 +20,15 @@ impl Font {
             "publisher {}, {}\nrepo {}",
             self.publisher_name, self.publisher_url, self.repo_url
         );
+    }
+}
+
+impl PartialOrd for Font {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+        if self.publisher_name == other.publisher_name {
+            return Some(self.name.cmp(&other.name));
+        }
+        Some(self.publisher_name.cmp(&other.publisher_name))
     }
 }
 
@@ -46,8 +55,30 @@ impl fmt::Display for FontError {
 }
 impl Error for FontError {}
 
-pub fn build_catalog() -> Vec<Font> {
-    vec![
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Catalog {
+    pub fonts: Vec<Font>
+}
+
+impl Catalog {
+    pub fn new() -> Self {
+        Catalog{
+            fonts: build_catalog(),
+        }
+    }
+
+    pub fn font_list(&self) ->  Vec<String> {
+        let mut fonts = self.fonts.clone();
+        let mut list = Vec::new();
+        for font in &self.fonts {
+            list.push(font.name.clone());
+        }
+        list
+    }
+}
+
+fn build_catalog() -> Vec<Font> {
+    let mut fonts = vec![
         Font {
 			name: "vazir".to_string(),
 			api: "https://api.github.com/repos/rastikerdar/vazirmatn/tags".to_string(),
@@ -224,5 +255,8 @@ pub fn build_catalog() -> Vec<Font> {
 			publisher_name: "Mohammad Darvishi".to_string(),
 			publisher_url: "https://github.com/MDarvishi5124".to_string(),
 		},
-    ]
+    ];
+    // fonts.sort_by(|a, b| a.publisher_name.cmp(&b.publisher_name));
+    fonts.sort();
+    fonts
 }

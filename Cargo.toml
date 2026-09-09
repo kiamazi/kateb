@@ -4,3 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0.104"
+dirs = "7.0.0"
+nix = { version = "0.31.3", features = ["user"] }
+reqwest = "0.13.5"
+serde = "1.0.229"
+serde_json = "1.0.151"
+tempfile = "3.27.0"

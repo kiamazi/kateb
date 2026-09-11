@@ -6,6 +6,7 @@ mod local_data;
 use std::env;
 use catalog::{Font, FontError, Catalog};
 use serde_json::{Map, Value, json};
+use toml_edit::{DocumentMut, Item, Table, value};
 
 use crate::local_data::LocalData;
 
@@ -61,65 +62,31 @@ fn run(command: Command) -> Result<(), ()> {
     Ok(())
 }
 
-/// Validate a user‑supplied list of font names and return the matching fonts.
-///
-/// * **Empty list** → `Err(FontError::EmptyList)`.
-/// * **`"all"`** → returns **all** fonts (extra items are ignored, a warning is printed).
-/// * **Invalid names** → `Err(FontError::InvalidFonts)` containing the unknown names.
-/// * **Valid subset** → `Ok(Vec<&Font>)` with the matching fonts, preserving the
-///   order of the original `fonts` slice.
-///
-/// The function never mutates its inputs.
-pub fn check_fonts<'a>(
-    fonts: &'a [Font],
-    list: &[String],
-) -> Result<Vec<&'a Font>, FontError> {
-    if list.is_empty() {
-        return Err(FontError::EmptyList);
-    }
-
-    // “all” handling – warning if other items are present
-    if list.iter().any(|s| s.as_str() == "all") {
-        if list.len() > 1 {
-            eprintln!(
-                r#"warning: when you choose "all" other options are ignored."#
-            );
-        }
-        return Ok(fonts.iter().collect());
-    }
-
-    // Find unknown names
-    let not_valid: Vec<String> = list
-        .iter()
-        .filter(|name| !fonts.iter().any(|font| font.name == **name))
-        .cloned()
-        .collect();
-
-    if !not_valid.is_empty() {
-        return Err(FontError::InvalidFonts(not_valid));
-    }
-
-    // All names exist → collect the matching fonts
-    let res: Vec<&Font> = fonts
-        .iter()
-        .filter(|f| list.contains(&f.name))
-        .collect();
-
-    Ok(res)
-}
-
 fn install(list: &[String]) -> Result<(), FontError> {
     let catalog = Catalog::new();
     let install_list = catalog.check_fonts(list)?;
+
+    let local_data = LocalData::new();
+    let config = local_data.configs;
+
     for font in install_list {
-        font.install();
+        let version_check = if !config.contains_table(&font.name) {
+            true
+        } else {
+            false
+        };
+        if version_check {
+            font.install();
+        } else {
+            println!("{} already installed", font.name);
+        }
     }
     Ok(())
 }
 
 fn update(list: &[String]) -> Result<(), FontError> {
     let catalog = Catalog::new();
-    let to_do = check_fonts(&catalog.fonts, list)?;
+    let to_do = catalog.check_fonts(list)?;
     for f in to_do {
         f.update();
     }
@@ -128,7 +95,7 @@ fn update(list: &[String]) -> Result<(), FontError> {
 
 fn reinstall(list: &[String]) -> Result<(), FontError> {
     let catalog = Catalog::new();
-    let to_do = check_fonts(&catalog.fonts, list)?;
+    let to_do = catalog.check_fonts(list)?;
     for f in to_do {
         f.reinstall();
     }
@@ -137,7 +104,7 @@ fn reinstall(list: &[String]) -> Result<(), FontError> {
 
 fn info(list: &[String]) -> Result<(), FontError> {
     let catalog = Catalog::new();
-    let to_show = check_fonts(&catalog.fonts, list)?;
+    let to_show = catalog.check_fonts(list)?;
     for f in to_show {
         f.info();
     }
@@ -195,6 +162,13 @@ sample:
 
 //-----------------------------
 fn main() {
+    // let mut data = LocalData::new();
+    // println!("{:#?}", data);
+    // let mut table = Table::new();
+    // table.insert("tag_name", value("v1.2.3"));
+    // data.insert("shahram", Item::Table(table));
+    // data.write();
+
     // Parse CLI arguments
     let args = env::args().skip(1);
     let command = match Command::from_iter(args) {

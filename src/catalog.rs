@@ -67,13 +67,62 @@ impl Catalog {
         }
     }
 
-    pub fn font_list(&self) ->  Vec<String> {
+    pub fn font_list<'a>(&'a self) ->  Vec<&'a String> {
         let mut fonts = self.fonts.clone();
         let mut list = Vec::new();
         for font in &self.fonts {
-            list.push(font.name.clone());
+            list.push(&font.name);
         }
         list
+    }
+
+    /// Validate a user‑supplied list of font names and return the matching fonts.
+    ///
+    /// * **Empty list** → `Err(FontError::EmptyList)`.
+    /// * **`"all"`** → returns **all** fonts (extra items are ignored, a warning is printed).
+    /// * **Invalid names** → `Err(FontError::InvalidFonts)` containing the unknown names.
+    /// * **Valid subset** → `Ok(Vec<&Font>)` with the matching fonts, preserving the
+    ///   order of the original `fonts` slice.
+    ///
+    /// The function never mutates its inputs.
+    pub fn check_fonts<'a>(
+        &'a self,
+        list: &[String],
+    ) -> Result<Vec<&'a Font>, FontError> {
+        if list.is_empty() {
+            return Err(FontError::EmptyList);
+        }
+
+        let fonts = Self::font_list(self);
+
+        // “all” handling – warning if other items are present
+        if list.iter().any(|s| s.as_str() == "all") {
+            if list.len() > 1 {
+                eprintln!(
+                    r#"warning: when you choose "all" other options are ignored."#
+                );
+            }
+            return Ok(self.fonts.iter().collect());
+        }
+
+        // Find unknown names
+        let not_valid: Vec<String> = list
+            .iter()
+            .filter(|name| !fonts.contains(name)) //iter().any(|font| font == name))
+            .cloned()
+            .collect();
+
+        if !not_valid.is_empty() {
+            return Err(FontError::InvalidFonts(not_valid));
+        }
+
+        // All names exist → collect the matching fonts
+        let res: Vec<&Font> = self.fonts
+            .iter()
+            .filter(|f| list.contains(&f.name))
+            .collect();
+
+        Ok(res)
     }
 }
 

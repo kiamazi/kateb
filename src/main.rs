@@ -5,6 +5,9 @@ mod local_data;
 
 use std::env;
 use catalog::{Font, FontError, Catalog};
+use serde_json::{Map, Value, json};
+
+use crate::local_data::LocalData;
 
 //-----------------------------
 /// All commands accepted by the CLI.
@@ -107,7 +110,7 @@ pub fn check_fonts<'a>(
 
 fn install(list: &[String]) -> Result<(), FontError> {
     let catalog = Catalog::new();
-    let install_list = check_fonts(&catalog.fonts, list)?;
+    let install_list = catalog.check_fonts(list)?;
     for font in install_list {
         font.install();
     }

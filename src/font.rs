@@ -53,7 +53,7 @@ impl Release {
     }
 
     /// Returns the first asset, if the release contains any.
-    pub fn seond_asset(&self) -> Option<&Asset> {
+    pub fn second_asset(&self) -> Option<&Asset> {
         self.assets.get(1)
     }
 
@@ -102,8 +102,10 @@ enum FontInstall {
     ReInstall,
 }
 
+#[allow(unused)]
 impl Font {
     pub fn install(&self) -> Result<()> {
+        // return Err(anyhow!("test error"));
         self.handle_with_helper(FontInstall::Install)?;
         Ok(())
     }
@@ -358,14 +360,14 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
     use regex::Regex;
     use zip::read::ZipArchive;
 
-    let zip_file = File::open(file).unwrap();
-    let mut archive = ZipArchive::new(BufReader::new(zip_file)).unwrap();
+    let zip_file = File::open(file)?;
+    let mut archive = ZipArchive::new(BufReader::new(zip_file))?;
     let re = Regex::new(pattern).expect("regex is constant and valid");
 
     let mut extracted = Vec::new();
 
     for i in 0..archive.len() {
-        let mut entry = archive.by_index(i).unwrap();
+        let mut entry = archive.by_index(i)?;
 
         // `entry.name()` returns the path stored in the zip (always uses `/` as separator)
         let entry_name = entry.name();

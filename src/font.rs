@@ -2,10 +2,9 @@ use anyhow::{Context, Result, anyhow, bail};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use std::fs::File;
-use std::io::{self, BufReader, Read, Write, copy};
+use std::io::{BufReader, Read, Write, copy};
 use std::path::{Path, PathBuf};
-use std::{collections::HashMap, error::Error, fmt};
-use toml_edit::{Array, DocumentMut, Item, Table, Value, value};
+use toml_edit::{Array, Item, Table, Value, value};
 
 use crate::local_data::LocalData;
 
@@ -46,16 +45,19 @@ impl GithubReleases {
     }
 }
 
+#[allow(unused)]
 impl Release {
     /// Returns the first asset, if the release contains any.
     pub fn first_asset(&self) -> Option<&Asset> {
         self.assets.get(0)
     }
 
+    /// Returns the first asset, if the release contains any.
     pub fn seond_asset(&self) -> Option<&Asset> {
         self.assets.get(1)
     }
 
+    /// Returns the asset, if the release contains any.
     pub fn get_asset(&self, name: &str) -> Option<&Asset> {
         if name.eq("arad") {
             self.assets.get(1)
@@ -132,7 +134,7 @@ impl Font {
                 std::fs::remove_file(&path).ok();
             }
             local_data.configs.remove(&self.name);
-            local_data.write();
+            local_data.write()?;
         }
         Ok(())
     }
@@ -199,21 +201,17 @@ impl Font {
             // #TODO: replace cache_dir with target_dir
             let font_file_path = &local_data.cache_dir.join(file_name);
 
-            let dl = download_file(&url, font_file_path)?;
+            download_file(&url, font_file_path)?;
 
-            let mut table = Table::new();
-            table.insert("tag_name", value(&latest_release.tag_name));
-            table.insert("update_date", value(&latest_release.updated_at));
-
-            // #TODO: helper function
-            let mut files = Array::default();
-            files.push(font_file_path.to_str().unwrap());
-            let files = Value::Array(files);
-
-            table.insert("install_path", Item::Value(files));
+            let extracted = Vec::from([font_file_path.to_owned()]);
+            let table = Self::toml_table(
+                &latest_release.tag_name,
+                &latest_release.updated_at,
+                &extracted,
+            );
 
             local_data.insert(&self.name, Item::Table(table));
-            local_data.write();
+            local_data.write()?;
 
             return Ok(());
         }
@@ -223,10 +221,9 @@ impl Font {
             .with_context(|| format!("no release found for {}, try again later!", &self.name))?;
 
         let zip_file_path = temp_dir.join(&asset.name);
-        // #TODO: handle donload error, like direct download
+
         let _ = download_file(&asset.url, &zip_file_path)?;
 
-        // #TODO: match or continue instead of ?
         let pattern: &str = self.extract_regex.as_ref().unwrap().as_str();
         let extracted = unzip_file(
             &zip_file_path,
@@ -235,10 +232,22 @@ impl Font {
             pattern,
         )?;
 
-        // #TODO: helper function
+        let table = Self::toml_table(
+            &latest_release.tag_name,
+            &latest_release.updated_at,
+            &extracted,
+        );
+
+        local_data.insert(&self.name, Item::Table(table));
+        local_data.write()?;
+
+        Ok(())
+    }
+
+    fn toml_table(tag_name: &str, update_date: &str, extracted: &Vec<PathBuf>) -> Table {
         let mut table = Table::new();
-        table.insert("tag_name", value(&latest_release.tag_name));
-        table.insert("update_date", value(&latest_release.updated_at));
+        table.insert("tag_name", value(tag_name));
+        table.insert("update_date", value(update_date));
 
         let mut files = Array::default();
         for path in extracted {
@@ -248,10 +257,7 @@ impl Font {
         let files = Value::Array(files);
         table.insert("install_path", Item::Value(files));
 
-        local_data.insert(&self.name, Item::Table(table));
-        local_data.write();
-
-        Ok(())
+        table
     }
 
     fn fetch_api(&self) -> Result<GithubReleases> {
@@ -260,13 +266,11 @@ impl Font {
             .timeout(std::time::Duration::from_secs(300)) // 5 minutes
             .build()
             .context("client build failed")?;
-        // .map_err(|e| FontError::RemoteFetch(format!("client build failed: {e}")))?;
 
         let response = client
             .get(&self.api)
             .send()
             .with_context(|| format!("Failed to download from {}", self.api))?;
-        // .map_err(|e| FontError::RemoteFetch(format!("Failed to download from {}: {e}", self.api)))?;;
 
         if !response.status().is_success() {
             let status = response.status();
@@ -302,7 +306,6 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
         .get(url)
         .send()
         .with_context(|| format!("Failed to download from {}", url))?;
-    // .unwrap_or_else(|e| panic!("Failed to download from {}: {}", url, e));
 
     let total_size = response.content_length().unwrap_or(0);
 
@@ -315,24 +318,11 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
         .progress_chars("=> "),
     );
 
-    // let bytes = response
-    //     .bytes()
-    //     .unwrap_or_else(|e| panic!("Failed to read response body: {}", e));
 
     let mut file = File::create(destination)
         .with_context(|| format!("Failed to create file {:?}", destination))?;
-    // .unwrap_or_else(|e| panic!("Failed to create file {:?}: {}", destination, e));
 
-    // file.write_all(&bytes)
-    //     .unwrap_or_else(|e| panic!("Failed to write to file {:?}: {}", destination, e));
-
-    // println!(
-    //     "Downloaded {} ({} bytes)",
-    //     url,
-    //     bytes.len()
-    // );
-
-    let mut buffer = [0u8; 8192]; // 8 KB per iteration – adjust if you like
+    let mut buffer = [0u8; 8192]; // 8 KB per iteration
     loop {
         let n = response
             .read(&mut buffer)
@@ -342,12 +332,12 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
         }
         file.write_all(&buffer[..n])
             .with_context(|| format!("failed to write to file {:?}", destination))?;
-        // .unwrap_or_else(|e| panic!("failed to write to file {:?}: {}", destination, e));
+
         pb.inc(n as u64);
     }
 
     // ------------------------------------------------------------------
-    // 7️⃣ Finish the bar and print a final message
+
     pb.finish_and_clear();
     let size_display = if total_size == 0 {
         "unknown".to_string()
@@ -376,12 +366,11 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
 
     for i in 0..archive.len() {
         let mut entry = archive.by_index(i).unwrap();
-        // .with_context(|| format!("cannot read entry #{i}"))?;
 
         // `entry.name()` returns the path stored in the zip (always uses `/` as separator)
         let entry_name = entry.name();
 
-        // Skip directories – we only want files
+        // Skip directories
         if entry.is_dir() {
             continue;
         }
@@ -389,7 +378,7 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
         // Does the entry match the wanted pattern?
         let caps = match re.captures(entry_name) {
             Some(c) => c,
-            None => continue, // not a ttf we care about
+            None => continue, // not a file we care about
         };
 
         // `caps[1]` is the *file name* part (no directories)
@@ -399,12 +388,12 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
         let dest_path = target_dir.join(file_name);
 
         // -------------------------------------------------
-        // 5️⃣  Stream the entry's contents into the destination file
+        //  Stream the entry's contents into the destination file
         // -------------------------------------------------
-        let mut out = File::create(&dest_path).unwrap();
-        // .with_context(|| format!("cannot create `{}`", dest_path.display()))?;
-        let _ = copy(&mut entry, &mut out).unwrap();
-        // .with_context(|| format!("failed to write `{}`", dest_path.display()))?;
+        let mut out = File::create(&dest_path)
+            .with_context(|| format!("cannot create `{}`", dest_path.display()))?;
+        let _ = copy(&mut entry, &mut out)
+            .with_context(|| format!("failed to write `{}`", dest_path.display()))?;
 
         extracted.push(dest_path);
     }

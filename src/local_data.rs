@@ -1,31 +1,26 @@
-use anyhow::{Context, Result};
-use dirs::{config_dir, home_dir};
-use nix::unistd::Uid;
-use serde::{Deserialize, Serialize};
-use serde_json::{Map, Value, json};
 use std::{
-    collections::HashMap,
     fs,
     path::{Path, PathBuf},
 };
-use tempfile::TempDir;
-use toml_edit::{Array, DocumentMut, Item, Table, TableLike, value};
-
-use crate::catalog::Catalog;
+use anyhow::{Context, Result};
+use dirs::{config_dir, data_dir, home_dir};
+use nix::unistd::Uid;
+use toml_edit::{DocumentMut, Item};
 
 
 /// ---------------------------------------------------------------------------
 /// The main data structure – equivalent to the hash reference returned by the
 /// Perl `_prepare` subroutine.
 /// ---------------------------------------------------------------------------
+#[allow(unused)]
 #[derive(Debug, Clone)]
 pub struct LocalData {
     pub home_dir: PathBuf,
     pub config_dir: PathBuf,
+    pub data_dir: PathBuf,
     pub toml_file: PathBuf,
     pub cache_dir: PathBuf,
     pub target_dir: PathBuf,
-    pub temp_dir: PathBuf,
     pub configs: DocumentMut,
 }
 
@@ -49,13 +44,18 @@ impl LocalData {
         let exec_name = "kateb";
 
         // ----- HOME ------------------------------------------------------------
-        let home = home_dir()
-            .ok_or_else(|| anyhow::anyhow!("Unable to determine home directory"))?;
+        let home =
+            home_dir().ok_or_else(|| anyhow::anyhow!("Unable to determine home directory"))?;
 
         // ----- CONFIG DIRECTORY ------------------------------------------------
         // `dirs::config_dir()` returns XDG_CONFIG_HOME if set,
         // otherwise $HOME/.config.
         let config = config_dir()
+            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG config dir"))?
+            .join(exec_name);
+
+        // ----- Data Directory ---------------------------------------------------
+        let data = data_dir()
             .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG config dir"))?
             .join(exec_name);
 
@@ -70,15 +70,13 @@ impl LocalData {
             Path::new("/usr/share/fonts/truetype/farsifreefont").to_path_buf()
         };
         let user_font_dir = if cfg!(target_os = "macos") {
-            dirs::font_dir().unwrap_or(
-                home.join("Library/Fonts")
-            )
+            dirs::font_dir().unwrap_or(home.join("Library/Fonts"))
         } else {
             dirs::font_dir().unwrap_or(
                 home.join(".local")
                     .join("share")
                     .join("fonts")
-                    .join("farsifreefont")
+                    .join("farsifreefont"),
             )
         };
         // If we run as root (uid 0) install system‑wide, otherwise user‑wide.
@@ -90,13 +88,10 @@ impl LocalData {
 
         // ----- TEMPORARY DOWNLOAD DIRECTORY ------------------------------------
         // `tempfile::TempDir` creates a unique temporary folder that is removed
-        // when the `TempDir` value is dropped. with a sub‑folder called
-        // “kateb” inside it, exactly as the Perl code does.
-        let temp_root = TempDir::new()
-            .context("Unable to create temporary directory")?;
-        let temp_dir = temp_root.path().join(exec_name);
-        fs::create_dir_all(&temp_dir)
-            .with_context(|| format!("Failed to create {}", temp_dir.display()))?;
+        // when the `TempDir` value is dropped.
+        // let temp_root = tempfile::Builder::new().prefix("kateb").disable_cleanup(true).tempdir()
+        //     .context("Unable to create temporary directory")?;
+        // let temp_dir = temp_root.path().to_path_buf();
 
         // ----- JSON DATABASE FILE ----------------------------------------------
         // let json_file = config.join(format!("{exec_name}.json"));
@@ -104,6 +99,7 @@ impl LocalData {
 
         // Ensure the config and target directories exist.
         ensure_dir(&config)?;
+        ensure_dir(&cache)?;
         ensure_dir(&target)?;
 
         // ----- LOAD OR INITIALISE THE TOML DATABASE ----------------------------
@@ -130,7 +126,7 @@ impl LocalData {
             config_dir: config,
             cache_dir: cache,
             target_dir: target,
-            temp_dir,
+            data_dir: data,
             toml_file,
             configs,
         })
@@ -147,8 +143,8 @@ impl LocalData {
     }
 
     fn reset_toml_file(path: &Path) -> Result<DocumentMut> {
-        let catalog = Catalog::new();
-        let fonts = catalog.fonts;
+        // let catalog = Catalog::new();
+        // let fonts = catalog.fonts;
 
         let config: DocumentMut = DocumentMut::new(); // mut config
 
@@ -161,8 +157,7 @@ impl LocalData {
         // }
 
         let toml_string = config.to_string();
-        fs::write(path, &toml_string)
-            .context(format!("Failed to write {}", path.display()))?;
+        fs::write(path, &toml_string).context(format!("Failed to write {}", path.display()))?;
         Ok(config)
     }
 
@@ -170,8 +165,9 @@ impl LocalData {
         self.configs.insert(key, item);
     }
 
-    pub fn write(&self) {
-        self.write_data(&self.configs);
+    pub fn write(&self) -> Result<()> {
+        self.write_data(&self.configs)?;
+        Ok(())
     }
 }
 

@@ -6,4 +6,4 @@ Cargo.lock
 **/mutants.out*/
 rustc-ice-*.txt
 .zed
-msg.txt
+notes.txt

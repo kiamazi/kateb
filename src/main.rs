@@ -2,65 +2,70 @@ mod catalog;
 mod font;
 mod local_data;
 
-use std::env;
-
-use anyhow::{Result, anyhow};
+use anyhow::Result;
+use clap::{Parser, Subcommand};
 use toml_edit::{DocumentMut, Item};
 
 use crate::catalog::Catalog;
 use crate::local_data::LocalData;
 
-//-----------------------------
-/// All commands accepted by the CLI.
-#[derive(Debug)]
-enum Command {
-    Install(Vec<String>),
-    Update(Vec<String>),
-    Reinstall(Vec<String>),
-    Uninstall(Vec<String>),
+#[derive(Parser, Debug)]
+#[command(name = "kateb")]
+#[command(about = "A font manager for Persian (Farsi) fonts", long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Install a new font
+    Install {
+        #[arg(trailing_var_arg = true)]
+        fonts: Vec<String>,
+    },
+    /// Update an installed font
+    Update {
+        #[arg(trailing_var_arg = true)]
+        fonts: Vec<String>,
+    },
+    /// Reinstall an already-installed font
+    Reinstall {
+        #[arg(trailing_var_arg = true)]
+        fonts: Vec<String>,
+    },
+    /// Uninstall an already-installed font
+    Uninstall {
+        #[arg(trailing_var_arg = true)]
+        fonts: Vec<String>,
+    },
+    /// List all supported Farsi fonts
     List,
+    /// Show the fonts that are currently installed
     Fonts,
-    Info(Vec<String>),
+    /// Display brief information about a font's publisher
+    Info {
+        #[arg(trailing_var_arg = true)]
+        fonts: Vec<String>,
+    },
+    /// Display the kateb version
+    #[command(alias = "v", visible_alias = "-v")]
     Version,
+    /// Upgrade the kateb tool itself
     SelfUpgrade,
 }
 
-impl Command {
-    /// Parse the raw iterator (`env::args().skip(1)`) into a `Command`.
-    fn from_iter<I>(mut it: I) -> Result<Self>
-    where
-        I: Iterator<Item = String>,
-    {
-        let cmd = it.next().ok_or(anyhow!("missing command"))?;
-        let args: Vec<String> = it.collect();
-
-        match cmd.as_str() {
-            "install" => Ok(Command::Install(args)),
-            "update" => Ok(Command::Update(args)),
-            "reinstall" => Ok(Command::Reinstall(args)),
-            "uninstall" => Ok(Command::Uninstall(args)),
-            "list" => Ok(Command::List),
-            "fonts" => Ok(Command::Fonts),
-            "info" => Ok(Command::Info(args)),
-            "version" | "-v" => Ok(Command::Version),
-            "self-upgrade" => Ok(Command::SelfUpgrade),
-            _ => Err(anyhow!("unknown command")),
-        }
-    }
-}
-
-//-----------------------------
-fn run(command: Command) -> Result<(), ()> {
+fn run(command: Commands) -> Result<(), ()> {
     match command {
-        Command::Install(list) => install(&list).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Command::Update(list) => update(&list).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Command::Reinstall(list) => reinstall(&list).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Command::Uninstall(list) => uninstall(&list).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Command::Info(list) => info(&list).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Command::List => show_supported_fonts(),
-        Command::Fonts => list_installed_fonts(),
-        Command::Version => println!("Version: {}", env!("CARGO_PKG_VERSION")),
-        Command::SelfUpgrade => println!("self‑upgrade…"),
+        Commands::Install { fonts } => install(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::Update { fonts } => update(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::Reinstall { fonts } => reinstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::Uninstall { fonts } => uninstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::Info { fonts } => info(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::List => show_supported_fonts(),
+        Commands::Fonts => list_installed_fonts(),
+        Commands::Version => println!("Version: {}", env!("CARGO_PKG_VERSION")),
+        Commands::SelfUpgrade => println!("self‐upgrade..."),
     }
     Ok(())
 }
@@ -70,9 +75,8 @@ fn install(list: &[String]) -> Result<()> {
     let install_list = catalog.check_args_fonts(list)?;
 
     for font in install_list {
-        match font.install() {
-            Ok(_) => (),
-            Err(e) => eprintln!("❌ {:#}", e),
+        if let Err(msg) = font.install() {
+            eprintln!("❌ {:#}", msg);
         }
     }
     Ok(())
@@ -84,9 +88,8 @@ fn update(list: &[String]) -> Result<()> {
     let update_list = catalog.check_args_fonts(&list)?;
 
     for font in update_list {
-        match font.update() {
-            Ok(_) => (),
-            Err(e) => eprintln!("❌ {:#}", e),
+        if let Err(msg) = font.update() {
+            eprintln!("❌ {:#}", msg);
         }
     }
     Ok(())
@@ -98,9 +101,8 @@ fn reinstall(list: &[String]) -> Result<()> {
     let reinstall_list = catalog.check_args_fonts(&list)?;
 
     for font in reinstall_list {
-        match font.reinstall() {
-            Ok(_) => (),
-            Err(e) => eprintln!("❌ {:#}", e),
+        if let Err(msg) = font.reinstall() {
+            eprintln!("❌ {:#}", msg);
         }
     }
     Ok(())
@@ -109,12 +111,11 @@ fn reinstall(list: &[String]) -> Result<()> {
 fn uninstall(list: &[String]) -> Result<()> {
     let list: Vec<String> = check_list_helper(list)?;
     let catalog = Catalog::new();
-    let update_list = catalog.check_args_fonts(&list)?;
+    let uninstall_list = catalog.check_args_fonts(&list)?;
 
-    for font in update_list {
-        match font.uninstall() {
-            Ok(_) => (),
-            Err(e) => eprintln!("❌ {:#}", e),
+    for font in uninstall_list {
+        if let Err(msg) = font.uninstall() {
+            eprintln!("❌ {:#}", msg);
         }
     }
     Ok(())
@@ -143,7 +144,7 @@ fn info(list: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// Pretty‑print the catalog of fonts (sorted by publisher).
+/// Pretty‐print the catalog of fonts (sorted by publisher).
 fn show_supported_fonts() {
     let catalog = Catalog::new();
     let fonts = catalog.fonts;
@@ -161,12 +162,12 @@ fn show_supported_fonts() {
     }
 }
 
-/// Placeholder – replace with a real list of “all supported fonts”.
+/// Placeholder – replace with a real list of "all supported fonts".
 fn list_installed_fonts() {
     println!("(supported fonts list would go here)");
 }
 
-/// Extract the names of every **top‑level** table from a mutable TOML document.
+/// Extract the names of every **top‐level** table from a mutable TOML document.
 ///
 /// The function consumes the `DocumentMut` and returns it together with the
 /// collected table names, so the caller can continue to edit the document.
@@ -187,46 +188,8 @@ fn flat_table_names(config: &DocumentMut) -> Result<Vec<String>> {
     Ok(names)
 }
 
-fn usage() -> ! {
-    println!(
-        r#"
-kateb <command> [option]
-
-commands:
-    install          install a new font
-    update           update an installed font
-    reinstall        reinstall an already‑installed font
-    uninstall        uninstall an already‑installed font
-    list             list all supported Farsi fonts
-    fonts            show the fonts that are currently installed
-    info             display brief information about a font’s publisher
-    version | -v     display the kateb version
-    self-upgrade     upgrade the kateb tool itself
-
-options:
-    -a | all         install or update every font
-    <font name>      install or update the specified font
-
-sample:
-    kateb install all
-"#
-    );
-
-    std::process::exit(1);
-}
-
-//-----------------------------
 fn main() {
-    // Parse CLI arguments
-    let args = env::args().skip(1);
-    let command = match Command::from_iter(args) {
-        Ok(c) => c,
-        Err(msg) => {
-            eprintln!("Error: {msg}");
-            usage();
-        }
-    };
+    let cli = Cli::parse();
 
-    // Execute the command; any error already printed inside `run`
-    let _ = run(command);
+    let _ = run(cli.command);
 }

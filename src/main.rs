@@ -4,11 +4,14 @@ mod local_data;
 
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
+use indicatif::MultiProgress;
 use rayon::prelude::*;
 use rayon::ThreadPoolBuilder;
-use toml_edit::{DocumentMut, Item};
+use toml_edit::{Array, DocumentMut, Item, Table, Value, value};
+use std::path::PathBuf;
 
 use crate::catalog::Catalog;
+use crate::font::{FontInfo, FontStatus};
 use crate::local_data::LocalData;
 
 #[derive(Parser, Debug)]
@@ -59,10 +62,22 @@ enum Commands {
 
 fn run(command: Commands) -> Result<(), ()> {
     match command {
-        Commands::Install { fonts } => install(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Commands::Update { fonts } => update(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Commands::Reinstall { fonts } => reinstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
-        Commands::Uninstall { fonts } => uninstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
+        Commands::Install { fonts } => {
+            let results = install(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?;
+            print_results_with_info("installed", &results);
+        }
+        Commands::Update { fonts } => {
+            let results = update(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?;
+            print_results_with_info("updated", &results);
+        }
+        Commands::Reinstall { fonts } => {
+            let results = reinstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?;
+            print_results_with_info("reinstalled", &results);
+        }
+        Commands::Uninstall { fonts } => {
+            let results = uninstall(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?;
+            print_results_simple("uninstalled", &results);
+        }
         Commands::Info { fonts } => info(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
         Commands::List => show_supported_fonts(),
         Commands::Fonts => list_installed_fonts(),
@@ -72,7 +87,123 @@ fn run(command: Commands) -> Result<(), ()> {
     Ok(())
 }
 
-fn install(list: &[String]) -> Result<()> {
+fn print_results_with_info(action: &str, results: &[(String, FontStatus, FontInfo)]) {
+    let errors: Vec<_> = results
+        .iter()
+        .filter(|(_, status, _)| matches!(status, FontStatus::Error(_)))
+        .collect();
+    let warnings: Vec<_> = results
+        .iter()
+        .filter(|(_, status, _)| matches!(status, FontStatus::Warning(_)))
+        .collect();
+    let successes: Vec<_> = results
+        .iter()
+        .filter(|(_, status, _)| matches!(status, FontStatus::Success))
+        .collect();
+
+    if !errors.is_empty() {
+        eprintln!("❌ Errors:");
+        for (name, status, _) in &errors {
+            if let FontStatus::Error(msg) = status {
+                eprintln!("  {} - {}", name, msg);
+            }
+        }
+    }
+
+    if !warnings.is_empty() {
+        eprintln!("⚠ Warnings:");
+        for (name, status, _) in &warnings {
+            if let FontStatus::Warning(msg) = status {
+                eprintln!("  {} - {}", name, msg);
+            }
+        }
+    }
+
+    if !successes.is_empty() {
+        println!("✅ {}:", action);
+        for (name, _, info) in &successes {
+            println!("  {} {} - {}", name, info.tag_name, info.update_date);
+        }
+    }
+
+    if results.is_empty()
+        || (errors.is_empty() && warnings.is_empty() && successes.is_empty())
+    {
+        println!("nothing to {action}");
+    }
+}
+
+fn print_results_simple(action: &str, results: &[(String, FontStatus)]) {
+    let errors: Vec<_> = results
+        .iter()
+        .filter(|(_, status)| matches!(status, FontStatus::Error(_)))
+        .collect();
+    let warnings: Vec<_> = results
+        .iter()
+        .filter(|(_, status)| matches!(status, FontStatus::Warning(_)))
+        .collect();
+    let successes: Vec<_> = results
+        .iter()
+        .filter(|(_, status)| matches!(status, FontStatus::Success))
+        .collect();
+
+    if !errors.is_empty() {
+        eprintln!("❌ Errors:");
+        for (name, status) in &errors {
+            if let FontStatus::Error(msg) = status {
+                eprintln!("  {} - {}", name, msg);
+            }
+        }
+    }
+
+    if !warnings.is_empty() {
+        eprintln!("⚠ Warnings:");
+        for (name, status) in &warnings {
+            if let FontStatus::Warning(msg) = status {
+                eprintln!("  {} - {}", name, msg);
+            }
+        }
+    }
+
+    if !successes.is_empty() {
+        println!("✅ {}:", action);
+        for (name, _) in &successes {
+            println!("  {}", name);
+        }
+    }
+
+    if results.is_empty()
+        || (errors.is_empty() && warnings.is_empty() && successes.is_empty())
+    {
+        println!("nothing to {action}");
+    }
+}
+
+fn save_font_info(info: &FontInfo) -> Result<()> {
+    let mut local_data = LocalData::new();
+    let table = font_toml_table(&info.tag_name, &info.update_date, &info.install_path);
+    local_data.insert(&info.name, Item::Table(table));
+    local_data.write()?;
+    Ok(())
+}
+
+fn font_toml_table(tag_name: &str, update_date: &str, extracted: &[PathBuf]) -> Table {
+    let mut table = Table::new();
+    table.insert("tag_name", value(tag_name));
+    table.insert("update_date", value(update_date));
+
+    let mut files = Array::default();
+    for path in extracted {
+        files.push(path.to_str().unwrap());
+    }
+
+    let files = Value::Array(files);
+    table.insert("install_path", Item::Value(files));
+
+    table
+}
+
+fn install(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
     let catalog = Catalog::new();
     let install_list = catalog.check_args_fonts(list)?;
 
@@ -81,18 +212,58 @@ fn install(list: &[String]) -> Result<()> {
         .build()
         .context("Failed to build thread pool")?;
 
-    pool.install(|| {
-        install_list.par_iter().for_each(|font| {
-            if let Err(msg) = font.install() {
-                eprintln!("❌ {:#}", msg);
-            }
-        });
+    let mp = MultiProgress::new();
+
+    let results: Vec<_> = pool.install(|| {
+        install_list
+            .par_iter()
+            .map(|font| (font.name.clone(), font.install(&mp)))
+            .collect()
     });
 
-    Ok(())
+    let mut font_results = Vec::new();
+    let mut error_msgs = Vec::new();
+
+    for (name, result) in results {
+        match result {
+            Ok(info) => {
+                font_results.push((name, info.status.clone(), info.clone()));
+            }
+            Err(e) => error_msgs.push(format!("{}: {:#}", name, e)),
+        }
+    }
+
+    // Write TOML sequentially for successful installs only
+    for (name, status, info) in &font_results {
+        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
+            if let Err(e) = save_font_info(info) {
+                error_msgs.push(format!("{}: failed to save config: {:#}", name, e));
+            }
+        }
+    }
+
+    // Print any config errors that occurred during TOML writing
+    for msg in &error_msgs {
+        eprintln!("❌ {msg}");
+    }
+
+    Ok(font_results)
 }
 
-fn update(list: &[String]) -> Result<()> {
+fn build_results_vec(results: Vec<(String, Result<FontInfo>)>) -> Vec<(String, FontStatus, FontInfo)> {
+    results
+        .into_iter()
+        .filter_map(|(name, result)| match result {
+            Ok(info) => Some((name, info.status.clone(), info)),
+            Err(e) => {
+                eprintln!("❌ {}: {:#}", name, e);
+                None
+            }
+        })
+        .collect()
+}
+
+fn update(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
     let list: Vec<String> = check_list_helper(list)?;
     let catalog = Catalog::new();
     let update_list = catalog.check_args_fonts(&list)?;
@@ -102,18 +273,30 @@ fn update(list: &[String]) -> Result<()> {
         .build()
         .context("Failed to build thread pool")?;
 
-    pool.install(|| {
-        update_list.par_iter().for_each(|font| {
-            if let Err(msg) = font.update() {
-                eprintln!("❌ {:#}", msg);
-            }
-        });
+    let mp = MultiProgress::new();
+
+    let results: Vec<_> = pool.install(|| {
+        update_list
+            .par_iter()
+            .map(|font| (font.name.clone(), font.update(&mp)))
+            .collect()
     });
 
-    Ok(())
+    let font_results = build_results_vec(results);
+
+    // Write TOML sequentially for successful updates
+    for (name, status, info) in &font_results {
+        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
+            if let Err(e) = save_font_info(info) {
+                eprintln!("❌ {} failed to save config: {:#}", name, e);
+            }
+        }
+    }
+
+    Ok(font_results)
 }
 
-fn reinstall(list: &[String]) -> Result<()> {
+fn reinstall(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
     let list: Vec<String> = check_list_helper(list)?;
     let catalog = Catalog::new();
     let reinstall_list = catalog.check_args_fonts(&list)?;
@@ -123,18 +306,30 @@ fn reinstall(list: &[String]) -> Result<()> {
         .build()
         .context("Failed to build thread pool")?;
 
-    pool.install(|| {
-        reinstall_list.par_iter().for_each(|font| {
-            if let Err(msg) = font.reinstall() {
-                eprintln!("❌ {:#}", msg);
-            }
-        });
+    let mp = MultiProgress::new();
+
+    let results: Vec<_> = pool.install(|| {
+        reinstall_list
+            .par_iter()
+            .map(|font| (font.name.clone(), font.reinstall(&mp)))
+            .collect()
     });
 
-    Ok(())
+    let font_results = build_results_vec(results);
+
+    // Write TOML sequentially for successful reinstalls
+    for (name, status, info) in &font_results {
+        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
+            if let Err(e) = save_font_info(info) {
+                eprintln!("❌ {} failed to save config: {:#}", name, e);
+            }
+        }
+    }
+
+    Ok(font_results)
 }
 
-fn uninstall(list: &[String]) -> Result<()> {
+fn uninstall(list: &[String]) -> Result<Vec<(String, FontStatus)>> {
     let list: Vec<String> = check_list_helper(list)?;
     let catalog = Catalog::new();
     let uninstall_list = catalog.check_args_fonts(&list)?;
@@ -144,15 +339,22 @@ fn uninstall(list: &[String]) -> Result<()> {
         .build()
         .context("Failed to build thread pool")?;
 
-    pool.install(|| {
-        uninstall_list.par_iter().for_each(|font| {
-            if let Err(msg) = font.uninstall() {
-                eprintln!("❌ {:#}", msg);
-            }
-        });
+    let results: Vec<_> = pool.install(|| {
+        uninstall_list
+            .par_iter()
+            .map(|font| (font.name.clone(), font.uninstall()))
+            .collect()
     });
 
-    Ok(())
+    let mut font_results = Vec::new();
+    for (name, result) in results {
+        match result {
+            Ok(_) => font_results.push((name, FontStatus::Success)),
+            Err(e) => font_results.push((name, FontStatus::Error(format!("{:#}", e)))),
+        }
+    }
+
+    Ok(font_results)
 }
 
 fn check_list_helper(list: &[String]) -> Result<Vec<String>> {
@@ -196,7 +398,7 @@ fn show_supported_fonts() {
     }
 }
 
-/// Placeholder – replace with a real list of "all supported fonts".
+/// Placeholder – replace with a real list of "all installed fonts".
 fn list_installed_fonts() {
     println!("(supported fonts list would go here)");
 }

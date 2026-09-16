@@ -1,10 +1,10 @@
 use anyhow::{Context, Result, anyhow, bail};
 use chrono::{DateTime, Utc};
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use serde::Deserialize;
 use std::fs::File;
 use std::io::{BufReader, Read, Write, copy};
 use std::path::{Path, PathBuf};
-use toml_edit::{Array, Item, Table, Value, value};
 
 use crate::local_data::LocalData;
 
@@ -104,23 +104,19 @@ enum FontInstall {
 
 #[allow(unused)]
 impl Font {
-    pub fn install(&self) -> Result<()> {
-        // return Err(anyhow!("test error"));
-        self.handle_with_helper(FontInstall::Install)?;
-        Ok(())
+    pub fn install(&self, mp: &MultiProgress) -> Result<FontInfo> {
+        self.handle_with_helper(FontInstall::Install, mp)
     }
 
-    pub fn update(&self) -> Result<()> {
-        self.handle_with_helper(FontInstall::Update)?;
-        Ok(())
+    pub fn update(&self, mp: &MultiProgress) -> Result<FontInfo> {
+        self.handle_with_helper(FontInstall::Update, mp)
     }
 
-    pub fn reinstall(&self) -> Result<()> {
-        self.handle_with_helper(FontInstall::ReInstall)?;
-        Ok(())
+    pub fn reinstall(&self, mp: &MultiProgress) -> Result<FontInfo> {
+        self.handle_with_helper(FontInstall::ReInstall, mp)
     }
 
-    pub fn uninstall(&self) -> Result<()> {
+    pub fn uninstall(&self) -> Result<String> {
         let mut local_data = LocalData::new();
 
         if local_data.configs.contains_table(&self.name) {
@@ -138,7 +134,7 @@ impl Font {
             local_data.configs.remove(&self.name);
             local_data.write()?;
         }
-        Ok(())
+        Ok(self.name.clone())
     }
 
     pub fn info(&self) {
@@ -148,8 +144,8 @@ impl Font {
         );
     }
 
-    fn handle_with_helper(&self, mode: FontInstall) -> Result<()> {
-        let mut local_data = LocalData::new();
+    fn handle_with_helper(&self, mode: FontInstall, mp: &MultiProgress) -> Result<FontInfo> {
+        let local_data = LocalData::new();
         let temp_root = tempfile::Builder::new()
             .prefix("kateb")
             .tempdir()
@@ -173,11 +169,16 @@ impl Font {
                         let current_version_date = parse_iso(v.as_str().unwrap());
                         let release_date = parse_iso(&latest_release.updated_at);
                         if current_version_date >= release_date {
-                            println!(
-                                "{:10} is already up‑to‑date ({})",
-                                &self.name, latest_release.tag_name
-                            );
-                            return Ok(());
+                            return Ok(FontInfo {
+                                name: self.name.clone(),
+                                tag_name: latest_release.tag_name.clone(),
+                                update_date: latest_release.updated_at.clone(),
+                                install_path: vec![],
+                                status: FontStatus::Warning(format!(
+                                    "already up-to-date {} - {}",
+                                    latest_release.tag_name, latest_release.updated_at
+                                )),
+                            });
                         } else {
                             true
                         }
@@ -187,81 +188,77 @@ impl Font {
             } else {
                 match mode {
                     FontInstall::Install => true,
-                    FontInstall::Update | FontInstall::ReInstall => {
-                        println!("{} is not installed", &self.name);
-                        false
-                    }
+                    FontInstall::Update | FontInstall::ReInstall => false,
                 }
             };
 
         if !install_cofirmed {
-            return Ok(());
+            return Ok(FontInfo {
+                name: self.name.clone(),
+                tag_name: latest_release.tag_name.clone(),
+                update_date: latest_release.updated_at.clone(),
+                install_path: vec![],
+                status: FontStatus::Warning(format!(
+                    "not installed - latest online version: {} - {}",
+                    latest_release.tag_name, latest_release.updated_at
+                )),
+            });
         }
+
+        let extracted: Vec<PathBuf>;
 
         if let Some(url) = &self.direct_download {
             let file_name = url.rsplit('/').next().unwrap();
-            // #TODO: replace cache_dir with target_dir
-            let font_file_path = &local_data.cache_dir.join(file_name);
+            let font_file_path = local_data.cache_dir.join(file_name);
 
-            download_file(&url, font_file_path)?;
+            download_file(&url, &font_file_path, mp)?;
 
-            let extracted = Vec::from([font_file_path.to_owned()]);
-            let table = Self::toml_table(
-                &latest_release.tag_name,
-                &latest_release.updated_at,
-                &extracted,
-            );
+            extracted = vec![font_file_path.to_owned()];
+        } else {
+            let asset = latest_release
+                .get_asset(&self.name)
+                .with_context(|| {
+                    format!("no release found for {}, try again later!", &self.name)
+                })?;
 
-            local_data.insert(&self.name, Item::Table(table));
-            local_data.write()?;
+            let zip_file_path = temp_dir.join(&asset.name);
 
-            return Ok(());
+            download_file(&asset.url, &zip_file_path, mp)?;
+
+            let pattern: &str = self.extract_regex.as_ref().unwrap().as_str();
+            extracted = unzip_file(&zip_file_path, &local_data.cache_dir, pattern)?;
         }
 
-        let asset = latest_release
-            .get_asset(&self.name)
-            .with_context(|| format!("no release found for {}, try again later!", &self.name))?;
-
-        let zip_file_path = temp_dir.join(&asset.name);
-
-        let _ = download_file(&asset.url, &zip_file_path)?;
-
-        let pattern: &str = self.extract_regex.as_ref().unwrap().as_str();
-        let extracted = unzip_file(
-            &zip_file_path,
-            // #TODO: target_dir
-            &local_data.cache_dir,
-            pattern,
-        )?;
-
-        let table = Self::toml_table(
-            &latest_release.tag_name,
-            &latest_release.updated_at,
-            &extracted,
-        );
-
-        local_data.insert(&self.name, Item::Table(table));
-        local_data.write()?;
-
-        Ok(())
+        Ok(FontInfo {
+            name: self.name.clone(),
+            tag_name: latest_release.tag_name.clone(),
+            update_date: latest_release.updated_at.clone(),
+            install_path: extracted,
+            status: FontStatus::Success,
+        })
     }
+}
 
-    fn toml_table(tag_name: &str, update_date: &str, extracted: &Vec<PathBuf>) -> Table {
-        let mut table = Table::new();
-        table.insert("tag_name", value(tag_name));
-        table.insert("update_date", value(update_date));
+/// Status of a font operation result.
+#[derive(Debug, Clone)]
+pub enum FontStatus {
+    Success,
+    Warning(String),
+    Error(String),
+}
 
-        let mut files = Array::default();
-        for path in extracted {
-            files.push(path.to_str().unwrap());
-        }
+/// Information about a font operation result.
+#[derive(Debug, Clone)]
+pub struct FontInfo {
+    pub name: String,
+    pub tag_name: String,
+    pub update_date: String,
+    pub install_path: Vec<PathBuf>,
+    pub status: FontStatus,
+}
 
-        let files = Value::Array(files);
-        table.insert("install_path", Item::Value(files));
-
-        table
-    }
-
+#[allow(unused)]
+impl Font {
     fn fetch_api(&self) -> Result<GithubReleases> {
         let client = reqwest::blocking::Client::builder()
             .user_agent("kateb/0.1")
@@ -296,9 +293,7 @@ fn parse_iso(s: &str) -> DateTime<Utc> {
         .with_timezone(&Utc)
 }
 
-fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
-    use indicatif::{ProgressBar, ProgressStyle};
-
+fn download_file(url: &str, destination: &PathBuf, mp: &MultiProgress) -> Result<String> {
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(300)) // 5 minutes
         .build()
@@ -311,20 +306,21 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
 
     let total_size = response.content_length().unwrap_or(0);
 
-    let pb = ProgressBar::new(total_size);
+    let file_name = destination.file_name().unwrap().to_str().unwrap();
+    let pb = mp.add(ProgressBar::new(total_size));
     pb.set_style(
         ProgressStyle::with_template(
-            "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+            "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta} - {msg})",
         )
         .unwrap()
         .progress_chars("=> "),
     );
-
+    pb.set_message(file_name.to_string());
 
     let mut file = File::create(destination)
         .with_context(|| format!("Failed to create file {:?}", destination))?;
 
-    let mut buffer = [0u8; 8192]; // 8 KB per iteration
+    let mut buffer = [0u8; 8192]; // 8 KB per iteration
     loop {
         let n = response
             .read(&mut buffer)
@@ -338,8 +334,6 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
         pb.inc(n as u64);
     }
 
-    // ------------------------------------------------------------------
-
     pb.finish_and_clear();
     let size_display = if total_size == 0 {
         "unknown".to_string()
@@ -347,13 +341,11 @@ fn download_file(url: &str, destination: &PathBuf) -> Result<()> {
         total_size.to_string()
     };
 
-    println!(
-        "✅ Downloaded {} ({} bytes)",
+    Ok(format!(
+        "Downloaded {} ({} bytes)",
         destination.file_name().unwrap().display(),
         size_display
-    );
-
-    Ok(())
+    ))
 }
 
 fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec<PathBuf>> {

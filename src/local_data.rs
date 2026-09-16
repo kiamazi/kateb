@@ -1,12 +1,11 @@
+use anyhow::{Context, Result};
+use dirs::{config_dir, data_dir, home_dir};
+use nix::unistd::Uid;
 use std::{
     fs,
     path::{Path, PathBuf},
 };
-use anyhow::{Context, Result};
-use dirs::{config_dir, data_dir, home_dir};
-use nix::unistd::Uid;
 use toml_edit::{DocumentMut, Item};
-
 
 /// ---------------------------------------------------------------------------
 /// The main data structure – equivalent to the hash reference returned by the

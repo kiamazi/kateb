@@ -2,8 +2,10 @@ mod catalog;
 mod font;
 mod local_data;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
+use rayon::prelude::*;
+use rayon::ThreadPoolBuilder;
 use toml_edit::{DocumentMut, Item};
 
 use crate::catalog::Catalog;
@@ -74,11 +76,19 @@ fn install(list: &[String]) -> Result<()> {
     let catalog = Catalog::new();
     let install_list = catalog.check_args_fonts(list)?;
 
-    for font in install_list {
-        if let Err(msg) = font.install() {
-            eprintln!("❌ {:#}", msg);
-        }
-    }
+    let pool = ThreadPoolBuilder::new()
+        .num_threads(4)
+        .build()
+        .context("Failed to build thread pool")?;
+
+    pool.install(|| {
+        install_list.par_iter().for_each(|font| {
+            if let Err(msg) = font.install() {
+                eprintln!("❌ {:#}", msg);
+            }
+        });
+    });
+
     Ok(())
 }
 
@@ -87,11 +97,19 @@ fn update(list: &[String]) -> Result<()> {
     let catalog = Catalog::new();
     let update_list = catalog.check_args_fonts(&list)?;
 
-    for font in update_list {
-        if let Err(msg) = font.update() {
-            eprintln!("❌ {:#}", msg);
-        }
-    }
+    let pool = ThreadPoolBuilder::new()
+        .num_threads(4)
+        .build()
+        .context("Failed to build thread pool")?;
+
+    pool.install(|| {
+        update_list.par_iter().for_each(|font| {
+            if let Err(msg) = font.update() {
+                eprintln!("❌ {:#}", msg);
+            }
+        });
+    });
+
     Ok(())
 }
 
@@ -100,11 +118,19 @@ fn reinstall(list: &[String]) -> Result<()> {
     let catalog = Catalog::new();
     let reinstall_list = catalog.check_args_fonts(&list)?;
 
-    for font in reinstall_list {
-        if let Err(msg) = font.reinstall() {
-            eprintln!("❌ {:#}", msg);
-        }
-    }
+    let pool = ThreadPoolBuilder::new()
+        .num_threads(4)
+        .build()
+        .context("Failed to build thread pool")?;
+
+    pool.install(|| {
+        reinstall_list.par_iter().for_each(|font| {
+            if let Err(msg) = font.reinstall() {
+                eprintln!("❌ {:#}", msg);
+            }
+        });
+    });
+
     Ok(())
 }
 
@@ -113,11 +139,19 @@ fn uninstall(list: &[String]) -> Result<()> {
     let catalog = Catalog::new();
     let uninstall_list = catalog.check_args_fonts(&list)?;
 
-    for font in uninstall_list {
-        if let Err(msg) = font.uninstall() {
-            eprintln!("❌ {:#}", msg);
-        }
-    }
+    let pool = ThreadPoolBuilder::new()
+        .num_threads(4)
+        .build()
+        .context("Failed to build thread pool")?;
+
+    pool.install(|| {
+        uninstall_list.par_iter().for_each(|font| {
+            if let Err(msg) = font.uninstall() {
+                eprintln!("❌ {:#}", msg);
+            }
+        });
+    });
+
     Ok(())
 }
 

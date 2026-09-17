@@ -57,13 +57,9 @@ impl Release {
         self.assets.get(1)
     }
 
-    /// Returns the asset, if the release contains any.
-    pub fn get_asset(&self, name: &str) -> Option<&Asset> {
-        if name.eq("arad") {
-            self.assets.get(1)
-        } else {
-            self.assets.get(0)
-        }
+    /// Returns the asset at the given index, if the release contains any.
+    pub fn get_asset(&self, index: usize) -> Option<&Asset> {
+        self.assets.get(index)
     }
 
     pub fn get_nth_asset(&self, index: usize) -> Option<&Asset> {
@@ -84,6 +80,7 @@ pub struct Font {
     pub publisher_url: String,
     pub direct_download: Option<String>,
     pub extract_regex: Option<String>,
+    pub asset_number: usize,
 }
 
 impl PartialOrd for Font {
@@ -216,7 +213,7 @@ impl Font {
             extracted = vec![font_file_path.to_owned()];
         } else {
             let asset = latest_release
-                .get_asset(&self.name)
+                .get_asset(self.asset_number)
                 .with_context(|| {
                     format!("no release found for {}, try again later!", &self.name)
                 })?;

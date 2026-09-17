@@ -1,4 +1,6 @@
 use anyhow::{Result, bail};
+use serde::Deserialize;
+use std::path::Path;
 
 use crate::font::Font;
 
@@ -22,7 +24,7 @@ impl Catalog {
         list
     }
 
-    /// Validate a user‑supplied list of font names and return the matching fonts.
+    /// Validate a user-supplied list of font names and return the matching fonts.
     ///
     /// * **Empty list** → `Err(FontError::EmptyList)`.
     /// * **`"all"`** → returns **all** fonts (extra items are ignored, a warning is printed).
@@ -38,7 +40,7 @@ impl Catalog {
 
         let fonts = Self::font_list(self);
 
-        // “all” handling – warning if other items are present
+        // "all" handling – warning if other items are present
         if list.iter().any(|s| s.as_str() == "all") {
             if list.len() > 1 {
                 eprintln!(r#"warning: when you choose "all" other options are ignored."#);
@@ -49,7 +51,7 @@ impl Catalog {
         // Find unknown names
         let not_valid: Vec<String> = list
             .iter()
-            .filter(|name| !fonts.contains(name)) //iter().any(|font| font == name))
+            .filter(|name| !fonts.contains(name))
             .cloned()
             .collect();
 
@@ -68,240 +70,56 @@ impl Catalog {
     }
 }
 
+#[derive(Deserialize)]
+struct CatalogToml {
+    fonts: Vec<FontEntry>,
+}
+
+#[derive(Deserialize)]
+struct FontEntry {
+    name: String,
+    api: String,
+    repo_name: String,
+    repo_url: String,
+    publisher_name: String,
+    publisher_url: String,
+    #[serde(default)]
+    direct_download: Option<String>,
+    #[serde(default)]
+    extract_regex: Option<String>,
+    #[serde(default = "default_asset_number")]
+    asset_number: usize,
+}
+
+fn default_asset_number() -> usize {
+    0
+}
+
 fn build_catalog() -> Vec<Font> {
-    let mut fonts = vec![
-        Font {
-			name: "vazir".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/vazirmatn/releases".to_string(),
-			repo_name: "vazirmatn".to_string(),
-			repo_url: "https://github.com/rastikerdar/vazirmatn/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^fonts/ttf/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "samim".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/samim-font/releases".to_string(),
-			repo_name: "samim-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/samin-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "tanha".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/tanha-font/releases".to_string(),
-			repo_name: "tanha-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/tanha-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "shabnam".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/shabnam-font/releases".to_string(),
-			repo_name: "shabnam-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/shabnam-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "gandom".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/gandom-font/releases".to_string(),
-			repo_name: "gandom-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/gandom-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "parastoo".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/parastoo-font/releases".to_string(),
-			repo_name: "parastoo-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/parastoo-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^web/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "sahel".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/sahel-font/releases".to_string(),
-			repo_name: "sahel-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/sahel-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "vazircode".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/vazir-code-font/releases".to_string(),
-			repo_name: "vazir-code-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/vazir-code-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "ziracode".to_string(),
-			api: "https://api.github.com/repos/kiamazi/zira-code-font/releases".to_string(),
-			repo_name: "zira-code-font".to_string(),
-			repo_url: "https://github.com/kiamazi/zira-code-font/".to_string(),
-			publisher_name: "Kiavash Mazi".to_string(),
-			publisher_url: "https://github.com/kiamazi".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "nahid".to_string(),
-			api: "https://api.github.com/repos/rastikerdar/nahid-font/releases".to_string(),
-			repo_name: "nahid-font".to_string(),
-			repo_url: "https://github.com/rastikerdar/nahid-font/".to_string(),
-			publisher_name: "Saber Rastikerdar".to_string(),
-			publisher_url: "https://github.com/rastikerdar".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "mikhak".to_string(),
-			api: "https://api.github.com/repos/aminabedi68/Mikhak/releases".to_string(),
-			repo_name: "Mikhak".to_string(),
-			repo_url: "https://github.com/aminabedi68/Mikhak/".to_string(),
-			publisher_name: "Amin Abedi".to_string(),
-			publisher_url: "https://github.com/aminabedi68".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^ttf/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "estedad".to_string(),
-			api: "https://api.github.com/repos/aminabedi68/Estedad/releases".to_string(),
-			repo_name: "Estedad".to_string(),
-			repo_url: "https://github.com/aminabedi68/Estedad/".to_string(),
-			publisher_name: "Amin Abedi".to_string(),
-			publisher_url: "https://github.com/aminabedi68".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^Statics/ttf/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "ganjnameh".to_string(),
-			api: "https://api.github.com/repos/font-store/GanjnamehFont/releases".to_string(),
-			repo_name: "GanjnamehFont".to_string(),
-			repo_url: "https://github.com/font-store/GanjnamehFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^fonts/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "behdad".to_string(),
-			api: "https://api.github.com/repos/font-store/BehdadFont/releases".to_string(),
-			repo_name: "BehdadFont".to_string(),
-			repo_url: "https://github.com/font-store/BehdadFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "nika".to_string(),
-			api: "https://api.github.com/repos/font-store/NikaFont/releases".to_string(),
-			repo_name: "NikaFont".to_string(),
-			repo_url: "https://github.com/font-store/NikaFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^fonts/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "farbod".to_string(),
-			api: "https://api.github.com/repos/font-store/FarbodFont/releases".to_string(),
-			repo_name: "FarbodFont".to_string(),
-			repo_url: "https://github.com/font-store/FarbodFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "shahab".to_string(),
-			api: "https://api.github.com/repos/font-store/ShahabFont/releases".to_string(),
-			repo_name: "ShahabFont".to_string(),
-			repo_url: "https://github.com/font-store/ShahabFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^fonts/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "noon".to_string(),
-			api: "https://api.github.com/repos/font-store/NoonFont/releases".to_string(),
-			repo_name: "NoonFont".to_string(),
-			repo_url: "https://github.com/font-store/NoonFont/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "pfont".to_string(),
-			api: "https://api.github.com/repos/pfont/pfont/releases".to_string(),
-			repo_name: "pfont".to_string(),
-			repo_url: "https://github.com/pfont/pfont/".to_string(),
-			publisher_name: "Persian Free Font".to_string(),
-			publisher_url: "https://github.com/pfont".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^pfont/ttf/Hinted/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "lalezar".to_string(),
-			api: "https://api.github.com/repos/BornaIz/Lalezar/releases".to_string(),
-			repo_name: "Lalezar".to_string(),
-			repo_url: "https://github.com/BornaIz/Lalezar/".to_string(),
-			publisher_name: "Borna Izadpanah".to_string(),
-			publisher_url: "https://github.com/BornaIz".to_string(),
-			direct_download: Some("https://raw.githubusercontent.com/BornaIz/Lalezar/master/fonts/Lalezar-Regular.ttf".to_string()),
-			extract_regex: None,
-		},
-		Font {
-			name: "nastaliq".to_string(),
-			api: "https://api.github.com/repos/font-store/font-IranNastaliq/releases".to_string(),
-			repo_name: "font-IranNastaliq".to_string(),
-			repo_url: "https://github.com/font-store/font-IranNastaliq/".to_string(),
-			publisher_name: "Saleh Souzanchi".to_string(),
-			publisher_url: "https://github.com/font-store".to_string(),
-			direct_download: Some("https://github.com/font-store/font-IranNastaliq/raw/master/WebFonts/IranNastaliq-Web.ttf".to_string()),
-			extract_regex: None,
-		},
-		Font {
-			name: "arad".to_string(),
-			api: "https://api.github.com/repos/MohamadDarvishi/Arad/releases".to_string(),
-			repo_name: "Arad".to_string(),
-			repo_url: "https://github.com/MohamadDarvishi/Arad".to_string(),
-			publisher_name: "Mohammad Darvishi".to_string(),
-			publisher_url: "https://github.com/MohamadDarvishi".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^MainFonts.*/Static_TTF/([^/]+\.ttf)$"#.to_string()),
-		},
-		Font {
-			name: "ario".to_string(),
-			api: "https://api.github.com/repos/MohamadDarvishi/Ario/releases".to_string(),
-			repo_name: "Ario".to_string(),
-			repo_url: "https://github.com/MohamadDarvishi/Ario".to_string(),
-			publisher_name: "Mohammad Darvishi".to_string(),
-			publisher_url: "https://github.com/MohamadDarvishi".to_string(),
-			direct_download: None,
-			extract_regex: Some(r#"^Main_Fonts.*/([^/]+\.ttf)$"#.to_string()),
-		},
-    ];
-    // fonts.sort_by(|a, b| a.publisher_name.cmp(&b.publisher_name));
+    let catalog_path = Path::new("catalog.toml");
+    
+    let toml_str = std::fs::read_to_string(catalog_path)
+        .expect("Failed to read catalog.toml");
+    
+    let catalog: CatalogToml = toml::from_str(&toml_str)
+        .expect("Failed to parse catalog.toml");
+
+    let mut fonts: Vec<Font> = catalog
+        .fonts
+        .into_iter()
+        .map(|entry| Font {
+            name: entry.name,
+            api: entry.api,
+            repo_name: entry.repo_name,
+            repo_url: entry.repo_url,
+            publisher_name: entry.publisher_name,
+            publisher_url: entry.publisher_url,
+            direct_download: entry.direct_download.filter(|s| !s.is_empty()),
+            extract_regex: entry.extract_regex.filter(|s| !s.is_empty()),
+            asset_number: entry.asset_number,
+        })
+        .collect();
+
     fonts.sort();
     fonts
 }

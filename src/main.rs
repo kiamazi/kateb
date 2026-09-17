@@ -8,6 +8,7 @@ use indicatif::MultiProgress;
 use rayon::ThreadPoolBuilder;
 use rayon::prelude::*;
 use std::path::PathBuf;
+use std::sync::Mutex;
 use toml_edit::{Array, DocumentMut, Item, Table, Value, value};
 
 use crate::catalog::Catalog;
@@ -332,6 +333,8 @@ fn uninstall(list: &[String]) -> Result<Vec<(String, FontStatus)>> {
     let catalog = Catalog::new();
     let uninstall_list = catalog.check_args_fonts(&list)?;
 
+    let local_data = Mutex::new(LocalData::new());
+
     let pool = ThreadPoolBuilder::new()
         .num_threads(4)
         .build()
@@ -340,7 +343,10 @@ fn uninstall(list: &[String]) -> Result<Vec<(String, FontStatus)>> {
     let results: Vec<_> = pool.install(|| {
         uninstall_list
             .par_iter()
-            .map(|font| (font.name.clone(), font.uninstall()))
+            .map(|font| {
+                let data = local_data.lock().unwrap();
+                (font.name.clone(), font.uninstall(data))
+            })
             .collect()
     });
 
@@ -362,7 +368,7 @@ fn check_list_helper(list: &[String]) -> Result<Vec<String>> {
             eprintln!(r#"warning: when you choose "all" other options are ignored."#);
         }
         let local_data = LocalData::new();
-        let config = local_data.local_dat;
+        let config = local_data.local_data;
 
         list = flat_table_names(&config)?;
     }
@@ -399,7 +405,7 @@ fn show_supported_fonts() {
 /// Placeholder – replace with a real list of "all installed fonts".
 fn list_installed_fonts() -> Result<()> {
     let local_data = LocalData::new();
-    let config = local_data.local_dat;
+    let config = local_data.local_data;
 
     let root = config.as_table();
     let mut list = Vec::new();

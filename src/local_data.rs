@@ -16,7 +16,7 @@ pub struct LocalData {
     pub toml_file: PathBuf,
     pub cache_dir: PathBuf,
     pub font_dir: PathBuf,
-    pub local_dat: DocumentMut,
+    pub local_data: DocumentMut,
 }
 
 impl LocalData {
@@ -63,13 +63,9 @@ impl LocalData {
         } else {
             (
                 Path::new("/usr/share/fonts/truetype/farsifreefont").to_path_buf(),
-                dirs::font_dir().unwrap_or(
-                    home_dir
-                        .join(".local")
-                        .join("share")
-                        .join("fonts")
-                        .join("farsifreefont"),
-                ),
+                dirs::font_dir()
+                    .unwrap_or(home_dir.join(".local").join("share").join("fonts"))
+                    .join("farsifreefont234"),
             )
         };
 
@@ -81,7 +77,7 @@ impl LocalData {
         };
 
         // ----- TOML DATABASE FILE ----------------------------------------------
-        let toml_file = config_dir.join("config.toml");
+        let toml_file = data_dir.join("kateb.toml");
 
         // Ensure the config and target directories exist.
         ensure_dir(&config_dir)?;
@@ -90,7 +86,7 @@ impl LocalData {
         ensure_dir(&target_font_dir)?;
 
         // ----- LOAD OR INITIALISE THE TOML DATABASE ----------------------------
-        let local_dat: DocumentMut = if !toml_file.is_file() {
+        let local_data: DocumentMut = if !toml_file.is_file() {
             // No file → create an empty one.
             let toml = Self::reset_toml_file(&toml_file)?;
             toml
@@ -115,7 +111,7 @@ impl LocalData {
             font_dir: target_font_dir,
             data_dir,
             toml_file,
-            local_dat,
+            local_data,
         })
     }
 
@@ -129,27 +125,27 @@ impl LocalData {
         Ok(())
     }
 
+    pub fn insert_table(&mut self, key: &str, table: Table) {
+        let table = Item::Table(table);
+        self.local_data.insert(key, table);
+    }
+
+    #[allow(unused)]
+    pub fn insert_itam(&mut self, key: &str, item: Item) {
+        self.local_data.insert(key, item);
+    }
+
+    pub fn write(&self) -> Result<()> {
+        self.write_data(&self.local_data)?;
+        Ok(())
+    }
+
     fn reset_toml_file(path: &Path) -> Result<DocumentMut> {
         let config: DocumentMut = DocumentMut::new(); // mut config
 
         let toml_string = config.to_string();
         fs::write(path, &toml_string).context(format!("Failed to write {}", path.display()))?;
         Ok(config)
-    }
-
-    pub fn insert_table(&mut self, key: &str, table: Table) {
-        let table = Item::Table(table);
-        self.local_dat.insert(key, table);
-    }
-
-    #[allow(unused)]
-    pub fn insert_itam(&mut self, key: &str, item: Item) {
-        self.local_dat.insert(key, item);
-    }
-
-    pub fn write(&self) -> Result<()> {
-        self.write_data(&self.local_dat)?;
-        Ok(())
     }
 }
 

@@ -89,10 +89,8 @@ fn default_asset_number() -> usize {
 
 fn build_catalog() -> Vec<Font> {
     // ====== Development-only code – kept for testing ======
-    // let catalog_path = Path::new("catalog.toml");
-
-    // let toml_str = std::fs::read_to_string(catalog_path)
-    //     .expect("Failed to read catalog.toml");
+    // let catalog_path = std::path::Path::new("catalog.toml");
+    // let toml_str = std::fs::read_to_string(catalog_path).expect("Failed to read catalog.toml");
     // ======================================================
 
     let toml_str = fetch_catalog(

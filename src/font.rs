@@ -5,6 +5,7 @@ use serde::Deserialize;
 use std::fs::File;
 use std::io::{BufReader, Read, Write, copy};
 use std::path::{Path, PathBuf};
+use std::sync::MutexGuard;
 
 use crate::local_data::LocalData;
 
@@ -97,11 +98,9 @@ impl Font {
         self.handle_with_helper(FontInstall::ReInstall, mp)
     }
 
-    pub fn uninstall(&self) -> Result<String> {
-        let mut local_data = LocalData::new();
-
-        if local_data.local_dat.contains_table(&self.name) {
-            let font_table = local_data.local_dat[&self.name].as_table().unwrap();
+    pub fn uninstall(&self, mut data: MutexGuard<'_, LocalData>) -> Result<String> {
+        if data.local_data.contains_table(&self.name) {
+            let font_table = data.local_data[&self.name].as_table().unwrap();
 
             let install_path = font_table.get("install_path").unwrap().as_array().unwrap();
             let paths: Vec<String> = install_path
@@ -112,8 +111,8 @@ impl Font {
             for path in paths {
                 std::fs::remove_file(&path).ok();
             }
-            local_data.local_dat.remove(&self.name);
-            local_data.write()?;
+            data.local_data.remove(&self.name);
+            data.write()?;
         }
         Ok(self.name.clone())
     }
@@ -139,10 +138,10 @@ impl Font {
             .ok_or_else(|| anyhow!("no release found for {}, try again later!", self.name))?;
 
         let install_cofirmed =
-            if local_data.local_dat.contains_table(&self.name) && mode == FontInstall::ReInstall {
+            if local_data.local_data.contains_table(&self.name) && mode == FontInstall::ReInstall {
                 true
-            } else if local_data.local_dat.contains_table(&self.name) {
-                let font_item = local_data.local_dat.get(&self.name).unwrap();
+            } else if local_data.local_data.contains_table(&self.name) {
+                let font_item = local_data.local_data.get(&self.name).unwrap();
                 let font_table = font_item.as_table().unwrap();
 
                 match font_table.get("update_date") {

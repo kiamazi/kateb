@@ -1,6 +1,6 @@
-use anyhow::{Result, bail};
+use anyhow::{Result, anyhow, bail};
+use reqwest::blocking::Client;
 use serde::Deserialize;
-use std::path::Path;
 
 use crate::font::Font;
 
@@ -25,14 +25,6 @@ impl Catalog {
     }
 
     /// Validate a user-supplied list of font names and return the matching fonts.
-    ///
-    /// * **Empty list** → `Err(FontError::EmptyList)`.
-    /// * **`"all"`** → returns **all** fonts (extra items are ignored, a warning is printed).
-    /// * **Invalid names** → `Err(FontError::InvalidFonts)` containing the unknown names.
-    /// * **Valid subset** → `Ok(Vec<&Font>)` with the matching fonts, preserving the
-    ///   order of the original `fonts` slice.
-    ///
-    /// The function never mutates its inputs.
     pub fn check_args_fonts<'a>(&'a self, list: &[String]) -> Result<Vec<&'a Font>> {
         if list.is_empty() {
             bail!("the font list is empty – please specify at least one font name");
@@ -96,13 +88,22 @@ fn default_asset_number() -> usize {
 }
 
 fn build_catalog() -> Vec<Font> {
-    let catalog_path = Path::new("catalog.toml");
-    
-    let toml_str = std::fs::read_to_string(catalog_path)
-        .expect("Failed to read catalog.toml");
-    
-    let catalog: CatalogToml = toml::from_str(&toml_str)
-        .expect("Failed to parse catalog.toml");
+    // ====== Development-only code – kept for testing ======
+    // let catalog_path = Path::new("catalog.toml");
+
+    // let toml_str = std::fs::read_to_string(catalog_path)
+    //     .expect("Failed to read catalog.toml");
+    // ======================================================
+
+    let toml_str = fetch_catalog(
+        "https://raw.githubusercontent.com/kiamazi/kateb/refs/heads/main/catalog.toml",
+    )
+    .unwrap_or_else(|err| {
+        eprintln!("Error fetching TOML: {}", err);
+        std::process::exit(1)
+    });
+
+    let catalog: CatalogToml = toml::from_str(&toml_str).expect("Failed to parse catalog.toml");
 
     let mut fonts: Vec<Font> = catalog
         .fonts
@@ -122,4 +123,23 @@ fn build_catalog() -> Vec<Font> {
 
     fonts.sort();
     fonts
+}
+
+pub fn fetch_catalog(url: &str) -> Result<String> {
+    let client = Client::new();
+
+    let response = client
+        .get(url)
+        .send()
+        .map_err(|e| anyhow!("request error: {}", e))?;
+
+    if !response.status().is_success() {
+        bail!("failed to fetch '{}': HTTP {}", url, response.status());
+    }
+
+    let body = response
+        .text()
+        .map_err(|e| anyhow!("failed to read response body: {}", e))?;
+
+    Ok(body)
 }

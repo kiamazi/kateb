@@ -5,10 +5,10 @@ mod local_data;
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 use indicatif::MultiProgress;
-use rayon::prelude::*;
 use rayon::ThreadPoolBuilder;
-use toml_edit::{Array, DocumentMut, Item, Table, Value, value};
+use rayon::prelude::*;
 use std::path::PathBuf;
+use toml_edit::{Array, DocumentMut, Item, Table, Value, value};
 
 use crate::catalog::Catalog;
 use crate::font::{FontInfo, FontStatus};
@@ -80,7 +80,7 @@ fn run(command: Commands) -> Result<(), ()> {
         }
         Commands::Info { fonts } => info(&fonts).map_err(|e| eprintln!("❌ {:#}", e))?,
         Commands::List => show_supported_fonts(),
-        Commands::Fonts => list_installed_fonts(),
+        Commands::Fonts => list_installed_fonts().map_err(|e| eprintln!("❌ {:#}", e))?,
         Commands::Version => println!("Version: {}", env!("CARGO_PKG_VERSION")),
         Commands::SelfUpgrade => println!("self‐upgrade..."),
     }
@@ -111,7 +111,7 @@ fn print_results_with_info(action: &str, results: &[(String, FontStatus, FontInf
     }
 
     if !warnings.is_empty() {
-        eprintln!("⚠ Warnings:");
+        eprintln!("⚠ :");
         for (name, status, _) in &warnings {
             if let FontStatus::Warning(msg) = status {
                 eprintln!("  {} - {}", name, msg);
@@ -126,9 +126,7 @@ fn print_results_with_info(action: &str, results: &[(String, FontStatus, FontInf
         }
     }
 
-    if results.is_empty()
-        || (errors.is_empty() && warnings.is_empty() && successes.is_empty())
-    {
+    if results.is_empty() || (errors.is_empty() && warnings.is_empty() && successes.is_empty()) {
         println!("nothing to {action}");
     }
 }
@@ -157,7 +155,7 @@ fn print_results_simple(action: &str, results: &[(String, FontStatus)]) {
     }
 
     if !warnings.is_empty() {
-        eprintln!("⚠ Warnings:");
+        eprintln!("⚠ :");
         for (name, status) in &warnings {
             if let FontStatus::Warning(msg) = status {
                 eprintln!("  {} - {}", name, msg);
@@ -172,9 +170,7 @@ fn print_results_simple(action: &str, results: &[(String, FontStatus)]) {
         }
     }
 
-    if results.is_empty()
-        || (errors.is_empty() && warnings.is_empty() && successes.is_empty())
-    {
+    if results.is_empty() || (errors.is_empty() && warnings.is_empty() && successes.is_empty()) {
         println!("nothing to {action}");
     }
 }
@@ -182,7 +178,7 @@ fn print_results_simple(action: &str, results: &[(String, FontStatus)]) {
 fn save_font_info(info: &FontInfo) -> Result<()> {
     let mut local_data = LocalData::new();
     let table = font_toml_table(&info.tag_name, &info.update_date, &info.install_path);
-    local_data.insert(&info.name, Item::Table(table));
+    local_data.insert_table(&info.name, table);
     local_data.write()?;
     Ok(())
 }
@@ -250,7 +246,9 @@ fn install(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
     Ok(font_results)
 }
 
-fn build_results_vec(results: Vec<(String, Result<FontInfo>)>) -> Vec<(String, FontStatus, FontInfo)> {
+fn build_results_vec(
+    results: Vec<(String, Result<FontInfo>)>,
+) -> Vec<(String, FontStatus, FontInfo)> {
     results
         .into_iter()
         .filter_map(|(name, result)| match result {
@@ -364,7 +362,7 @@ fn check_list_helper(list: &[String]) -> Result<Vec<String>> {
             eprintln!(r#"warning: when you choose "all" other options are ignored."#);
         }
         let local_data = LocalData::new();
-        let config = local_data.configs;
+        let config = local_data.local_dat;
 
         list = flat_table_names(&config)?;
     }
@@ -399,8 +397,26 @@ fn show_supported_fonts() {
 }
 
 /// Placeholder – replace with a real list of "all installed fonts".
-fn list_installed_fonts() {
-    println!("(supported fonts list would go here)");
+fn list_installed_fonts() -> Result<()> {
+    let local_data = LocalData::new();
+    let config = local_data.local_dat;
+
+    let root = config.as_table();
+    let mut list = Vec::new();
+
+    // `root.iter()` yields (&Key, &Item) pairs.
+    for (key, item) in root.iter() {
+        // Keep only entries that are tables (`[foo]`).
+        if matches!(item, Item::Table(_)) {
+            list.push((key.to_string(), root[key]["tag_name"].as_str().unwrap()));
+        }
+    }
+
+    for (font, tag) in list {
+        println!("{font:10}, {:?}", tag);
+    }
+
+    Ok(())
 }
 
 /// Extract the names of every **top‐level** table from a mutable TOML document.

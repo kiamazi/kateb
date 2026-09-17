@@ -19,7 +19,7 @@ pub struct Release {
     pub tag_name: String,
 
     #[serde(rename = "updated_at")]
-    pub updated_at: String, // keep as String or change to DateTime<Utc>
+    pub updated_at: String,
 
     /// Assets attached to the release. We only look at the first one.
     #[serde(default)]
@@ -45,24 +45,9 @@ impl GithubReleases {
     }
 }
 
-#[allow(unused)]
 impl Release {
-    /// Returns the first asset, if the release contains any.
-    pub fn first_asset(&self) -> Option<&Asset> {
-        self.assets.get(0)
-    }
-
-    /// Returns the first asset, if the release contains any.
-    pub fn second_asset(&self) -> Option<&Asset> {
-        self.assets.get(1)
-    }
-
     /// Returns the asset at the given index, if the release contains any.
     pub fn get_asset(&self, index: usize) -> Option<&Asset> {
-        self.assets.get(index)
-    }
-
-    pub fn get_nth_asset(&self, index: usize) -> Option<&Asset> {
         self.assets.get(index)
     }
 }
@@ -99,7 +84,6 @@ enum FontInstall {
     ReInstall,
 }
 
-#[allow(unused)]
 impl Font {
     pub fn install(&self, mp: &MultiProgress) -> Result<FontInfo> {
         self.handle_with_helper(FontInstall::Install, mp)
@@ -116,8 +100,8 @@ impl Font {
     pub fn uninstall(&self) -> Result<String> {
         let mut local_data = LocalData::new();
 
-        if local_data.configs.contains_table(&self.name) {
-            let font_table = local_data.configs[&self.name].as_table().unwrap();
+        if local_data.local_dat.contains_table(&self.name) {
+            let font_table = local_data.local_dat[&self.name].as_table().unwrap();
 
             let install_path = font_table.get("install_path").unwrap().as_array().unwrap();
             let paths: Vec<String> = install_path
@@ -128,7 +112,7 @@ impl Font {
             for path in paths {
                 std::fs::remove_file(&path).ok();
             }
-            local_data.configs.remove(&self.name);
+            local_data.local_dat.remove(&self.name);
             local_data.write()?;
         }
         Ok(self.name.clone())
@@ -155,10 +139,10 @@ impl Font {
             .ok_or_else(|| anyhow!("no release found for {}, try again later!", self.name))?;
 
         let install_cofirmed =
-            if local_data.configs.contains_table(&self.name) && mode == FontInstall::ReInstall {
+            if local_data.local_dat.contains_table(&self.name) && mode == FontInstall::ReInstall {
                 true
-            } else if local_data.configs.contains_table(&self.name) {
-                let font_item = local_data.configs.get(&self.name).unwrap();
+            } else if local_data.local_dat.contains_table(&self.name) {
+                let font_item = local_data.local_dat.get(&self.name).unwrap();
                 let font_table = font_item.as_table().unwrap();
 
                 match font_table.get("update_date") {
@@ -223,7 +207,7 @@ impl Font {
             download_file(&asset.url, &zip_file_path, mp)?;
 
             let pattern: &str = self.extract_regex.as_ref().unwrap().as_str();
-            extracted = unzip_file(&zip_file_path, &local_data.cache_dir, pattern)?;
+            extracted = unzip_file(&zip_file_path, &local_data.font_dir, pattern)?;
         }
 
         Ok(FontInfo {
@@ -254,7 +238,6 @@ pub struct FontInfo {
     pub status: FontStatus,
 }
 
-#[allow(unused)]
 impl Font {
     fn fetch_api(&self) -> Result<GithubReleases> {
         let client = reqwest::blocking::Client::builder()
@@ -366,7 +349,6 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
             continue;
         }
 
-        // Does the entry match the wanted pattern?
         let caps = match re.captures(entry_name) {
             Some(c) => c,
             None => continue, // not a file we care about
@@ -389,6 +371,5 @@ fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec
         extracted.push(dest_path);
     }
 
-    // println!("{:?}", extracted);
     Ok(extracted)
 }

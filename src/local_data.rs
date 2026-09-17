@@ -1,16 +1,12 @@
 use anyhow::{Context, Result};
-use dirs::{config_dir, data_dir, home_dir};
+use dirs;
 use nix::unistd::Uid;
 use std::{
     fs,
     path::{Path, PathBuf},
 };
-use toml_edit::{DocumentMut, Item};
+use toml_edit::{DocumentMut, Item, Table};
 
-/// ---------------------------------------------------------------------------
-/// The main data structure – equivalent to the hash reference returned by the
-/// Perl `_prepare` subroutine.
-/// ---------------------------------------------------------------------------
 #[allow(unused)]
 #[derive(Debug, Clone)]
 pub struct LocalData {
@@ -19,12 +15,11 @@ pub struct LocalData {
     pub data_dir: PathBuf,
     pub toml_file: PathBuf,
     pub cache_dir: PathBuf,
-    pub target_dir: PathBuf,
-    pub configs: DocumentMut,
+    pub font_dir: PathBuf,
+    pub local_dat: DocumentMut,
 }
 
 impl LocalData {
-    /// Public constructor – mirrors Perl's `new`.
     pub fn new() -> Self {
         match Self::prepare() {
             Ok(s) => s,
@@ -35,74 +30,67 @@ impl LocalData {
         }
     }
 
-    /// -----------------------------------------------------------------------
-    /// Core preparation logic (a direct translation of the Perl `_prepare`).
-    /// -----------------------------------------------------------------------
     fn prepare() -> Result<Self> {
         // ----- executable name -------------------------------------------------
         let exec_name = "kateb";
 
         // ----- HOME ------------------------------------------------------------
-        let home =
-            home_dir().ok_or_else(|| anyhow::anyhow!("Unable to determine home directory"))?;
+        let home_dir = dirs::home_dir()
+            .ok_or_else(|| anyhow::anyhow!("Unable to determine home directory"))?;
 
         // ----- CONFIG DIRECTORY ------------------------------------------------
-        // `dirs::config_dir()` returns XDG_CONFIG_HOME if set,
-        // otherwise $HOME/.config.
-        let config = config_dir()
+        let config_dir = dirs::config_dir()
             .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG config dir"))?
             .join(exec_name);
 
         // ----- Data Directory ---------------------------------------------------
-        let data = data_dir()
-            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG config dir"))?
+        let data_dir = dirs::data_dir()
+            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG data dir"))?
             .join(exec_name);
 
         // ----- CACHE (fonts) ---------------------------------------------------
-        let cache = config.join("fonts");
+        let cache_dir = dirs::cache_dir()
+            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG cache dir"))?
+            .join(exec_name);
 
         // ----- TARGET (install) DIRECTORY --------------------------------------
         // Platform‑specific defaults (macOS vs other Unix)
-        let root_font_dir = if cfg!(target_os = "macos") {
-            Path::new("/Library/Fonts").to_path_buf()
+        let (root_font_dir, user_font_dir) = if cfg!(target_os = "macos") {
+            (
+                Path::new("/Library/Fonts").to_path_buf(),
+                dirs::font_dir().unwrap_or(home_dir.join("Library/Fonts")),
+            )
         } else {
-            Path::new("/usr/share/fonts/truetype/farsifreefont").to_path_buf()
-        };
-        let user_font_dir = if cfg!(target_os = "macos") {
-            dirs::font_dir().unwrap_or(home.join("Library/Fonts"))
-        } else {
-            dirs::font_dir().unwrap_or(
-                home.join(".local")
-                    .join("share")
-                    .join("fonts")
-                    .join("farsifreefont"),
+            (
+                Path::new("/usr/share/fonts/truetype/farsifreefont").to_path_buf(),
+                dirs::font_dir().unwrap_or(
+                    home_dir
+                        .join(".local")
+                        .join("share")
+                        .join("fonts")
+                        .join("farsifreefont"),
+                ),
             )
         };
+
         // If we run as root (uid 0) install system‑wide, otherwise user‑wide.
-        let target = if Uid::effective().is_root() {
+        let target_font_dir = if Uid::effective().is_root() {
             root_font_dir
         } else {
             user_font_dir
         };
 
-        // ----- TEMPORARY DOWNLOAD DIRECTORY ------------------------------------
-        // `tempfile::TempDir` creates a unique temporary folder that is removed
-        // when the `TempDir` value is dropped.
-        // let temp_root = tempfile::Builder::new().prefix("kateb").disable_cleanup(true).tempdir()
-        //     .context("Unable to create temporary directory")?;
-        // let temp_dir = temp_root.path().to_path_buf();
-
-        // ----- JSON DATABASE FILE ----------------------------------------------
-        // let json_file = config.join(format!("{exec_name}.json"));
-        let toml_file = config.join("config.toml");
+        // ----- TOML DATABASE FILE ----------------------------------------------
+        let toml_file = config_dir.join("config.toml");
 
         // Ensure the config and target directories exist.
-        ensure_dir(&config)?;
-        ensure_dir(&cache)?;
-        ensure_dir(&target)?;
+        ensure_dir(&config_dir)?;
+        ensure_dir(&data_dir)?;
+        ensure_dir(&cache_dir)?;
+        ensure_dir(&target_font_dir)?;
 
         // ----- LOAD OR INITIALISE THE TOML DATABASE ----------------------------
-        let configs: DocumentMut = if !toml_file.is_file() {
+        let local_dat: DocumentMut = if !toml_file.is_file() {
             // No file → create an empty one.
             let toml = Self::reset_toml_file(&toml_file)?;
             toml
@@ -121,51 +109,46 @@ impl LocalData {
         };
 
         Ok(LocalData {
-            home_dir: home,
-            config_dir: config,
-            cache_dir: cache,
-            target_dir: target,
-            data_dir: data,
+            home_dir,
+            config_dir,
+            cache_dir,
+            font_dir: target_font_dir,
+            data_dir,
             toml_file,
-            configs,
+            local_dat,
         })
     }
 
     /// -----------------------------------------------------------------------
-    /// Write a new TOML structure to the database file – mirrors Perl `write_data`.
+    /// Write a new TOML structure to the database file
     /// -----------------------------------------------------------------------
-    pub fn write_data<T: ToString>(&self, configs: &T) -> Result<()> {
-        let toml = configs.to_string();
+    pub fn write_data<T: ToString>(&self, local_data: &T) -> Result<()> {
+        let toml = local_data.to_string();
         fs::write(&self.toml_file, toml)
             .with_context(|| format!("Unable to write {}", self.toml_file.display()))?;
         Ok(())
     }
 
     fn reset_toml_file(path: &Path) -> Result<DocumentMut> {
-        // let catalog = Catalog::new();
-        // let fonts = catalog.fonts;
-
         let config: DocumentMut = DocumentMut::new(); // mut config
-
-        // for font in fonts {
-        //     let mut table = Table::new();
-        //     table["tag_name"] = value("");
-        //     table["update_date"] = value("");
-        //     table["install_path"] = Item::Value(Array::new().into());
-        //     config.insert(&font.name, Item::Table(table));
-        // }
 
         let toml_string = config.to_string();
         fs::write(path, &toml_string).context(format!("Failed to write {}", path.display()))?;
         Ok(config)
     }
 
-    pub fn insert(&mut self, key: &str, item: Item) {
-        self.configs.insert(key, item);
+    pub fn insert_table(&mut self, key: &str, table: Table) {
+        let table = Item::Table(table);
+        self.local_dat.insert(key, table);
+    }
+
+    #[allow(unused)]
+    pub fn insert_itam(&mut self, key: &str, item: Item) {
+        self.local_dat.insert(key, item);
     }
 
     pub fn write(&self) -> Result<()> {
-        self.write_data(&self.configs)?;
+        self.write_data(&self.local_dat)?;
         Ok(())
     }
 }

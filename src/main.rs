@@ -57,8 +57,8 @@ enum Commands {
     /// Display the kateb version
     #[command(alias = "v", visible_alias = "-v")]
     Version,
-    /// Upgrade the kateb tool itself
-    SelfUpgrade,
+    // /// Upgrade the kateb tool itself
+    // SelfUpgrade,
 }
 
 fn run(command: Commands) -> Result<(), ()> {
@@ -83,7 +83,7 @@ fn run(command: Commands) -> Result<(), ()> {
         Commands::List => show_supported_fonts(),
         Commands::Fonts => list_installed_fonts().map_err(|e| eprintln!("❌ {:#}", e))?,
         Commands::Version => println!("Version: {}", env!("CARGO_PKG_VERSION")),
-        Commands::SelfUpgrade => println!("self‐upgrade..."),
+        // Commands::SelfUpgrade => println!("self‐upgrade..."),
     }
     Ok(())
 }

@@ -54,10 +54,13 @@ jobs:
         if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: cross build --release --target ${{ matrix.target }}
 
+      - name: Rename binary
+        run: mv target/${{ matrix.target }}/release/${{ matrix.binary_name }} ${{ matrix.asset_name }}
+
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          files: target/${{ matrix.target }}/release/${{ matrix.binary_name }}
+          files: ${{ matrix.asset_name }}
           name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

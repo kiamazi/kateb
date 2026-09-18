@@ -101,6 +101,9 @@ impl Font {
     }
 
     pub fn uninstall(&self, mut data: MutexGuard<'_, LocalData>) -> Result<String> {
+        if !data.local_data.contains_table(&self.name) {
+            bail!("not installed")
+        }
         if data.local_data.contains_table(&self.name) {
             let font_table = data.local_data[&self.name].as_table().unwrap();
 

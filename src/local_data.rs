@@ -31,39 +31,51 @@ impl LocalData {
 
     fn prepare() -> Result<Self> {
         // ----- executable name -------------------------------------------------
-        let exec_name = "kateb";
+        let exec_name = env!("CARGO_PKG_NAME");
 
         // ----- HOME ------------------------------------------------------------
         let home_dir = dirs::home_dir()
             .ok_or_else(|| anyhow::anyhow!("Unable to determine home directory"))?;
 
         // ----- CONFIG DIRECTORY ------------------------------------------------
-        let config_dir = dirs::config_dir()
-            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG config dir"))?
-            .join(exec_name);
+        let config_dir = if Uid::effective().is_root() {
+            Path::new("/etc").join(exec_name)
+        } else {
+            dirs::config_dir()
+                .unwrap_or_else(|| home_dir.join(".config"))
+                .join(exec_name)
+        };
 
-        // ----- Data Directory ---------------------------------------------------
-        let data_dir = dirs::data_dir()
-            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG data dir"))?
-            .join(exec_name);
+        // ----- DATA DIRECTORY ---------------------------------------------------
+        let data_dir = if Uid::effective().is_root() {
+            Path::new("/var/lib").join(exec_name)
+        } else {
+            dirs::data_dir()
+                .unwrap_or_else(|| home_dir.join(".local/share"))
+                .join(exec_name)
+        };
 
         // ----- CACHE (fonts) ---------------------------------------------------
-        let cache_dir = dirs::cache_dir()
-            .ok_or_else(|| anyhow::anyhow!("Unable to locate XDG cache dir"))?
-            .join(exec_name);
+        let cache_dir = if Uid::effective().is_root() {
+            Path::new("/var/cache").join(exec_name)
+        } else {
+            dirs::cache_dir()
+                .unwrap_or_else(|| home_dir.join(".cache"))
+                .join(exec_name)
+        };
 
         // ----- TARGET (install) DIRECTORY --------------------------------------
         // Platform‑specific defaults (macOS vs other Unix)
         let (root_font_dir, user_font_dir) = if cfg!(target_os = "macos") {
             (
                 Path::new("/Library/Fonts").to_path_buf(),
-                dirs::font_dir().unwrap_or(home_dir.join("Library/Fonts")),
+                dirs::font_dir().unwrap_or_else(|| home_dir.join("Library/Fonts")),
             )
         } else {
             (
                 Path::new("/usr/share/fonts/truetype/farsi-freefont").to_path_buf(),
                 dirs::font_dir()
-                    .unwrap_or(home_dir.join(".local").join("share").join("fonts"))
+                    .unwrap_or_else(|| home_dir.join(".local/share/fonts"))
                     .join("farsi-freefont"),
             )
         };

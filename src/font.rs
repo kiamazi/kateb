@@ -124,7 +124,7 @@ impl Font {
 
     pub fn info(&self) {
         println!(
-            "publisher {}, {}\nrepo {}",
+            "publisher: {}, {}\nrepo     : {}",
             self.publisher_name, self.publisher_url, self.repo_url
         );
     }

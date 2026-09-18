@@ -84,7 +84,20 @@ jobs:
           } > checksums.json
           cat checksums.json
 
-      - name: Upload to release
+      - name: Prepare binaries for upload
+        run: |
+          for dir in binaries/*/; do
+            asset_name=$(basename "$dir")
+            cp "binaries/$asset_name/$asset_name" .
+          done
+          ls -la kateb*
+
+      - name: Upload binaries and checksums to release
         uses: softprops/action-gh-release@v1
         with:
-          files: checksums.json
+          files: |
+            kateb-linux
+            kateb-linux-arm64
+            kateb-darwin
+            kateb-darwin-arm64
+            checksums.json

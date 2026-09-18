@@ -69,12 +69,7 @@ get_bin_dir() {
 
   if [ "$EUID" -eq 0 ]; then
     # Running with sudo/as root
-    if [ "$os" = "linux" ]; then
-      echo "/usr/local/bin"
-    else
-      # macOS
-      echo "/usr/local/bin"
-    fi
+    echo "/usr/local/bin"
   else
     # Running as regular user
     echo "${HOME}/.local/bin"
@@ -97,7 +92,25 @@ get_latest_version() {
 # Determine the binary name based on platform
 get_binary_name() {
   local platform="$1"
-  echo "kateb-${platform}"
+
+  case "$platform" in
+    linux-x86_64)
+      echo "kateb-linux"
+      ;;
+    linux-arm64)
+      echo "kateb-linux-arm64"
+      ;;
+    darwin-x86_64)
+      echo "kateb-darwin"
+      ;;
+    darwin-arm64)
+      echo "kateb-darwin-arm64"
+      ;;
+    *)
+      log_error "Unknown platform: $platform"
+      exit 1
+      ;;
+  esac
 }
 
 # Download file with retry logic

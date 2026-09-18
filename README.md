@@ -84,6 +84,19 @@ cargo build --release
     #or
     kateb reinstall all
 
+### uninstall
+
+حذف کردن فونت نصب شده
+
+    kateb uninstall [font name(s) or all]
+
+    kateb uninstall ario
+    #or
+    kateb uninstall nika arad ziracode
+    #or
+    kateb uninstall all
+
+
 ### fonts
 
 لیست نام و نسخه‌ی فونت‌های نصب شده توسط کاتب
@@ -98,13 +111,36 @@ cargo build --release
     #or
     kateb info all
 
+### help
+
+```
+~$ kateb help
+
+Usage: kateb <COMMAND>
+
+Commands:
+  install    Install a new font
+  update     Update an installed font
+  reinstall  Reinstall an already-installed font
+  uninstall  Uninstall an already-installed font
+  list       List all supported Farsi fonts
+  fonts      Show the fonts that are currently installed
+  info       Display brief information about a font's publisher
+  version    Display the kateb version [alias: -v]
+  help       Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+
 ## مسیر نصب
 
 در صورتیکه فونت‌های پشتیبانی شده را قبلا در آدرس
 
     ~/.local/share/fonts/
+    ~/.local/share/fonts/farsifreefont
 
-‫یا سایر مسیرهایی که به عنوان شاخه‌های فونت توسط سیستم‌عامل شما در دایرکتوری خانه پشتیبانی می‌شوند، کپی کرده‌اید ابتدا فونت‌های کپی شده را پاک کنید.
+‫یا سایر مسیرهایی که به عنوان شاخه‌های فونت توسط سیستم‌عامل شما در دایرکتوری خانه پشتیبانی می‌شوند، کپی یا با کمک نسخه‌های قبل از۲ کاتب نصب کرده‌اید، ابتدا فونت‌های کپی شده را پاک کنید.
 
 ‫**۱-** نصب در دایرکتوری خانه کاربر:
 

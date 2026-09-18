@@ -1,52 +1,19 @@
 [[fonts]]
-name = "vazir"
-api = "https://api.github.com/repos/rastikerdar/vazirmatn/releases"
-repo_name = "vazirmatn"
-repo_url = "https://github.com/rastikerdar/vazirmatn/"
-publisher_name = "Saber Rastikerdar"
-publisher_url = "https://github.com/rastikerdar"
-direct_download = ""
-extract_regex = "^fonts/ttf/([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "samim"
-api = "https://api.github.com/repos/rastikerdar/samim-font/releases"
-repo_name = "samim-font"
-repo_url = "https://github.com/rastikerdar/samin-font/"
-publisher_name = "Saber Rastikerdar"
-publisher_url = "https://github.com/rastikerdar"
-direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "tanha"
-api = "https://api.github.com/repos/rastikerdar/tanha-font/releases"
-repo_name = "tanha-font"
-repo_url = "https://github.com/rastikerdar/tanha-font/"
-publisher_name = "Saber Rastikerdar"
-publisher_url = "https://github.com/rastikerdar"
-direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "shabnam"
-api = "https://api.github.com/repos/rastikerdar/shabnam-font/releases"
-repo_name = "shabnam-font"
-repo_url = "https://github.com/rastikerdar/shabnam-font/"
-publisher_name = "Saber Rastikerdar"
-publisher_url = "https://github.com/rastikerdar"
-direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
 name = "gandom"
 api = "https://api.github.com/repos/rastikerdar/gandom-font/releases"
 repo_name = "gandom-font"
 repo_url = "https://github.com/rastikerdar/gandom-font/"
+publisher_name = "Saber Rastikerdar"
+publisher_url = "https://github.com/rastikerdar"
+direct_download = ""
+extract_regex = "^([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "nahid"
+api = "https://api.github.com/repos/rastikerdar/nahid-font/releases"
+repo_name = "nahid-font"
+repo_url = "https://github.com/rastikerdar/nahid-font/"
 publisher_name = "Saber Rastikerdar"
 publisher_url = "https://github.com/rastikerdar"
 direct_download = ""
@@ -76,6 +43,50 @@ extract_regex = "^([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
+name = "shabnam"
+api = "https://api.github.com/repos/rastikerdar/shabnam-font/releases"
+repo_name = "shabnam-font"
+repo_url = "https://github.com/rastikerdar/shabnam-font/"
+publisher_name = "Saber Rastikerdar"
+publisher_url = "https://github.com/rastikerdar"
+direct_download = ""
+extract_regex = "^([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "samim"
+api = "https://api.github.com/repos/rastikerdar/samim-font/releases"
+repo_name = "samim-font"
+repo_url = "https://github.com/rastikerdar/samin-font/"
+publisher_name = "Saber Rastikerdar"
+publisher_url = "https://github.com/rastikerdar"
+direct_download = ""
+extract_regex = "^([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "tanha"
+api = "https://api.github.com/repos/rastikerdar/tanha-font/releases"
+repo_name = "tanha-font"
+repo_url = "https://github.com/rastikerdar/tanha-font/"
+publisher_name = "Saber Rastikerdar"
+publisher_url = "https://github.com/rastikerdar"
+direct_download = ""
+extract_regex = "^([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "vazir"
+api = "https://api.github.com/repos/rastikerdar/vazirmatn/releases"
+repo_name = "vazirmatn"
+repo_url = "https://github.com/rastikerdar/vazirmatn/"
+publisher_name = "Saber Rastikerdar"
+publisher_url = "https://github.com/rastikerdar"
+direct_download = ""
+extract_regex = "^fonts/ttf/([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
 name = "vazircode"
 api = "https://api.github.com/repos/rastikerdar/vazir-code-font/releases"
 repo_name = "vazir-code-font"
@@ -98,14 +109,14 @@ extract_regex = "^([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
-name = "nahid"
-api = "https://api.github.com/repos/rastikerdar/nahid-font/releases"
-repo_name = "nahid-font"
-repo_url = "https://github.com/rastikerdar/nahid-font/"
-publisher_name = "Saber Rastikerdar"
-publisher_url = "https://github.com/rastikerdar"
+name = "estedad"
+api = "https://api.github.com/repos/aminabedi68/Estedad/releases"
+repo_name = "Estedad"
+repo_url = "https://github.com/aminabedi68/Estedad/"
+publisher_name = "Amin Abedi"
+publisher_url = "https://github.com/aminabedi68"
 direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
+extract_regex = "^Statics/ttf/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -120,28 +131,6 @@ extract_regex = "^ttf/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
-name = "estedad"
-api = "https://api.github.com/repos/aminabedi68/Estedad/releases"
-repo_name = "Estedad"
-repo_url = "https://github.com/aminabedi68/Estedad/"
-publisher_name = "Amin Abedi"
-publisher_url = "https://github.com/aminabedi68"
-direct_download = ""
-extract_regex = "^Statics/ttf/([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "ganjnameh"
-api = "https://api.github.com/repos/font-store/GanjnamehFont/releases"
-repo_name = "GanjnamehFont"
-repo_url = "https://github.com/font-store/GanjnamehFont/"
-publisher_name = "Saleh Souzanchi"
-publisher_url = "https://github.com/font-store"
-direct_download = ""
-extract_regex = "^fonts/([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
 name = "behdad"
 api = "https://api.github.com/repos/font-store/BehdadFont/releases"
 repo_name = "BehdadFont"
@@ -150,17 +139,6 @@ publisher_name = "Saleh Souzanchi"
 publisher_url = "https://github.com/font-store"
 direct_download = ""
 extract_regex = "^([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "nika"
-api = "https://api.github.com/repos/font-store/NikaFont/releases"
-repo_name = "NikaFont"
-repo_url = "https://github.com/font-store/NikaFont/"
-publisher_name = "Saleh Souzanchi"
-publisher_url = "https://github.com/font-store"
-direct_download = ""
-extract_regex = "^fonts/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -175,6 +153,39 @@ extract_regex = "^([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
+name = "ganjnameh"
+api = "https://api.github.com/repos/font-store/GanjnamehFont/releases"
+repo_name = "GanjnamehFont"
+repo_url = "https://github.com/font-store/GanjnamehFont/"
+publisher_name = "Saleh Souzanchi"
+publisher_url = "https://github.com/font-store"
+direct_download = ""
+extract_regex = "^fonts/([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "nastaliq"
+api = "https://api.github.com/repos/font-store/font-IranNastaliq/releases"
+repo_name = "font-IranNastaliq"
+repo_url = "https://github.com/font-store/font-IranNastaliq/"
+publisher_name = "Saleh Souzanchi"
+publisher_url = "https://github.com/font-store"
+direct_download = "https://github.com/font-store/font-IranNastaliq/raw/master/WebFonts/IranNastaliq-Web.ttf"
+extract_regex = ""
+asset_number = 0
+
+[[fonts]]
+name = "nika"
+api = "https://api.github.com/repos/font-store/NikaFont/releases"
+repo_name = "NikaFont"
+repo_url = "https://github.com/font-store/NikaFont/"
+publisher_name = "Saleh Souzanchi"
+publisher_url = "https://github.com/font-store"
+direct_download = ""
+extract_regex = "^fonts/([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
 name = "shahab"
 api = "https://api.github.com/repos/font-store/ShahabFont/releases"
 repo_name = "ShahabFont"
@@ -183,17 +194,6 @@ publisher_name = "Saleh Souzanchi"
 publisher_url = "https://github.com/font-store"
 direct_download = ""
 extract_regex = "^fonts/([^/]+\\.ttf)$"
-asset_number = 0
-
-[[fonts]]
-name = "noon"
-api = "https://api.github.com/repos/font-store/NoonFont/releases"
-repo_name = "NoonFont"
-repo_url = "https://github.com/font-store/NoonFont/"
-publisher_name = "Saleh Souzanchi"
-publisher_url = "https://github.com/font-store"
-direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -219,17 +219,6 @@ extract_regex = ""
 asset_number = 0
 
 [[fonts]]
-name = "nastaliq"
-api = "https://api.github.com/repos/font-store/font-IranNastaliq/releases"
-repo_name = "font-IranNastaliq"
-repo_url = "https://github.com/font-store/font-IranNastaliq/"
-publisher_name = "Saleh Souzanchi"
-publisher_url = "https://github.com/font-store"
-direct_download = "https://github.com/font-store/font-IranNastaliq/raw/master/WebFonts/IranNastaliq-Web.ttf"
-extract_regex = ""
-asset_number = 0
-
-[[fonts]]
 name = "arad"
 api = "https://api.github.com/repos/MohamadDarvishi/Arad/releases"
 repo_name = "Arad"
@@ -248,5 +237,16 @@ repo_url = "https://github.com/MohamadDarvishi/Ario"
 publisher_name = "Mohammad Darvishi"
 publisher_url = "https://github.com/MohamadDarvishi"
 direct_download = ""
-extract_regex = "^Main_Fonts.*/([^/]+\\.ttf)$"
+extract_regex = "^Main_Fonts/([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
+name = "rooyin"
+api = "https://api.github.com/repos/MohamadDarvishi/Rooyin/releases"
+repo_name = "Rooyin"
+repo_url = "https://github.com/MohamadDarvishi/Rooyin"
+publisher_name = "Mohammad Darvishi"
+publisher_url = "https://github.com/MohamadDarvishi"
+direct_download = ""
+extract_regex = "^Font Family/([^/]+\\.ttf)$"
 asset_number = 0

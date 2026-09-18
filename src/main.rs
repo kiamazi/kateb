@@ -232,10 +232,11 @@ fn install(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
 
     // Write TOML sequentially for successful installs only
     for (name, status, info) in &font_results {
-        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
-            if let Err(e) = save_font_info(info) {
-                error_msgs.push(format!("{}: failed to save config: {:#}", name, e));
-            }
+        if matches!(status, FontStatus::Success)
+            && !info.install_path.is_empty()
+            && let Err(e) = save_font_info(info)
+        {
+            error_msgs.push(format!("{}: failed to save config: {:#}", name, e));
         }
     }
 
@@ -285,10 +286,11 @@ fn update(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
 
     // Write TOML sequentially for successful updates
     for (name, status, info) in &font_results {
-        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
-            if let Err(e) = save_font_info(info) {
-                eprintln!("❌ {} failed to save config: {:#}", name, e);
-            }
+        if matches!(status, FontStatus::Success)
+            && !info.install_path.is_empty()
+            && let Err(e) = save_font_info(info)
+        {
+            eprintln!("❌ {} failed to save config: {:#}", name, e);
         }
     }
 
@@ -318,10 +320,11 @@ fn reinstall(list: &[String]) -> Result<Vec<(String, FontStatus, FontInfo)>> {
 
     // Write TOML sequentially for successful reinstalls
     for (name, status, info) in &font_results {
-        if matches!(status, FontStatus::Success) && !info.install_path.is_empty() {
-            if let Err(e) = save_font_info(info) {
-                eprintln!("❌ {} failed to save config: {:#}", name, e);
-            }
+        if matches!(status, FontStatus::Success)
+            && !info.install_path.is_empty()
+            && let Err(e) = save_font_info(info)
+        {
+            eprintln!("❌ {} failed to save config: {:#}", name, e);
         }
     }
 

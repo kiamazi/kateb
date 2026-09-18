@@ -16,7 +16,7 @@ impl Catalog {
         }
     }
 
-    pub fn font_list<'a>(&'a self) -> Vec<&'a String> {
+    pub fn font_list(&self) -> Vec<&String> {
         let mut list = Vec::new();
         for font in &self.fonts {
             list.push(&font.name);

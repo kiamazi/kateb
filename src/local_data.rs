@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use dirs;
 use nix::unistd::Uid;
 use std::{
     fs,
@@ -62,10 +61,10 @@ impl LocalData {
             )
         } else {
             (
-                Path::new("/usr/share/fonts/truetype/farsifreefont").to_path_buf(),
+                Path::new("/usr/share/fonts/truetype/farsi-freefont").to_path_buf(),
                 dirs::font_dir()
                     .unwrap_or(home_dir.join(".local").join("share").join("fonts"))
-                    .join("farsifreefont234"),
+                    .join("farsi-freefont"),
             )
         };
 
@@ -88,8 +87,7 @@ impl LocalData {
         // ----- LOAD OR INITIALISE THE TOML DATABASE ----------------------------
         let local_data: DocumentMut = if !toml_file.is_file() {
             // No file → create an empty one.
-            let toml = Self::reset_toml_file(&toml_file)?;
-            toml
+            Self::reset_toml_file(&toml_file)?
         } else {
             // File exists → try to parse it.
             let raw = fs::read_to_string(&toml_file)
@@ -98,8 +96,7 @@ impl LocalData {
                 Ok(toml) => toml,
                 Err(_) => {
                     // Corrupt JSON → reset to a clean file.
-                    let toml = Self::reset_toml_file(&toml_file)?;
-                    toml
+                    Self::reset_toml_file(&toml_file)?
                 }
             }
         };

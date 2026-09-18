@@ -42,7 +42,7 @@ impl GithubReleases {
     /// Returns the **first** element of the releases array (the newest release,
     /// because the API returns releases sorted newest‑first by default).
     pub fn latest_release(&self) -> Option<&Release> {
-        self.0.get(0)
+        self.0.first()
     }
 }
 
@@ -57,6 +57,7 @@ impl Release {
 
 /// Information about a single font.
 #[derive(Clone, Debug, PartialEq, Eq, Ord)]
+#[allow(clippy::derive_ord_xor_partial_ord)]
 pub struct Font {
     pub name: String,
     pub api: String,
@@ -69,6 +70,7 @@ pub struct Font {
     pub asset_number: usize,
 }
 
+#[allow(clippy::non_canonical_partial_ord_impl)]
 impl PartialOrd for Font {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         if self.publisher_name == other.publisher_name {
@@ -191,15 +193,13 @@ impl Font {
             let file_name = url.rsplit('/').next().unwrap();
             let font_file_path = local_data.cache_dir.join(file_name);
 
-            download_file(&url, &font_file_path, mp)?;
+            download_file(url, &font_file_path, mp)?;
 
             extracted = vec![font_file_path.to_owned()];
         } else {
             let asset = latest_release
                 .get_asset(self.asset_number)
-                .with_context(|| {
-                    format!("no release found for {}, try again later!", &self.name)
-                })?;
+                .with_context(|| format!("no release found for {}, try again later!", self.name))?;
 
             let zip_file_path = temp_dir.join(&asset.name);
 
@@ -327,7 +327,7 @@ fn download_file(url: &str, destination: &PathBuf, mp: &MultiProgress) -> Result
     ))
 }
 
-fn unzip_file(file: &PathBuf, target_dir: &PathBuf, pattern: &str) -> Result<Vec<PathBuf>> {
+fn unzip_file(file: &PathBuf, target_dir: &Path, pattern: &str) -> Result<Vec<PathBuf>> {
     use regex::Regex;
     use zip::read::ZipArchive;
 

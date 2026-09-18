@@ -1,7 +1,16 @@
 [package]
 name = "kateb"
-version = "0.1.0"
+version = "2.0.0"
 edition = "2024"
+authors = ["Kiavash Mazi <kiavash@gmail.com>"]
+description = "A CLI font installer for installing Farsi free and open-source fonts"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/kiamazi/kateb"
+homepage = "https://github.com/kiamazi/kateb"
+documentation = "https://github.com/kiamazi/kateb#readme"
+keywords = ["cli", "font", "installer", "farsi", "persian"]
+categories = ["command-line-utilities"]
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.104"

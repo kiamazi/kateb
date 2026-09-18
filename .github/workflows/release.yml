@@ -5,33 +5,24 @@ on:
     tags:
       - "v*"
 
-permissions:
-  contents: write
-
 jobs:
   build:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            binary_name: kateb
+          - target: x86_64-unknown-linux-gnu
             asset_name: kateb-linux
-
-          - os: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            binary_name: kateb
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
             asset_name: kateb-linux-arm64
-
-          - os: macos-latest
-            target: x86_64-apple-darwin
-            binary_name: kateb
+            os: ubuntu-latest
+            use_cross: true
+          - target: x86_64-apple-darwin
             asset_name: kateb-darwin
-
-          - os: macos-14
-            target: aarch64-apple-darwin
-            binary_name: kateb
+            os: macos-latest
+          - target: aarch64-apple-darwin
             asset_name: kateb-darwin-arm64
+            os: macos-14
 
     runs-on: ${{ matrix.os }}
 
@@ -42,25 +33,58 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Install cross (for ARM64 Linux)
-        if: matrix.target == 'aarch64-unknown-linux-gnu'
+      - name: Install cross
+        if: matrix.use_cross
         run: cargo install cross
 
       - name: Build
-        if: matrix.target != 'aarch64-unknown-linux-gnu'
-        run: cargo build --release --target ${{ matrix.target }}
-
-      - name: Build (cross)
-        if: matrix.target == 'aarch64-unknown-linux-gnu'
-        run: cross build --release --target ${{ matrix.target }}
-
-      - name: Prepare binary for release
+        run: |
+          if [ "${{ matrix.use_cross }}" = "true" ]; then
+            cross build --release --target ${{ matrix.target }}
+          else
+            cargo build --release --target ${{ matrix.target }}
+          fi
         shell: bash
-        run: cp target/${{ matrix.target }}/release/${{ matrix.binary_name }} ${{ matrix.asset_name }}
 
-      - name: Upload Release Asset
+      - name: Copy binary
+        run: cp target/${{ matrix.target }}/release/kateb ${{ matrix.asset_name }}
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ${{ matrix.asset_name }}
+
+  checksums:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: binaries
+
+      - name: Generate checksums
+        run: |
+          {
+            echo "{"
+            first=true
+            for dir in binaries/*/; do
+              asset_name=$(basename "$dir")
+              checksum=$(sha256sum "binaries/$asset_name/$asset_name" | awk '{print $1}')
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo ","
+              fi
+              printf '  "%s": "%s"' "$asset_name" "$checksum"
+            done
+            echo ""
+            echo "}"
+          } > checksums.json
+          cat checksums.json
+
+      - name: Upload to release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ matrix.asset_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: checksums.json

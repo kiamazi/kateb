@@ -11,7 +11,17 @@ a script to download, install and update Persian free(libre) fonts on all GNU/Li
 ## نصب
 
 ```
-cargo install --git https://github.com/kiamazi/kateb 
+curl -fsSL https://raw.githubusercontent.com/kiamazi/kateb/main/scripts/install.sh | bash
+# Installs to ~/.local/bin
+
+curl -fsSL https://raw.githubusercontent.com/kiamazi/kateb/main/install.sh | sudo bash
+# Installs to /usr/local/bin
+```
+
+یا
+
+```
+cargo install --git https://github.com/kiamazi/kateb
 ```
 
 یا نسخه باینری را مستقیما از (صفحه انتشار)[https://github.com/kiamazi/kateb/releases] دانلود کنید
@@ -27,7 +37,8 @@ cargo build --release
 > [!NOTE]
 > ‫اگر از یکی از نسخه‌های قدیمی‌تر از نسخه۲(نسخه‌های perl) استفاده می‌کنید یا می‌کردید، لطفا
 > ابتدا دایرکتوری قدیمی فونت‌ها را حذف کنید. در یکی از این ۴مسیر(بسته به سیستم عامل)
-> دایرکتوری `farsifreefont` را پیدا کنید و آن را حذف کنید 
+> دایرکتوری `farsifreefont` را پیدا کنید و آن را حذف کنید
+
 ```
 # mac:
 /Library/Fonts/farsifreefont
@@ -95,7 +106,6 @@ cargo build --release
     kateb uninstall nika arad ziracode
     #or
     kateb uninstall all
-
 
 ### fonts
 

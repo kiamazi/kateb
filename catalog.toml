@@ -186,6 +186,17 @@ extract_regex = "^fonts/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
+name = "noon"
+api = "https://api.github.com/repos/font-store/NoonFont/releases"
+repo_name = "NoonFont"
+repo_url = "https://github.com/font-store/NoonFont"
+publisher_name = "Saleh Souzanchi"
+publisher_url = "https://github.com/font-store"
+direct_download = ""
+extract_regex = "([^/]+\\.ttf)$"
+asset_number = 0
+
+[[fonts]]
 name = "shahab"
 api = "https://api.github.com/repos/font-store/ShahabFont/releases"
 repo_name = "ShahabFont"

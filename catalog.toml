@@ -116,7 +116,7 @@ repo_url = "https://github.com/aminabedi68/Estedad/"
 publisher_name = "Amin Abedi"
 publisher_url = "https://github.com/aminabedi68"
 direct_download = ""
-extract_regex = "^Statics/ttf/([^/]+\\.ttf)$"
+extract_regex = "Statics/ttf/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -127,7 +127,7 @@ repo_url = "https://github.com/aminabedi68/Mikhak/"
 publisher_name = "Amin Abedi"
 publisher_url = "https://github.com/aminabedi68"
 direct_download = ""
-extract_regex = "^ttf/([^/]+\\.ttf)$"
+extract_regex = "ttf/([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -138,7 +138,7 @@ repo_url = "https://github.com/font-store/BehdadFont/"
 publisher_name = "Saleh Souzanchi"
 publisher_url = "https://github.com/font-store"
 direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
+extract_regex = "([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]
@@ -149,7 +149,7 @@ repo_url = "https://github.com/font-store/FarbodFont/"
 publisher_name = "Saleh Souzanchi"
 publisher_url = "https://github.com/font-store"
 direct_download = ""
-extract_regex = "^([^/]+\\.ttf)$"
+extract_regex = "([^/]+\\.ttf)$"
 asset_number = 0
 
 [[fonts]]

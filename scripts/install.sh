@@ -271,7 +271,7 @@ main() {
   check_path "$bin_dir" "$EUID"
 
   log_info "Installation complete! ✓"
-  log_info "Run 'kateb --version' to verify the installation"
+  log_info "Run 'kateb version' to verify the installation"
 }
 
 main "$@"

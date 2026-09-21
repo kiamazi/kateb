@@ -261,3 +261,25 @@ publisher_url = "https://github.com/MohamadDarvishi"
 direct_download = ""
 extract_regex = "^Font Family/([^/]+\\.ttf)$"
 asset_number = 0
+
+[[fonts]]
+name = "ulduz"
+api = "https://api.github.com/repos/zoha-fontgraph/Ulduz/releases"
+repo_name = "Ulduz"
+repo_url = "https://github.com/zoha-fontgraph/Ulduz"
+publisher_name = "Zoha Asgharzadeh"
+publisher_url = "https://github.com/zoha-fontgraph"
+direct_download = "https://raw.githubusercontent.com/zoha-fontgraph/Ulduz/main/Ulduz.ttf"
+extract_regex = ""
+asset_number = 0
+
+[[fonts]]
+name = "erfan"
+api = "https://api.github.com/repos/ekm507/erfan-font/releases"
+repo_name = "erfan-font"
+repo_url = "https://github.com/ekm507/erfan-font"
+publisher_name = "Erfan Kheyrollahi"
+publisher_url = "https://github.com/ekm507"
+direct_download = ""
+extract_regex = "^([^/]+\\.ttf)$"
+asset_number = 0

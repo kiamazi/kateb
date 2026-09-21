@@ -1,6 +1,6 @@
 [package]
 name = "kateb"
-version = "2.0.1"
+version = "2.0.2"
 edition = "2024"
 authors = ["Kiavash Mazi <kiavash@gmail.com>"]
 description = "A CLI font installer for installing Farsi free fonts"
@@ -28,3 +28,9 @@ tempfile = "3.27.0"
 toml = "0.8"
 toml_edit = "0.25.15"
 zip = "8.6.0"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1

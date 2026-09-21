@@ -5,6 +5,7 @@ set -euo pipefail
 # Configuration
 REPO="kiamazi/kateb"
 BINARY_NAME="kateb"
+VERSION="V2.0.2"
 
 # Colors for output
 RED='\033[0;31m'
@@ -76,18 +77,18 @@ get_bin_dir() {
   fi
 }
 
-# Get the latest release version
-get_latest_version() {
-  local version
-  version=$(curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | cut -d'"' -f4)
+# # Get the latest release version
+# get_latest_version() {
+#   local version
+#   version=$(curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | cut -d'"' -f4)
 
-  if [ -z "$version" ]; then
-    log_error "Failed to fetch latest version"
-    exit 1
-  fi
+#   if [ -z "$version" ]; then
+#     log_error "Failed to fetch latest version"
+#     exit 1
+#   fi
 
-  echo "$version"
-}
+#   echo "$version"
+# }
 
 # Determine the binary name based on platform
 get_binary_name() {
@@ -222,10 +223,10 @@ main() {
   fi
   log_info "Installation directory: $bin_dir"
 
-  # Get latest version
-  local version
-  version=$(get_latest_version)
-  log_info "Latest version: $version"
+  # # Get latest version
+  # local version
+  # version=$(get_latest_version)
+  # log_info "Latest version: $version"
 
   # Get binary name
   local binary_name
@@ -240,11 +241,13 @@ main() {
   cd "$temp_dir"
 
   # Download binary
-  local download_url="https://github.com/${REPO}/releases/download/${version}/${binary_name}"
+  # local download_url="https://github.com/${REPO}/releases/download/${version}/${binary_name}"
+  local download_url="https://github.com/${REPO}/releases/download/${VERSION}/${binary_name}"
   download_file "$download_url" "$binary_name"
 
   # Download checksums
-  local checksums_url="https://github.com/${REPO}/releases/download/${version}/checksums.json"
+  # local checksums_url="https://github.com/${REPO}/releases/download/${version}/checksums.json"
+  local checksums_url="https://github.com/${REPO}/releases/download/${VERSION}/checksums.json"
   if ! download_file "$checksums_url" "checksums.json"; then
     log_warn "Could not download checksums.json, proceeding without verification"
   else

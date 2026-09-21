@@ -194,7 +194,7 @@ impl Font {
 
         if let Some(url) = &self.direct_download {
             let file_name = url.rsplit('/').next().unwrap();
-            let font_file_path = local_data.cache_dir.join(file_name);
+            let font_file_path = local_data.font_dir.join(file_name);
 
             download_file(url, &font_file_path, mp)?;
 

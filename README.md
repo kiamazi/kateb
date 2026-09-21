@@ -55,7 +55,7 @@ cd kateb
 cargo build --release
 ```
 
-- ‫یا نسخه اجرایی را بر اساس سیستم‌عامل خودتان مستقیما از (صفحه انتشار)[https://github.com/kiamazi/kateb/releases] دانلود کنید، آن را به `kateb` تغییر نام دهید و در مسیری که PATH آن را پیدا کند، مثلا `~/.local/bin` کپی کنید
+- ‫یا نسخه اجرایی را بر اساس سیستم‌عامل خودتان مستقیما از [صفحه انتشار](https://github.com/kiamazi/kateb/releases) دانلود کنید، آن را به `kateb` تغییر نام دهید و در مسیری که PATH آن را پیدا کند، مثلا `~/.local/bin` کپی کنید
 
 
 ### به روز رسانی از نسخه‌های قبل از ورژن۲(نسخه‌های پرل)
@@ -125,7 +125,7 @@ rm ~/Library/Fonts/farsifreefont
 
 ```bash
 #linux
-sudo rm -rf /usr/share/fonts/farsifreefont
+sudo rm -rf /usr/share/fonts/truetype/farsifreefont
 
 #mac
 sudo rm /Library/Fonts/farsifreefont
@@ -250,7 +250,7 @@ Options:
 ~/.local/share/fonts/
 ~/.local/share/fonts/farsifreefont
 /usr/share/fonts/
-/usr/share/fonts/farsifreefont
+/usr/share/fonts/truetype/farsifreefont
 
 ~/Library/Fonts/
 ~/Library/Fonts/farsifreefont

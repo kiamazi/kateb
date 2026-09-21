@@ -5,7 +5,7 @@ set -euo pipefail
 # Configuration
 REPO="kiamazi/kateb"
 BINARY_NAME="kateb"
-VERSION="v2.0.2"
+VERSION="v2.0.3"
 
 # Colors for output
 RED='\033[0;31m'

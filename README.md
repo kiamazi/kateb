@@ -4,7 +4,6 @@
 
 ‫کاتب یک نصب کننده و به روز رسان برای فونت‌های آزاد فارسی است.
 
-
 - [نصب](#نصب)
   - [نصب برای اولین بار](#نصب-برای-اولین-بار)
   - [به روز رسانی از نسخه‌های قبل از ورژن۲(نسخه‌های پرل)](#به-روز-رسانی-از-نسخه‌های-قبل-از-ورژن۲نسخه‌های-پرل)
@@ -14,7 +13,6 @@
 - [مشارکت](#مشارکت)
   - [افزودن فونت جدید](#افزودن-فونت-جدید)
 
-
 ## نصب
 
 - [نصب برای اولین بار](#نصب-برای-اولین-بار)
@@ -23,9 +21,9 @@
 ### نصب برای اولین بار
 
 برای نصب کاتب، یکی از روش‌های زیر را انتخاب کنید
+
 > [!NOTE]
 > در پایان هم اگر پیش از این هر یک از فونت‌های پشتیبانی شده را خودتان قبلا نصب یا کپی کرده‌اید، یک نگاه به بخش پایانی این فایل راهنما(**مسیر نصب**) می‌تواند مفید باشد.
-
 
 - نصب برای کاربر فعلی (پیشنهاد اصلی)  
   ‫این روش برنامه را فقط برای حساب کاربری شما نصب می‌کند و فایل اجرایی در مسیر `~/.local/bin` قرار می‌گیرد:
@@ -57,11 +55,9 @@ cargo build --release
 
 - ‫یا نسخه اجرایی را بر اساس سیستم‌عامل خودتان مستقیما از [صفحه انتشار](https://github.com/kiamazi/kateb/releases) دانلود کنید، آن را به `kateb` تغییر نام دهید و در مسیری که PATH آن را پیدا کند، مثلا `~/.local/bin` کپی کنید
 
-
 ### به روز رسانی از نسخه‌های قبل از ورژن۲(نسخه‌های پرل)
 
 برای به روزرسانی، ابتدا نسخه‌ی قدیمی را حذف کنید
-
 
 - ‫اگر کاتب را برای کاربر فعلی و بدون sudo نصب کرده‌اید
 
@@ -75,7 +71,7 @@ which kateb | xarg rm
 wich kateb
 # ~/path/to/kateb
 
-rm ~/path/to/kateb
+rm -rf ~/path/to/kateb
 ```
 
 و برای حذف ماژول پرل(اگر مایل به حذف کامل ماژول نیستید، این مرحله قابل چشم‌پوشی است)
@@ -96,7 +92,7 @@ perl -M kateb -e 'print $INC{"kateb.pm"}' | xargs dirname | xargs -I {} rm -rf {
 wich kateb
 # ~/path/to/kateb
 
-sudo rm ~/path/to/kateb
+sudo rm -rf ~/path/to/kateb
 ```
 
 و برای حذف ماژول پرل(اگر مایل به حذف کامل ماژول نیستید، این مرحله قابل چشم‌پوشی است)
@@ -140,6 +136,7 @@ kateb <command> [option]
 ### list
 
 نمایش فونت‌های پشتیبانی شده توسط کاتب
+
 ```bash
 kateb list
 ```
@@ -150,7 +147,7 @@ kateb list
 
 ```bash
 kateb install [font name(s) or all]
-    
+
 kateb install vazir
     #or
 kateb install vazir sahel estedad
@@ -268,8 +265,8 @@ Options:
 ~/Library/Fonts/farsi-freefont
 ```
 
-
 - ‫مسیر نصب سیستمی فونت:
+
 ```bash
 #linux
 /usr/share/fonts/truetype/farsi-freefont
@@ -282,35 +279,47 @@ Options:
 
 لیست فونت‌هایی که در حال حاضر پشتیبانی می‌شوند
 
-    arad
-    ario
-    behdad
-    estedad
-    farbod
-    gandom
-    ganjnameh
-    lalezar
-    mikhak
-    nahid
-    nastaliq
-    nika
-    noon
-    parastoo
-    pfont
-    rooyin
-    sahel
-    samim
-    shabnam
-    shahab
-    tanha
-    vazir
-    vazircode
-    ziracode
-    
+```
+estedad    │ Amin Abedi         │ https://github.com/aminabedi68/Estedad/
+mikhak     │                    │ https://github.com/aminabedi68/Mikhak/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+lalezar    │ Borna Izadpanah    │ https://github.com/BornaIz/Lalezar/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+erfan      │ Erfan Kheyrollahi  │ https://github.com/ekm507/erfan-font
+───────────┼────────────────────┼───────────────────────────────────────────────────
+ziracode   │ Kiavash Mazi       │ https://github.com/kiamazi/zira-code-font/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+arad       │ Mohammad Darvishi  │ https://github.com/MohamadDarvishi/Arad
+ario       │                    │ https://github.com/MohamadDarvishi/Ario
+rooyin     │                    │ https://github.com/MohamadDarvishi/Rooyin
+───────────┼────────────────────┼───────────────────────────────────────────────────
+pfont      │ Persian Free Font  │ https://github.com/pfont/pfont/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+gandom     │ Saber Rastikerdar  │ https://github.com/rastikerdar/gandom-font/
+nahid      │                    │ https://github.com/rastikerdar/nahid-font/
+parastoo   │                    │ https://github.com/rastikerdar/parastoo-font/
+sahel      │                    │ https://github.com/rastikerdar/sahel-font/
+samim      │                    │ https://github.com/rastikerdar/samin-font/
+shabnam    │                    │ https://github.com/rastikerdar/shabnam-font/
+tanha      │                    │ https://github.com/rastikerdar/tanha-font/
+vazir      │                    │ https://github.com/rastikerdar/vazirmatn/
+vazircode  │                    │ https://github.com/rastikerdar/vazir-code-font/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+behdad     │ Saleh Souzanchi    │ https://github.com/font-store/BehdadFont/
+farbod     │                    │ https://github.com/font-store/FarbodFont/
+ganjnameh  │                    │ https://github.com/font-store/GanjnamehFont/
+nastaliq   │                    │ https://github.com/font-store/font-IranNastaliq/
+nika       │                    │ https://github.com/font-store/NikaFont/
+noon       │                    │ https://github.com/font-store/NoonFont
+shahab     │                    │ https://github.com/font-store/ShahabFont/
+───────────┼────────────────────┼───────────────────────────────────────────────────
+ulduz      │ Zoha Asgharzadeh   │ https://github.com/zoha-fontgraph/Ulduz
+```
+
 ## مشارکت
-    
-به هر طریقی که دوست داشته باشید می‌توانید در توسعه کاتب مشارکت کنید، برای مثال: 
-    
+
+به هر طریقی که دوست داشته باشید می‌توانید در توسعه کاتب مشارکت کنید، برای مثال:
+
 - گزارش باگ‌ها یا مشکلاتی که در کاتب با آن‌ها مواجه می‌شوید یا دادن هر پیشنهادی برای بهتر شدن آن
 - خواندن کد و مشارکت در توسعه آن
 - نوشتن راهنمای بهتر برای استفاده
@@ -324,7 +333,6 @@ Options:
 - یا اگر فونت آزادی را می‌شناید که در لیست فونت‌های کاتب قرار ندارد
 
 ‫می‌توانید از طریق صفحه issue همین مخزن آن را به من اطلاع دهید تا بانک فونت‌ها را به روز کنم، یا خیلی راحت می‌توانید خودتان این کار را انجام دهید.
-
 
 ‫کافی است این پروژه را fork کنید، فایل `catalog.toml` را ویرایش کنید و فونت مورد نظرتان را به آن اضافه کنید یا اگر نیازی به اصلاح دارد، آن را اصلاح کنید و یک pull request بفرستید. کاتب لیست فونت‌ها را به شکل آنلاین از همین فایل می‌خواند، پس بعد از به روز شدن این فایل در همین مخزن، کاتب بدون نیاز به به‌روز‌رسانی جدید، فونت‌های جدید را پشتیبانی خواهد کرد.
 
@@ -397,4 +405,3 @@ fonts/ttf/Vazirmatn-SemiBold.ttf
 تنها دلیل وجود این فیلد، فونت‌های Lalezar و IranNastaliq هستند، برای مثال لاله‌زار هیچ فایل ضمیمه‌ای همراه آخرین انتشار خود ندارد و برای دریافت تنها یک فایل، باید کل مخزن گیت‌هاب پروژه را دریافت کرد، وجود این فیلد باعث می‌شود که به جای دریافت کل مخزن، تنها همان یک فایل را مستقیم دریافت کنیم.
 
 ‫به این نکته توجه کنید که در صورت مقدار دادن به این فیلد، دیگر فایل ضمیمه‌ی آخرین نسخه دانلود نمی‌شود و از آن چشم پوشی خواهد شد، پس در این حالت فیلد `extract_regex` را بدون مقدار باقی بگذارید.
-

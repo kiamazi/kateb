@@ -283,3 +283,14 @@ publisher_url = "https://github.com/ekm507"
 direct_download = ""
 extract_regex = "^([^/]+\\.ttf)$"
 asset_number = 0
+
+[[fonts]]
+name = "vazirsoft"
+api = "https://api.github.com/repos/truthofmatthew/vazirmatn-soft/releases"
+repo_name = "vazirmatn-soft"
+repo_url = "https://github.com/truthofmatthew/vazirmatn-soft/"
+publisher_name = "Matthew Truth"
+publisher_url = "https://github.com/truthofmatthew"
+direct_download = ""
+extract_regex = "^VazirmatnSoft/fonts/ttf/([^/]+\\.ttf)$"
+asset_number = 0

@@ -289,6 +289,8 @@ erfan      │ Erfan Kheyrollahi  │ https://github.com/ekm507/erfan-font
 ───────────┼────────────────────┼───────────────────────────────────────────────────
 ziracode   │ Kiavash Mazi       │ https://github.com/kiamazi/zira-code-font/
 ───────────┼────────────────────┼───────────────────────────────────────────────────
+vazirsoft  │ Matthew Truth      │ https://github.com/truthofmatthew/vazirmatn-soft/
+───────────┼────────────────────┼───────────────────────────────────────────────────
 arad       │ Mohammad Darvishi  │ https://github.com/MohamadDarvishi/Arad
 ario       │                    │ https://github.com/MohamadDarvishi/Ario
 rooyin     │                    │ https://github.com/MohamadDarvishi/Rooyin

@@ -71,7 +71,7 @@ which kateb | xarg rm
 wich kateb
 # ~/path/to/kateb
 
-rm -rf ~/path/to/kateb
+rm ~/path/to/kateb
 ```
 
 و برای حذف ماژول پرل(اگر مایل به حذف کامل ماژول نیستید، این مرحله قابل چشم‌پوشی است)
@@ -90,9 +90,9 @@ perl -M kateb -e 'print $INC{"kateb.pm"}' | xargs dirname | xargs -I {} rm -rf {
 
 ```bash
 wich kateb
-# ~/path/to/kateb
+# /path/to/kateb
 
-sudo rm -rf ~/path/to/kateb
+sudo rm /path/to/kateb
 ```
 
 و برای حذف ماژول پرل(اگر مایل به حذف کامل ماژول نیستید، این مرحله قابل چشم‌پوشی است)
